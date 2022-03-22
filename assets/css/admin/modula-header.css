@@ -164,8 +164,24 @@ body.modula-gallery_page_modula-addons .modula-header-links {
 .modula-header-links .dashicons { font-size: 16px; }
 
 .modula-status-bar {
-	display:flex;
+	/*display:flex;*/
 	align-items: center;
 	align-content: center;
 	font-weight: bold;
+	position: relative;
+	width:200px;
+}
+
+#modula_settings_search_results {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    border: 1px solid;
+    padding: 0px 5px;
+    z-index: 999;
+    top: 58px;
+    border-radius: 3px;
+	width:500px;
 }

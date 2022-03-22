@@ -45,6 +45,7 @@ class Modula {
 		require_once MODULA_PATH . 'includes/admin/class-wpchill-upsells.php';
 		require_once MODULA_PATH . 'includes/admin/class-modula-upsells.php';
 		require_once MODULA_PATH . 'includes/admin/class-modula-admin.php';
+		require_once MODULA_PATH . 'includes/admin/class-modula-search-settings.php';
 
 		require_once MODULA_PATH . 'includes/public/class-modula-shortcode.php';
 		require_once MODULA_PATH . 'includes/class-modula-gutenberg.php';
