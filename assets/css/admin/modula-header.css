@@ -167,9 +167,9 @@ body.modula-gallery_page_modula-addons .modula-header-links {
 	/*display:flex;*/
 	align-items: center;
 	align-content: center;
-	font-weight: bold;
 	position: relative;
-	width:200px;
+	width:500px;
+	padding-top: 20px;
 }
 
 #modula_settings_search_results {
@@ -184,4 +184,62 @@ body.modula-gallery_page_modula-addons .modula-header-links {
     top: 58px;
     border-radius: 3px;
 	width:500px;
+}
+.modula_search_result_item_name, .modula_search_result_item_description {
+    display: block;
+    font-size: 13px;
+    margin-bottom: .2em;
+}
+.modula_search_result_item {
+    padding: 10px 5px;
+    border-bottom: 1px solid #dedede;
+    text-decoration: none;
+    display: flex;
+    color: #000;
+}
+.modula_search_result_item .mrgl
+{
+	flex: auto;
+}
+.modula_search_result_item .mrgl.badge-center {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    text-align: center;
+    padding-left: 10px;
+}
+span.modula_search_result_item_bread {
+    font-size: 9px;
+	display: block;
+	line-height: 13px;
+}
+.modula-status-bar .selectize-control.single .selectize-input,.modula-status-bar .selectize-dropdown.single {
+    max-width: unset;
+}
+span.modula_search_result_req_pro {
+    margin-right: 5px;
+    font-size: 12px;
+    background: #f4daa4;
+    padding: 2px 5px;
+    color: #000;
+    font-weight: 400;
+}
+span.modula_search_result_badge {
+    margin-right: 5px;
+    font-size: 12px;
+    background: #f0f0f0;
+    padding: 2px 5px;
+    color: #000;
+    font-weight: 400;
+}
+span.modula_search_result_item_description {
+    display: block;
+    font-size: 10px;
+    line-height: 14px;
+}
+span.mrgl.mrgl-details {
+    width: 85%;
+}
+.modula-status-bar .selectize-dropdown-content {
+    max-height: 300px;
 }
