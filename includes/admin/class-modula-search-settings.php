@@ -15,13 +15,12 @@ class Modula_Search_Settings {
 	public function __construct() {
         add_action( 'wp_ajax_modula_search_settings', array( $this, 'modula_search_settings' ) ); 
         add_action( 'admin_enqueue_scripts', array( $this, 'register_scripts' ), 20 );
-        wp_enqueue_script( 'modula-selectize', MODULA_URL . 'assets/js/admin/selectize.js', null, MODULA_LITE_VERSION, true );
-		wp_enqueue_style( 'modula-selectize', MODULA_URL . 'assets/css/admin/selectize.default.css', array(), MODULA_LITE_VERSION );
 	}
 
 
     public function register_scripts(){
-        
+        wp_enqueue_script( 'modula-selectize', MODULA_URL . 'assets/js/admin/selectize.js', null, MODULA_LITE_VERSION, true );
+        wp_enqueue_style( 'modula-selectize', MODULA_URL . 'assets/css/admin/selectize.default.css', array(), MODULA_LITE_VERSION );
 		wp_enqueue_script( 'modula_search_settings_script', MODULA_URL . 'assets/js/admin/modula-search-settings.js', array( 'jquery' ), MODULA_LITE_VERSION, true );
     }
 
@@ -35,14 +34,18 @@ class Modula_Search_Settings {
             
             foreach( $this->get_settings() as $key => $setting ){
                 if( preg_grep('~' . $input . '~', array( strtolower( $setting['name'] ) ) ) ){
-                    $results['test'][$key] = $setting;
-                    $results['test'][$key]['url'] = $this->get_link( $setting )['url'];
+                    // $results['test'][$key] = $setting;
+                    // $results['test'][$key]['url'] = $this->get_link( $setting )['url'];
+                    $setting['id'] = $key;
+                    $results[] = $setting;
                     //$results[$key]['prio'] = 1;
                     //$results[$key]['value'] = '<li>'. $this->get_link( $setting ) .'</li>';
                 }
                 if( preg_grep('~' . $input . '~', array( strtolower( $setting['description'] ) ) ) && !array_key_exists( $key, $results ) ){
-                    $results['test'][$key] = $setting;
-                    $results['test'][$key]['url'] = $this->get_link( $setting )['url'];
+                    // $results['test'][$key] = $setting;
+                    // $results['test'][$key]['url'] = $this->get_link( $setting )['url'];
+                    $setting['id'] = $key;
+                    $results[] = $setting;
                     //$results[$key]['prio'] = 2;
                    // $results[$key]['value'] = '<li>'. $this->get_link( $setting ) .'</li>';
                 }

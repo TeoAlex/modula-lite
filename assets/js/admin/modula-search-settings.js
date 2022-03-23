@@ -15,7 +15,7 @@ jQuery(document).ready(function ($) {
     $(element).selectize({
         valueField: "name",
         labelField: "name",
-        searchField: "name",
+        searchField: ["name"],
         create: false,
         render: {
           option: function (item, escape) {
@@ -24,6 +24,9 @@ jQuery(document).ready(function ($) {
           },
         },
         load: function (query, callback) {
+
+            console.log( query );
+            console.log( callback );
             
          // if (!query.length) return callback();
           $.ajax({
@@ -38,8 +41,9 @@ jQuery(document).ready(function ($) {
               callback();
             },
             success: function (res) {
-                console.log(res.test)
-                callback(res.test);
+                console.log(res);
+                // callback( [{name:'border'},{name:'booring'}]  );
+                callback( res  );
             },
           });
         },
