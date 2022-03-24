@@ -191,8 +191,7 @@ body.modula-gallery_page_modula-addons .modula-header-links {
     margin-bottom: .2em;
 }
 .modula_search_result_item {
-    padding: 10px 5px;
-    border-bottom: 1px solid #dedede;
+    padding: 6px 12px;
     text-decoration: none;
     display: flex;
     color: #000;
@@ -208,7 +207,7 @@ body.modula-gallery_page_modula-addons .modula-header-links {
     text-align: center;
     padding-left: 10px;
 }
-span.modula_search_result_item_bread {
+.modula_search_result_item_bread {
     font-size: 9px;
 	display: block;
 	line-height: 13px;
@@ -216,7 +215,7 @@ span.modula_search_result_item_bread {
 .modula-status-bar .selectize-control.single .selectize-input,.modula-status-bar .selectize-dropdown.single {
     max-width: unset;
 }
-span.modula_search_result_req_pro {
+.modula_search_result_req_pro {
     margin-right: 5px;
     font-size: 12px;
     background: #f4daa4;
@@ -224,7 +223,7 @@ span.modula_search_result_req_pro {
     color: #000;
     font-weight: 400;
 }
-span.modula_search_result_badge {
+.modula_search_result_badge {
     margin-right: 5px;
     font-size: 12px;
     background: #f0f0f0;
@@ -232,14 +231,48 @@ span.modula_search_result_badge {
     color: #000;
     font-weight: 400;
 }
-span.modula_search_result_item_description {
+.modula_search_result_item_description {
     display: block;
     font-size: 10px;
     line-height: 14px;
 }
-span.mrgl.mrgl-details {
+.mrgl.mrgl-details {
     width: 85%;
 }
 .modula-status-bar .selectize-dropdown-content {
     max-height: 300px;
+	padding: 8px 16px;
+}
+.modula_search_result_item.active {
+    background-color: #f0f0f0;
+    color: #007cba;
+}
+.modula_search_result_item.active .modula_search_result_badge {
+    color: #007cba;
+    background-color: #fff;
+}
+.modula-status-bar .selectize-control.single .selectize-input{
+	box-shadow: unset;
+	background-color: unset;
+	background-image: unset;
+	cursor:text;
+}
+.modula-status-bar .selectize-control.single .selectize-input:after{
+	display:none;
+}
+.modula_search_result_item.active .mrgl-details .modula_search_result_item_name .highlight{
+	color: #007cba;
+}
+.mrgl-details .modula_search_result_item_name .highlight {
+    font-weight: 700;
+	background: none !important;
+}
+
+.mrgl-details .modula_search_result_item_description .highlight,.mrgl-details .modula_search_result_item_bread .highlight {
+    font-weight: unset;
+	color:unset;
+	background: none !important;
+}
+.modula_search_result_item_description, .modula_search_result_item_bread {
+    color: #757575;
 }

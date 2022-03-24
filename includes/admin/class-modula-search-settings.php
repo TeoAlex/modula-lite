@@ -14,7 +14,7 @@ class Modula_Search_Settings {
 
 	public function __construct() {
         add_action( 'wp_ajax_modula_search_settings', array( $this, 'modula_search_settings' ) ); 
-        add_action( 'admin_enqueue_scripts', array( $this, 'register_scripts' ), 20 );
+        add_action( 'admin_enqueue_scripts', array( $this, 'register_scripts' ), 10 );
 
 	}
 
@@ -28,45 +28,23 @@ class Modula_Search_Settings {
 
     public function modula_search_settings(){
         $results = array();
-        if( isset( $_POST['search_val'] ) && '' != $_POST['search_val'] ){
 
-            $search_val = strtolower( $_POST['search_val'] );
-            $input = preg_quote( $search_val, '~' );
+        foreach( $this->get_settings() as $key => $setting ){
 
-            
-            foreach( $this->get_settings() as $key => $setting ){
-                
-                $defaults = Modula_CPT_Fields_Helper::get_defaults();
-                $requires_pro = false;
-                if( !array_key_exists( $key, $defaults ) ){
-                    $requires_pro = true;
-                }
-
-                if( preg_grep('~' . $input . '~', array( strtolower( $setting['name'] ) ) ) ){
-                    $results[] = array(
-                        'name'        => $setting['name'],
-                        'description' => $setting['description'],
-                        'url'         => $this->get_link( $setting )['url'],
-                        'breadcrumbs' => $this->get_link( $setting )['breadcrumbs'],
-                        'badge'         => ( $requires_pro ) ? 'pro' : $setting['badge'],
-                    );
-
-                    //skip introducing the same setting if description matches too
-                    continue;
-                }
-
-                if( preg_grep('~' . $input . '~', array( strtolower( $setting['description'] ) ) ) ){
-                    $results[] = array(
-                        'name'        => $setting['name'],
-                        'description' => $setting['description'],
-                        'url'         => $this->get_link( $setting )['url'],
-                        'breadcrumbs' => $this->get_link( $setting )['breadcrumbs'],
-                        'badge'         => ( $requires_pro ) ? 'pro' : $setting['badge'],
-                    );
-                }
+            $defaults = Modula_CPT_Fields_Helper::get_defaults();
+            $requires_pro = false;
+            if( !array_key_exists( $key, $defaults ) ){
+                $requires_pro = true;
             }
+            $results[] = array(
+                'name'        => $setting['name'],
+                'description' => $setting['description'],
+                'url'         => $this->get_link( $setting )['url'],
+                'breadcrumbs' => $this->get_link( $setting )['breadcrumbs'],
+                'badge'       => ( $requires_pro ) ? 'pro' : $setting['badge'],
+            );
         }
-
+        
         echo json_encode( $results );
         die();
         

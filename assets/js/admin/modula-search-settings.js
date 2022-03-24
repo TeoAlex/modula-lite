@@ -5,13 +5,14 @@ jQuery(document).ready(function ($) {
         labelField: "name",
         searchField: ["name", "description"],
         sortField: "name",
+        placeholder: "Search Modula settings...",
         create: false,
         render: {
           option: function (item, escape) {
 
             var badge = disabled = '';
             if( item.badge == 'pro' ){
-                badge = "<span class='modula_search_result_req_pro'>PRO</span>";
+                badge = "<span class='modula_search_result_req_pro'>pro</span>";
                 disabled = "disabled='disabled' style='pointer-events: none; color: #aaa;'";
             }else{
                 badge = "<span class='modula_search_result_badge'>" + item.badge + "</span>";
@@ -28,25 +29,10 @@ jQuery(document).ready(function ($) {
 
           },
         },
-        load: function (query, callback) {
+        onInitialize: function () {
+            var self = this;
+            get_settings_data( self );
             
-        if (!query.length) return callback();
-          $.ajax({
-            url: ajaxurl,
-            type: 'post',
-            dataType: "json",
-            data: { 
-                action: "modula_search_settings",
-                search_val: query,
-            },
-            error: function () {
-              callback();
-            },
-            success: function (res) {
-                console.log(res);
-                callback( res  );
-            },
-          });
         },
         onItemAdd: function(value, $item){
 
@@ -55,6 +41,26 @@ jQuery(document).ready(function ($) {
             }
         },
       });
+
+function get_settings_data( self ){
+    $.ajax({
+        url: ajaxurl,
+        type: 'post',
+        dataType: "json",
+        data: { 
+            action: "modula_search_settings",
+        },
+        error: function () {
+          return;
+        },
+        success: function (res) {
+            console.log(res);
+           // return( res  );
+            self.addOption( res );
+            self.refreshOptions(false);
+        },
+      });
+}
 
 });
  
