@@ -32,6 +32,12 @@ $troubleshooting_fields = array(
 				'type'        => 'toggle',
 				'priority'    => 10,
 		),
+		'modula_search_tracking_accord'             => array(
+            'label'       => esc_html__( 'Search Accord', 'modula-best-grid-gallery' ),
+            'description' => esc_html__( 'Check this if you agree to send us data about your search patterns.', 'modula-best-grid-gallery' ),
+            'type'        => 'toggle',
+            'priority'    => 10,
+        ),
 		'enqueue_files_heaging' => array(
 				'label'       => esc_html__( 'Enqueue assets on all pages.', 'modula-best-grid-gallery' ),
 				'description' => esc_html__( 'If you have problems with displaying or running Modula Galleries you might want to enqueue Modula CSS and JS in all pages.', 'modula-best-grid-gallery' ),
@@ -74,18 +80,7 @@ $troubleshooting_fields = array(
 				'class'       => array( 'troubleshoot-subfield' ),
 				'priority'    => 40,
 		),
-		'tracking_accord_heaging' => array(
-            'label'       => esc_html__( 'Modula Searchbar tracking accord.', 'modula-best-grid-gallery' ),
-            'description' => '',
-            'type'        => 'heading',
-            'priority'    => 50,
-    ),
-		'modula_search_tracking_accord'             => array(
-            'label'       => esc_html__( 'Search Accord', 'modula-best-grid-gallery' ),
-            'description' => esc_html__( 'Check this if you agree to send data about your search patterns...', 'modula-best-grid-gallery' ),
-            'type'        => 'toggle',
-            'priority'    => 60,
-    ),
+
 );
 
 $troubleshooting_fields = apply_filters( 'modula_troubleshooting_fields', $troubleshooting_fields );
