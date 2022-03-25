@@ -34,6 +34,7 @@ class Modula_Admin {
 
 		add_filter( 'admin_body_class', array( $this, 'add_body_class' ) );
 
+        add_action( 'admin_enqueue_scripts', array( $this, 'modula_pointer_load' ), 1000 );
 	}
 
 	public function delete_resized_image( $post_id ) {
@@ -649,6 +650,64 @@ class Modula_Admin {
 		return $classes;
 
 	}
+
+	/**
+	 *  Enqueues modula custom pointers scripts
+	 *
+	 * @param string $hook_suffix
+	 * 
+	 * 
+	 * @since 2.6.3
+	 */
+    public function modula_pointer_load( $hook_suffix ) {
+     
+        // Don't run on WP < 3.3
+        if ( get_bloginfo( 'version' ) < '3.3' )
+            return;
+     
+        $screen = get_current_screen();
+        $screen_id = $screen->id;
+        
+		$pointers = apply_filters( 'modula_admin_pointer', array() );
+		
+		// Get pointers for this screen
+        $pointers = apply_filters( 'modula_admin_pointers-' . $screen_id, $pointers );
+     
+        if ( ! $pointers || ! is_array( $pointers ) )
+            return;
+     
+        // Get dismissed pointers
+        $dismissed = explode( ',', (string) get_user_meta( get_current_user_id(), 'dismissed_wp_pointers', true ) );
+        $valid_pointers =array();
+     
+        // Check pointers and remove dismissed ones.
+        foreach ( $pointers as $pointer_id => $pointer ) {
+     
+            // Sanity check
+            if ( in_array( $pointer_id, $dismissed ) || empty( $pointer )  || empty( $pointer_id ) || empty( $pointer['target'] ) || empty( $pointer['options'] ) )
+                continue;
+     
+            $pointer['pointer_id'] = $pointer_id;
+     
+            // Add the pointer to $valid_pointers array
+            $valid_pointers['pointers'][] =  $pointer;
+        }
+     
+        // No valid pointers? Stop here.
+        if ( empty( $valid_pointers ) )
+            return;
+     
+        // Add pointers style to queue.
+        wp_enqueue_style( 'wp-pointer' );
+     
+        // Add pointers script to queue. Add custom script.
+        wp_enqueue_script( 'modula-pointer',  MODULA_URL . 'assets/js/admin/modula-wp-pointers.js', array( 'wp-pointer' ) );
+     
+        // Add pointer options to script.
+        wp_localize_script( 'modula-pointer', 'modulaPointer', $valid_pointers );
+
+		wp_localize_script( 'modula-pointer', 'modulaPointerButtons', array( 'accept' => esc_html__('Accept', 'modula-best-grid-gallery'), 'reject' => esc_html__('Dismiss', 'modula-best-grid-gallery') ) );
+    }
 
 }
 

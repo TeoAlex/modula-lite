@@ -1,11 +1,11 @@
 jQuery(document).ready(function ($) {
-    var element = $("#modula_settings_search_results");
-    var instance = $(element).selectize({
+
+    $("#modula_settings_search_results").selectize({
         valueField: "name",
         labelField: "name",
         searchField: ["name", "description"],
         sortField: "name",
-        placeholder: "Search Modula settings...",
+        placeholder: translate.placeholder,
         create: false,
         render: {
           option: function (item, escape) {
@@ -30,8 +30,13 @@ jQuery(document).ready(function ($) {
           },
         },
         onInitialize: function () {
+            if( !tracking_accord.accord ){
+                this.lock();
+            }
             var self = this;
             get_settings_data( self );
+            
+
             
         },
         onItemAdd: function(value, $item){
@@ -40,27 +45,32 @@ jQuery(document).ready(function ($) {
                 window.location.href = this.options[value]['url'];
             }
         },
-      });
+        onFocus: function(){
+            if( !tracking_accord.accord ){
+                $( "body" ).removeClass( "modula_searchbar_disabled" );
+            }
+        },
+    });
 
-function get_settings_data( self ){
-    $.ajax({
-        url: ajaxurl,
-        type: 'post',
-        dataType: "json",
-        data: { 
-            action: "modula_search_settings",
-        },
-        error: function () {
-          return;
-        },
-        success: function (res) {
-            console.log(res);
-           // return( res  );
-            self.addOption( res );
-            self.refreshOptions(false);
-        },
-      });
-}
+    function get_settings_data( self ){
+        $.ajax({
+            url: ajaxurl,
+            type: 'post',
+            dataType: "json",
+            data: { 
+                action: "modula_search_settings",
+            },
+            error: function () {
+            return;
+            },
+            success: function (res) {
+                console.log(res);
+            // return( res  );
+                self.addOption( res );
+                self.refreshOptions(false);
+            },
+        });
+    }
 
 });
  

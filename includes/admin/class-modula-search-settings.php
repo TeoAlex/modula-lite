@@ -13,15 +13,61 @@ class Modula_Search_Settings {
     public $modula_settings = false;
 
 	public function __construct() {
+
+        //ajax calls
         add_action( 'wp_ajax_modula_search_settings', array( $this, 'modula_search_settings' ) ); 
+        add_action( 'wp_ajax_accept_modula_search_tracking', array( $this, 'accept_modula_search_tracking' ) );
+
+        //register scripts
         add_action( 'admin_enqueue_scripts', array( $this, 'register_scripts' ), 10 );
 
-	}
+        //apply searchbar pointer to modula screens
+        add_filter( 'modula_admin_pointer', array( $this, 'modula_register_pointer_searchbar' ) );
 
+        add_filter( 'admin_body_class', array( $this, 'searchbar_hide_pointer_class' ) );
+
+	}
+    
+    function searchbar_hide_pointer_class( $classes ) {
+
+        //add body class to hide the pointer if the searchbar is disabled
+        if( !get_option( 'modula_troubleshooting_option', false )['modula_search_tracking_accord'] ){
+            $classes .= ' modula_searchbar_disabled';
+        }
+        return $classes;
+         
+    }
+    public function modula_register_pointer_searchbar( $p ) {
+
+        // dont show pointer on pages other than modula's
+        if( !in_array( get_current_screen()->id, apply_filters( 'modula_admin_pointer_display_screens', array( 'modula-gallery_page_modula', 'modula-gallery_page_modula-addons', 'edit-modula-gallery', 'modula-gallery', 'modula-gallery_page_modula-import-export', 'modula-gallery_page_modula-lite-vs-pro' ) ) ) ){
+            return $p;
+        }
+
+        // dont show pointer if consent is given.
+        if( get_option( 'modula_troubleshooting_option', false )['modula_search_tracking_accord'] ){
+            return $p;
+        }
+
+        $p['modula_searchbar_pointer'] = array(
+            'test' => 'testmore',
+            'target' => '#modula_settings_search_results',
+            'options' => array(
+                'content' => sprintf( '<h3> %s </h3> <p> %s </p>',
+                    __( 'Search for modula settings' ,'plugindomain'),
+                    __( 'Now it even simplier to customize your modula gallery, simply.... yada yada','plugindomain'),
+                ),
+                'position' => array( 'edge' => 'top', 'align' => 'middle' )
+            )
+        );
+        return $p;
+    }
 
     public function register_scripts(){
         
 		wp_enqueue_script( 'modula_search_settings_script', MODULA_URL . 'assets/js/admin/modula-search-settings.js', array( 'jquery' ), MODULA_LITE_VERSION, true );
+        wp_localize_script( 'modula_search_settings_script', 'translate', array(  'placeholder' => esc_attr__( 'Search Modula settings', 'modula-best-grid-gallery' ) ) );
+        wp_localize_script( 'modula_search_settings_script', 'tracking_accord', array(  'accord' => get_option( 'modula_troubleshooting_option', false )['modula_search_tracking_accord'] ) );
         wp_enqueue_script( 'modula-selectize', MODULA_URL . 'assets/js/admin/selectize.js', null, MODULA_LITE_VERSION, true );
 		wp_enqueue_style( 'modula-selectize', MODULA_URL . 'assets/css/admin/selectize.default.css', array(), MODULA_LITE_VERSION );
     }
@@ -48,6 +94,16 @@ class Modula_Search_Settings {
         echo json_encode( $results );
         die();
         
+    }
+
+    public function accept_modula_search_tracking(){
+        $options = get_option('modula_troubleshooting_option');
+        if( isset( $_POST['consent'] ) && 'accept' == $_POST['consent'] ){
+            $options['modula_search_tracking_accord'] = true;
+        }else{
+            $options['modula_search_tracking_accord'] = false;
+        }
+        update_option('modula_troubleshooting_option', $options );
     }
 
     private function get_link( $setting ){

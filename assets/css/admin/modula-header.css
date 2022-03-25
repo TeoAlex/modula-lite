@@ -181,7 +181,7 @@ body.modula-gallery_page_modula-addons .modula-header-links {
     border: 1px solid;
     padding: 0px 5px;
     z-index: 999;
-    top: 58px;
+    top: 23px;
     border-radius: 3px;
 	width:500px;
 }
@@ -257,8 +257,14 @@ body.modula-gallery_page_modula-addons .modula-header-links {
 	background-image: unset;
 	cursor:text;
 }
-.modula-status-bar .selectize-control.single .selectize-input:after{
-	display:none;
+.modula-status-bar .selectize-control.single .selectize-input:after {
+	all: unset;
+    content: "\f179";
+    font-family: dashicons;
+    font-size: 18px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
 }
 .modula_search_result_item.active .mrgl-details .modula_search_result_item_name .highlight{
 	color: #007cba;
@@ -275,4 +281,13 @@ body.modula-gallery_page_modula-addons .modula-header-links {
 }
 .modula_search_result_item_description, .modula_search_result_item_bread {
     color: #757575;
+}
+.modula-pointer-buttons a.button {
+    margin-left: 10px;
+}
+.modula-pointer-buttons a.close {
+    top: 5px;
+}
+.modula_searchbar_disabled .wp-pointer{
+	display: none !important;
 }

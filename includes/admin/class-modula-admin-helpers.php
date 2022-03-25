@@ -79,8 +79,7 @@ class Modula_Admin_Helpers {
 				<img src="<?php echo esc_url( MODULA_URL . 'assets/images/logo-dark.webp' ); ?>" class="modula-logo">
 			</div>
 			<div class="modula-status-bar">
-				<!-- <input type="text" placeholder="Search settings..." id="modula_settings_search" class="search"> -->
-				<select id="modula_settings_search_results" ></select>
+				<select id="modula_settings_search_results" style="opacity:0;"></select>
 			</div>
 			<div class="modula-header-links">
 				<a href="<?php echo admin_url('edit.php?post_type=modula-gallery&page=modula-about-page'); ?>"
