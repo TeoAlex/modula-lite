@@ -33,7 +33,7 @@ $troubleshooting_fields = array(
 				'priority'    => 10,
 		),
 		'modula_search_tracking_accord'             => array(
-            'label'       => esc_html__( 'Search Accord', 'modula-best-grid-gallery' ),
+            'label'       => esc_html__( 'Search Consent', 'modula-best-grid-gallery' ),
             'description' => esc_html__( 'Check this if you agree to send us data about your search patterns.', 'modula-best-grid-gallery' ),
             'type'        => 'toggle',
             'priority'    => 10,
