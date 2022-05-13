@@ -241,8 +241,9 @@ class Modula {
 			wp_enqueue_script( 'modula-items', MODULA_URL . 'assets/js/admin/wp-modula-items.js', array(), MODULA_LITE_VERSION, true );
 			wp_enqueue_script( 'modula-modal', MODULA_URL . 'assets/js/admin/wp-modula-modal.js', array(), MODULA_LITE_VERSION, true );
 			wp_enqueue_script( 'modula-upload', MODULA_URL . 'assets/js/admin/wp-modula-upload.js', array(), MODULA_LITE_VERSION, true );
-			wp_enqueue_script( 'modula-gallery', MODULA_URL . 'assets/js/admin/wp-modula-gallery.js', array(), MODULA_LITE_VERSION, true );
+
 			wp_enqueue_script( 'modula-conditions', MODULA_URL . 'assets/js/admin/wp-modula-conditions.js', array(), MODULA_LITE_VERSION, true );
+			wp_enqueue_script( 'modula-gallery', MODULA_URL . 'assets/js/admin/wp-modula-gallery.js', array(), MODULA_LITE_VERSION, true );
 
 			do_action( 'modula_scripts_before_wp_modula' );
 

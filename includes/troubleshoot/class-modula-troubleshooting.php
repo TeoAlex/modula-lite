@@ -115,7 +115,22 @@ class Modula_Troubleshooting {
         return $tabs;
     }
 
+    public static function get_misc_defaults(){
+        return apply_filters('modula_troubleshooting_defaults', array(
+            'enqueue_files'    => false,
+            'pass_protect'     => false,
+            'download_protect' => false,
+            'deeplink'         => false,
+            'gridtypes'        => array(),
+            'lightboxes'       => array(),
+            'lazy_load'        => false,
+            'disable_edit'     => false,
+            'track_data'       => false
+        ));
+    }
+
     public function show_misc_tab(){
+        $defaults = $this->get_misc_defaults();
         include MODULA_PATH . 'includes/admin/tabs/troubleshooting-options.php';
     }
 

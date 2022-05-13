@@ -126,20 +126,6 @@ wp.Modula.upload = 'undefined' === typeof( wp.Modula.upload ) ? {} : wp.Modula.u
 		})
 	})
 
-	/** Remember last tab on update */
-	// search for modula in hash so we won't do the function on every hash
-	if( window.location.hash.length != 0 && window.location.hash.indexOf('modula') ) {
-		var modulaTabHash = window.location.hash.split( '#!' )[1];
-		$( '.modula-tabs,.modula-tabs-content' ).find( '.active-tab' ).removeClass( 'active-tab' );
-		$( '.modula-tabs' ).find( '.' + modulaTabHash ).addClass( 'active-tab' );
-		$( '#' + modulaTabHash ).addClass( 'active-tab').trigger('modula-current-tab');
-		var postAction = $( "#post" ).attr('action');
-		if( postAction ) {
-			postAction = postAction.split( '#' )[0];
-			$( '#post' ).attr( 'action', postAction + window.location.hash );
-		}
-	}
-
 	var inputs = $('#modula-hover-effect .modula-hover-effect-item input[type="radio"]');
 	$( '#modula-hover-effect .modula-hover-effect-item' ).on( 'click',function () {
 		let input = $( this ).find( 'input[type="radio"]' );
@@ -150,4 +136,14 @@ wp.Modula.upload = 'undefined' === typeof( wp.Modula.upload ) ? {} : wp.Modula.u
 		}
 	} );
 
+
+	
 })(jQuery);
+
+jQuery(window).on('load',function(){
+	/** Remember last tab on update */
+	// search for modula in hash so we won't do the function on every hash
+	if( window.location.hash.length != 0 && window.location.hash.indexOf('modula') ) {
+		try_find_setting_subjective(window.location.href);
+	}
+});

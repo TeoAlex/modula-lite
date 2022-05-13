@@ -19,13 +19,14 @@ class Modula_Search_Settings {
         add_action( 'wp_ajax_accept_modula_search_tracking', array( $this, 'accept_modula_search_tracking' ) );
 
         //register scripts
-        add_action( 'admin_enqueue_scripts', array( $this, 'register_scripts' ), 10 );
+        add_action( 'admin_enqueue_scripts', array( $this, 'register_scripts' ), 5 );
 
         //apply searchbar pointer to modula screens
         add_filter( 'modula_admin_pointer', array( $this, 'modula_register_pointer_searchbar' ) );
 
         add_filter( 'admin_body_class', array( $this, 'searchbar_hide_pointer_class' ) );
 
+        //add_action( 'admin_init', array( $this, 'modula_search_settings' )  );
 	}
     
     function searchbar_hide_pointer_class( $classes ) {
@@ -68,8 +69,23 @@ class Modula_Search_Settings {
 		wp_enqueue_script( 'modula_search_settings_script', MODULA_URL . 'assets/js/admin/modula-search-settings.js', array( 'jquery' ), MODULA_LITE_VERSION, true );
         wp_localize_script( 'modula_search_settings_script', 'translate', array(  'placeholder' => esc_attr__( 'Search Modula settings', 'modula-best-grid-gallery' ) ) );
         wp_localize_script( 'modula_search_settings_script', 'tracking_accord', array(  'accord' => get_option( 'modula_troubleshooting_option', false )['modula_search_tracking_accord'] ) );
+        wp_localize_script( 'modula_search_settings_script', 'modula_post_id', array( 'id' => isset( $_GET['post'] ) ?  absint( $_GET['post'] ) : absint( $this->get_last_cpt_id() ) ) );
         wp_enqueue_script( 'modula-selectize', MODULA_URL . 'assets/js/admin/selectize.js', null, MODULA_LITE_VERSION, true );
 		wp_enqueue_style( 'modula-selectize', MODULA_URL . 'assets/css/admin/selectize.default.css', array(), MODULA_LITE_VERSION );
+    }
+
+    public function get_last_cpt_id(){
+        $args = array(
+            'post_type' =>'modula-gallery',
+            'posts_per_page' => 1
+        );
+        $recent_post = wp_get_recent_posts( $args );
+
+        if( !empty( $recent_post ) ){
+            return $recent_post[0]['ID'];
+        }else{
+            return 0;
+        }
     }
 
     public function modula_search_settings(){
@@ -78,16 +94,21 @@ class Modula_Search_Settings {
         foreach( $this->get_settings() as $key => $setting ){
 
             $defaults = Modula_CPT_Fields_Helper::get_defaults();
+            $defaults = array_merge( $defaults, Modula_Troubleshooting::get_misc_defaults() );
             $requires_pro = false;
             if( !array_key_exists( $key, $defaults ) ){
                 $requires_pro = true;
             }
+            $setting['key'] = $key;
+            $setting['modula_post_id'] = isset( $_POST['modula_post_id'] ) ? absint( $_POST['modula_post_id'] ) : absint( $this->get_last_cpt_id() );
+
             $results[] = array(
                 'name'        => $setting['name'],
                 'description' => $setting['description'],
                 'url'         => $this->get_link( $setting )['url'],
                 'breadcrumbs' => $this->get_link( $setting )['breadcrumbs'],
                 'badge'       => ( $requires_pro ) ? 'pro' : $setting['badge'],
+                'type'        => $setting['type']
             );
         }
         
@@ -112,16 +133,24 @@ class Modula_Search_Settings {
 
         if( 'general' == $setting['type'] ){
             $url = add_query_arg( array( 'post_type' => 'modula-gallery', 'page' => 'modula', 'modula-tab' => $setting['tab'] ), $url . '/edit.php' );
+            $url .= '#!' . $setting['key'];
+            if( isset( $setting['parent'] ) && '' != $setting['parent'] ){
+                $url .= '#!' . $setting['parent'];
+            }
             $breadcrumbs = 'Modula > Settings > ' . $setting['tab'] . '(tab) > ' . $setting['name'];
         }
 
         if( 'subjective' == $setting['type'] ){
-            if( isset( $_GET['post'] ) ){
-                $url = add_query_arg( array( 'post' => absint( wp_unslash( $_GET['post'] ) ), 'action' => 'edit' ), $url . '/post.php' );
+            
+            if( isset( $setting['modula_post_id'] ) && 0 !== $setting['modula_post_id'] ){
+                $url = add_query_arg( array( 'post' => absint( $setting['modula_post_id'] ), 'action' => 'edit' ), $url . 'post.php' );
             }else{
-                $url = add_query_arg( 'post_type', 'modula-gallery', $url . '/post-new.php' );
+                $url = add_query_arg( 'post_type', 'modula-gallery', $url . 'post-new.php' );
             }
-            $url .= '#' . $setting['tab'];
+            $url .= '#' . $setting['tab'] . '#!' . $setting['key'];
+            if( isset( $setting['parent'] ) && '' != $setting['parent'] ){
+                $url .= '#!' . $setting['parent'];
+            }
             $breadcrumbs = 'Modula > Galleries > ' . $setting['tab_name'] . '(tab) > ' . $setting['name'];
         }
         
@@ -789,15 +818,6 @@ class Modula_Search_Settings {
                 "description" => esc_html__( 'Enable this option to display the date information', 'modula-exif' ),
                 'tab'         => '!modula-exif',
                 'tab_name'    => 'EXIF',
-                'parent'      => 'enable_exif',
-                'type'        => 'subjective',
-                'badge'     => 'setting'
-            ),
-            'test_incadrare'   => array(
-                "name"        => esc_html__( 'Nume lung de setare pentru test; nu avem ceva cu un nume incredibil de lung', 'modula-exif' ),
-                "description" => esc_html__( 'Nici descriere lunga asa de fel nu prea avem desii is cateva care intra pe 2 randuri si nu mai stiu ce sa mai scriu.', 'modula-exif' ),
-                'tab'         => '!modula-exif',
-                'tab_name'    => 'Tab Fain',
                 'parent'      => 'enable_exif',
                 'type'        => 'subjective',
                 'badge'     => 'setting'

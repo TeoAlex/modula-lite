@@ -1889,6 +1889,10 @@ html body #wpbody #poststuff #post-body .postbox-container #modula-hover-effect 
   display:none;
 }
 
+.modula-settings-container .modula-tabs-content .form-table tr.found-setting th,
+.modula-columns .form-table tr.found-setting th{
+  border: 2px solid #11a0d2;
+}
 
 
 /**

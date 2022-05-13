@@ -101,7 +101,7 @@ uasort( $troubleshooting_fields, array( 'Modula_Helper', 'sort_data_by_priority'
                 }
 
 				?>
-                <tr valign="top" class="<?php echo esc_attr( implode( ' ', $class ) ) ?>">
+                <tr data-container="<?php echo esc_attr( $key ) ?>" valign="top" class="<?php echo esc_attr( implode( ' ', $class ) ) ?>">
 					<th scope="row" style="width:300px;" valign="top" <?php echo 'heading' == $ts_field['type'] ? 'colspan="2"' : ''; ?>>
                         <?php
 						echo ( 'heading' == $ts_field['type'] ) ? '<h2>' . esc_html( $ts_field['label'] ) . '</h2>' : esc_html( $ts_field['label'] ) ;
