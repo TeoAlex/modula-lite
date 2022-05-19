@@ -38,7 +38,7 @@
 				'item_attributes'  => array(),
 
 				/* Item link attributes & classes */
-				'link_classes'     => array( 'tile-inner', 'modula-item-link' ),
+				'link_classes'     => array( 'tile-inner', 'modula-item-link', 'lightbox' ),
 				'link_attributes'  => array(
 					'data-image-id' => $image['id']
 				),
