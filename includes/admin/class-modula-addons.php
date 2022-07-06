@@ -230,8 +230,7 @@ class Modula_Addons {
 		}
 
 		$image = ( $addons_images && in_array( $addon[ 'slug' ], $addons_images ) ) ? MODULA_URL . 'assets/images/addons/' . $addon[ 'slug' ] . '.png' : MODULA_URL . 'assets/images/modula-logo.jpg';
-		
-		echo '<div class="modula-addon">';
+		echo '<div class="modula-addon ' . $addon[ 'slug' ] . '">';
 		echo '<div class="modula-addon-box">';
 
 		if ( !isset( $addon['image'] ) || '' == $addon['image'] ){

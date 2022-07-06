@@ -88,17 +88,36 @@ class Modula_Search_Settings {
         }
     }
 
+    public function requires_pro( $setting ){
+
+		if ( class_exists( 'WPChill_Upsells' ) && !empty( $setting['addon'] ) ) {
+
+			$args           = apply_filters(
+				'modula_upsells_args',
+				array(
+					'shop_url' => 'https://wp-modula.com',
+					'slug'     => 'modula',
+				)
+			);
+			$wpchill_upsell = WPChill_Upsells::get_instance( $args );
+
+
+            $defaults = Modula_CPT_Fields_Helper::get_defaults();
+            $defaults = array_merge( $defaults, Modula_Troubleshooting::get_misc_defaults() );
+
+            if( !array_key_exists( $setting['key'], $defaults ) || ! $wpchill_upsell || $wpchill_upsell->is_upgradable_addon( $setting['addon'] ) ){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function modula_search_settings(){
         $results = array();
 
         foreach( $this->get_settings() as $key => $setting ){
 
-            $defaults = Modula_CPT_Fields_Helper::get_defaults();
-            $defaults = array_merge( $defaults, Modula_Troubleshooting::get_misc_defaults() );
-            $requires_pro = false;
-            if( !array_key_exists( $key, $defaults ) ){
-                $requires_pro = true;
-            }
+
             $setting['key'] = $key;
             $setting['modula_post_id'] = isset( $_POST['modula_post_id'] ) ? absint( $_POST['modula_post_id'] ) : absint( $this->get_last_cpt_id() );
 
@@ -107,7 +126,7 @@ class Modula_Search_Settings {
                 'description' => $setting['description'],
                 'url'         => $this->get_link( $setting )['url'],
                 'breadcrumbs' => $this->get_link( $setting )['breadcrumbs'],
-                'badge'       => ( $requires_pro ) ? 'pro' : $setting['badge'],
+                'badge'       => ( $this->requires_pro( $setting ) ) ? 'pro' : $setting['badge'],
                 'type'        => $setting['type']
             );
         }
@@ -132,25 +151,36 @@ class Modula_Search_Settings {
         $breadcrumbs = '';
 
         if( 'general' == $setting['type'] ){
-            $url = add_query_arg( array( 'post_type' => 'modula-gallery', 'page' => 'modula', 'modula-tab' => $setting['tab'] ), $url . '/edit.php' );
-            $url .= '#!' . $setting['key'];
-            if( isset( $setting['parent'] ) && '' != $setting['parent'] ){
-                $url .= '#!' . $setting['parent'];
+            if( $this->requires_pro( $setting ) ){
+                $url = add_query_arg( array( 'post_type' => 'modula-gallery', 'page' => 'modula-addons', 'modula-addon' => $setting['addon'] ), $url . '/edit.php' );
+            
+            }else{
+                $url = add_query_arg( array( 'post_type' => 'modula-gallery', 'page' => 'modula', 'modula-tab' => $setting['tab'] ), $url . '/edit.php' );
+                $url .= '#!' . $setting['key'];
+                if( isset( $setting['parent'] ) && '' != $setting['parent'] ){
+                    $url .= '#!' . $setting['parent'];
+                }
             }
+
             $breadcrumbs = 'Modula > Settings > ' . $setting['tab'] . '(tab) > ' . $setting['name'];
         }
 
         if( 'subjective' == $setting['type'] ){
+            if( $this->requires_pro( $setting ) ){
+                $url = add_query_arg( array( 'post_type' => 'modula-gallery', 'page' => 'modula-addons', 'modula-addon' => $setting['addon'] ), $url . '/edit.php' );
             
-            if( isset( $setting['modula_post_id'] ) && 0 !== $setting['modula_post_id'] ){
-                $url = add_query_arg( array( 'post' => absint( $setting['modula_post_id'] ), 'action' => 'edit' ), $url . 'post.php' );
             }else{
-                $url = add_query_arg( 'post_type', 'modula-gallery', $url . 'post-new.php' );
+                if( isset( $setting['modula_post_id'] ) && 0 !== $setting['modula_post_id'] ){
+                    $url = add_query_arg( array( 'post' => absint( $setting['modula_post_id'] ), 'action' => 'edit' ), $url . 'post.php' );
+                }else{
+                    $url = add_query_arg( 'post_type', 'modula-gallery', $url . 'post-new.php' );
+                }
+                $url .= '#' . $setting['tab'] . '#!' . $setting['key'];
+                if( isset( $setting['parent'] ) && '' != $setting['parent'] ){
+                    $url .= '#!' . $setting['parent'];
+                }
             }
-            $url .= '#' . $setting['tab'] . '#!' . $setting['key'];
-            if( isset( $setting['parent'] ) && '' != $setting['parent'] ){
-                $url .= '#!' . $setting['parent'];
-            }
+
             $breadcrumbs = 'Modula > Galleries > ' . $setting['tab_name'] . '(tab) > ' . $setting['name'];
         }
         
@@ -757,7 +787,8 @@ class Modula_Search_Settings {
                 'tab_name'    => 'EXIF',
                 'parent'      => '',
                 'type'        => 'subjective',
-                'badge'     => 'setting'
+                'badge'     => 'setting',
+                'addon'       => 'modula-exif'
             ),
             'exif_camera'  => array(
                 "name"        => esc_html__( 'Camera Model', 'modula-exif' ),
@@ -766,7 +797,8 @@ class Modula_Search_Settings {
                 'tab_name'    => 'EXIF',
                 'parent'      => 'enable_exif',
                 'type'        => 'subjective',
-                'badge'     => 'setting'
+                'badge'     => 'setting',
+                'addon'       => 'modula-exif'
             ),
             'exif_lens'   => array(
                 "name"        => esc_html__( 'Lens', 'modula-exif' ),
@@ -775,7 +807,8 @@ class Modula_Search_Settings {
                 'tab_name'    => 'EXIF',
                 'parent'      => 'enable_exif',
                 'type'        => 'subjective',
-                'badge'     => 'setting'
+                'badge'     => 'setting',
+                'addon'       => 'modula-exif'
             ),
             'exif_shutter_speed'   => array(
                 "name"        => esc_html__( 'Shutter Speed', 'modula-exif' ),
@@ -784,7 +817,8 @@ class Modula_Search_Settings {
                 'tab_name'    => 'EXIF',
                 'parent'      => 'enable_exif',
                 'type'        => 'subjective',
-                'badge'     => 'setting'
+                'badge'     => 'setting',
+                'addon'       => 'modula-exif'
             ),
             'exif_aperture'   => array(
                 "name"        => esc_html__( 'Aperture', 'modula-exif' ),
@@ -793,7 +827,8 @@ class Modula_Search_Settings {
                 'tab_name'    => 'EXIF',
                 'parent'      => 'enable_exif',
                 'type'        => 'subjective',
-                'badge'     => 'setting'
+                'badge'     => 'setting',
+                'addon'       => 'modula-exif'
             ),
             'exif_focal_length'   => array(
                 "name"        => esc_html__( 'Focal Length', 'modula-exif' ),
@@ -802,7 +837,8 @@ class Modula_Search_Settings {
                 'tab_name'    => 'EXIF',
                 'parent'      => 'enable_exif',
                 'type'        => 'subjective',
-                'badge'     => 'setting'
+                'badge'     => 'setting',
+                'addon'       => 'modula-exif'
             ),
             'exif_iso'   => array(
                 "name"        => esc_html__( 'ISO', 'modula-exif' ),
@@ -811,7 +847,8 @@ class Modula_Search_Settings {
                 'tab_name'    => 'EXIF',
                 'parent'      => 'enable_exif',
                 'type'        => 'subjective',
-                'badge'     => 'setting'
+                'badge'     => 'setting',
+                'addon'       => 'modula-exif'
             ),
             'exif_date'   => array(
                 "name"        => esc_html__( 'Date', 'modula-exif' ),
@@ -820,7 +857,8 @@ class Modula_Search_Settings {
                 'tab_name'    => 'EXIF',
                 'parent'      => 'enable_exif',
                 'type'        => 'subjective',
-                'badge'     => 'setting'
+                'badge'     => 'setting',
+                'addon'       => 'modula-exif'
             ),
         );
 

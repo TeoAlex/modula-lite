@@ -8,7 +8,8 @@ $defaults = apply_filters('modula_troubleshooting_defaults', array(
     'lightboxes'       => array(),
     'lazy_load'        => false,
     'disable_edit'     => false,
-    'track_data'       => false
+    'track_data'       => false,
+    'modula_search_tracking_accord' => false
 ));
 
 $troubleshooting_options = get_option( 'modula_troubleshooting_option', array() );
@@ -32,7 +33,7 @@ $troubleshooting_fields = array(
 				'type'        => 'toggle',
 				'priority'    => 10,
 		),
-		'modula_search_tracking_accord'             => array(
+		'modula_search_tracking_accord' => array(
             'label'       => esc_html__( 'Search Consent', 'modula-best-grid-gallery' ),
             'description' => esc_html__( 'Check this if you agree to send us data about your search patterns.', 'modula-best-grid-gallery' ),
             'type'        => 'toggle',

@@ -2,7 +2,10 @@ jQuery(window).on( 'load', function () {
 	if( window.location.hash.length != 0 && window.location.href.indexOf('modula-gallery&page=modula') != -1 ) {
 
 		try_find_setting_general(window.location.href);
-	}
+	}else if(  window.location.href.indexOf('modula-gallery&page=modula-addons') != -1 ){
+
+        try_find_addon_extension(window.location.href);
+    }
     jQuery("#modula_settings_search_results").selectize({
         valueField: "name",
         labelField: "name",
@@ -16,8 +19,8 @@ jQuery(window).on( 'load', function () {
             var badge = disabled = '';
             if( item.badge == 'pro' ){
                 badge = "<span class='modula_search_result_req_pro'>pro</span>";
-                disabled = "disabled='disabled' style='pointer-events: none; color: #aaa;'";
-            }else{
+                //disabled = "disabled='disabled' style='pointer-events: none; color: #aaa;'";
+            }else{ 
                 badge = "<span class='modula_search_result_badge'>" + item.badge + "</span>";
             }
               return ( 
@@ -87,6 +90,17 @@ jQuery(window).on( 'load', function () {
 
 });
 
+function getUrlVars(){
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++)
+    {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+    }
+    return vars;
+}
     
 function try_find_setting_subjective( $url ){
     var modulaTabHash = $url.split( '#!' )[1];
@@ -102,16 +116,20 @@ function try_find_setting_subjective( $url ){
         jQuery( '#post' ).attr( 'action', postAction + window.location.hash );
     }
     if( 'undefined' !== typeof modulaSettingHash ){
-        jQuery( '.modula-tabs,.modula-tabs-content' ).find( '.found-setting' ).removeClass( 'found-setting' );
+            jQuery( '.modula-tabs,.modula-tabs-content' ).find( '.found-setting' ).removeClass( 'found-setting' );
 
             $found = jQuery( '.modula-tabs-content' ).find( '[data-container="' + modulaSettingHash + '"]' );
             if( $found.is(":not(:visible)") ){
                 $found = jQuery( '.modula-tabs-content' ).find( '[data-container="' + modulaSettingParent + '"]' );
             }
-            $found.addClass( 'found-setting' );
-            jQuery('html, body').animate({
-            scrollTop: ($found.offset().top - 300 )
-        },500);
+            if( $found.length ){
+                $found.addClass( 'found-setting' );
+                jQuery('html, body').animate({
+                    scrollTop: ($found.offset().top - 300 )
+                },500);
+            }else{
+                console.log('setting not found');
+            }
     }
 }
 
@@ -120,14 +138,43 @@ function try_find_setting_general( $url ){
     var modulaSettingHash = $url.split( '#!' )[1];
     var modulaSettingParent = $url.split( '#!' )[2];
     if( 'undefined' !== typeof modulaSettingHash ){
+
         jQuery( '.modula-columns' ).find( '.found-setting' ).removeClass( 'found-setting' );
-            $found = jQuery( '.modula-columns' ).find( '[data-container="' + modulaSettingHash + '"]' );
-            if( $found.is(":not(:visible)") ){
-                $found = jQuery( '.modula-columns' ).find( '[data-container="' + modulaSettingParent + '"]' );
-            }
+
+        $found = jQuery( '.modula-columns' ).find( '[data-container="' + modulaSettingHash + '"]' );
+
+        if( $found.is(":not(:visible)") ){
+            $found = jQuery( '.modula-columns' ).find( '[data-container="' + modulaSettingParent + '"]' );
+        }
+        if( $found.length ){
             $found.addClass( 'found-setting' );
             jQuery('html, body').animate({
-            scrollTop: ($found.offset().top - 300 )
-        },500);
+                scrollTop: ($found.offset().top - 300 )
+            },500);
+        }else{
+            console.log('setting not found');
+        }
     }
+}
+
+    
+function try_find_addon_extension( $url ){
+
+    if( 'modula-addon' in getUrlVars() ){
+        $addon = getUrlVars()['modula-addon'];
+        jQuery( '.modula-addons-container' ).find( '.found-setting' ).removeClass( 'found-setting' );
+
+        $found = jQuery( '.modula-addons-container' ).find( '.'+$addon );
+
+        if( $found.length ){
+            $found.addClass( 'found-setting' );
+            jQuery('html, body').animate({
+                scrollTop: ($found.offset().top - 300 )
+            },500);
+        }else{
+            console.log('setting not found');
+        }
+
+    }
+    console.log('addon ext');
 }

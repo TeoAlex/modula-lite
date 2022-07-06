@@ -288,3 +288,7 @@ body .media-modal-content .attachment-details .modula-toggle__track {
 /**
 End Toggles
  */
+
+.modula-addons-container .modula-addon.found-setting{
+	border: 2px solid #11a0d2;
+}
