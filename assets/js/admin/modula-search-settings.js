@@ -5,6 +5,9 @@ jQuery(window).on( 'load', function () {
 	}else if(  window.location.href.indexOf('modula-gallery&page=modula-addons') != -1 ){
 
         try_find_addon_extension(window.location.href);
+    }else if(  window.location.href.indexOf('modula-gallery&page=modula-lite-vs-pro') != -1 ){
+
+        try_find_addon(window.location.href);
     }
     jQuery("#modula_settings_search_results").selectize({
         valueField: "name",
@@ -156,7 +159,27 @@ function try_find_setting_general( $url ){
         }
     }
 }
+    
+function try_find_addon( $url ){
 
+    if( 'modula-addon' in getUrlVars() ){
+        $addon = getUrlVars()['modula-addon'];
+        jQuery( '.lite-vs-pro-section' ).find( '.found-setting' ).removeClass( 'found-setting' );
+
+        $found = jQuery( '.'+$addon );
+
+        if( $found.length ){
+            $found.addClass( 'found-setting' );
+            jQuery('html, body').animate({
+                scrollTop: ($found.offset().top - 300 )
+            },500);
+        }else{
+            console.log('setting not found');
+        }
+
+    }
+    console.log('addon ext');
+}
     
 function try_find_addon_extension( $url ){
 

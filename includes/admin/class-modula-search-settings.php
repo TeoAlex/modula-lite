@@ -152,7 +152,7 @@ class Modula_Search_Settings {
 
         if( 'general' == $setting['type'] ){
             if( $this->requires_pro( $setting ) ){
-                $url = add_query_arg( array( 'post_type' => 'modula-gallery', 'page' => 'modula-addons', 'modula-addon' => $setting['addon'] ), $url . '/edit.php' );
+                $url = add_query_arg( array( 'post_type' => 'modula-gallery', 'page' => 'modula-lite-vs-pro', 'modula-addon' => $setting['addon'] ), $url . '/edit.php' );
             
             }else{
                 $url = add_query_arg( array( 'post_type' => 'modula-gallery', 'page' => 'modula', 'modula-tab' => $setting['tab'] ), $url . '/edit.php' );
@@ -167,7 +167,7 @@ class Modula_Search_Settings {
 
         if( 'subjective' == $setting['type'] ){
             if( $this->requires_pro( $setting ) ){
-                $url = add_query_arg( array( 'post_type' => 'modula-gallery', 'page' => 'modula-addons', 'modula-addon' => $setting['addon'] ), $url . '/edit.php' );
+                $url = add_query_arg( array( 'post_type' => 'modula-gallery', 'page' => 'modula-lite-vs-pro', 'modula-addon' => $setting['addon'] ), $url . '/edit.php' );
             
             }else{
                 if( isset( $setting['modula_post_id'] ) && 0 !== $setting['modula_post_id'] ){

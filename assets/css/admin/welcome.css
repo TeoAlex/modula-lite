@@ -362,3 +362,7 @@ Featured section
 .modula-tooltip:hover .modula-tooltip-content {
     display: block;
 }
+
+.lite-vs-pro-section .wpchill-plans-table.found-setting{
+	border: 2px solid #11a0d2;
+}

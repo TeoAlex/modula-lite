@@ -447,6 +447,7 @@ if ( ! class_exists( 'WPChill_Upsells' ) ) {
 
 					$addon_class = 'wpchill-highlight';
 				}
+				$addon_class .= ' ' . explode( '/', $addon['slug'] )[0];
 				?>
 				<div class="wpchill-plans-table <?php echo esc_attr( $addon_class ); ?>">
 					<div class="wpchill-pricing-package feature-name">
