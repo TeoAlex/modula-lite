@@ -88,7 +88,21 @@ class Modula_Search_Settings {
         }
     }
 
-    public function requires_pro( $setting ){
+    public function addon_is_installed( $setting ){
+
+		if ( !empty( $setting['addon'] ) ) {
+
+            $defaults = Modula_CPT_Fields_Helper::get_defaults();
+            $defaults = array_merge( $defaults, Modula_Troubleshooting::get_misc_defaults() );
+
+            if( !array_key_exists( $setting['key'], $defaults ) ){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public function addon_has_license( $setting ){
 
 		if ( class_exists( 'WPChill_Upsells' ) && !empty( $setting['addon'] ) ) {
 
@@ -105,11 +119,11 @@ class Modula_Search_Settings {
             $defaults = Modula_CPT_Fields_Helper::get_defaults();
             $defaults = array_merge( $defaults, Modula_Troubleshooting::get_misc_defaults() );
 
-            if( !array_key_exists( $setting['key'], $defaults ) || ! $wpchill_upsell || $wpchill_upsell->is_upgradable_addon( $setting['addon'] ) ){
-                return true;
+            if( ! $wpchill_upsell || $wpchill_upsell->is_upgradable_addon( $setting['addon'] ) ){
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     public function modula_search_settings(){
@@ -126,7 +140,7 @@ class Modula_Search_Settings {
                 'description' => $setting['description'],
                 'url'         => $this->get_link( $setting )['url'],
                 'breadcrumbs' => $this->get_link( $setting )['breadcrumbs'],
-                'badge'       => ( $this->requires_pro( $setting ) ) ? 'pro' : $setting['badge'],
+                'badge'       => ( !$this->addon_is_installed( $setting ) || !$this->addon_has_license( $setting ) ) ? 'pro' : $setting['badge'],
                 'type'        => $setting['type']
             );
         }
@@ -151,7 +165,7 @@ class Modula_Search_Settings {
         $breadcrumbs = '';
 
         if( 'general' == $setting['type'] ){
-            if( $this->requires_pro( $setting ) ){
+            if( ! $this->addon_has_license( $setting ) ){
                 $url = add_query_arg( array( 'post_type' => 'modula-gallery', 'page' => 'modula-lite-vs-pro', 'modula-addon' => $setting['addon'] ), $url . '/edit.php' );
             
             }else{
@@ -166,7 +180,7 @@ class Modula_Search_Settings {
         }
 
         if( 'subjective' == $setting['type'] ){
-            if( $this->requires_pro( $setting ) ){
+            if( ! $this->addon_has_license( $setting ) ){
                 $url = add_query_arg( array( 'post_type' => 'modula-gallery', 'page' => 'modula-lite-vs-pro', 'modula-addon' => $setting['addon'] ), $url . '/edit.php' );
             
             }else{
@@ -314,7 +328,7 @@ class Modula_Search_Settings {
                 'page'        => '',
                 'tab'         => '!modula-general',
                 'tab_name'    => 'General',
-                'parent'      => '',
+                'parent'      => 'type',
                 'type'        => 'subjective',
                 'badge'     => 'setting'
             ),
@@ -325,7 +339,7 @@ class Modula_Search_Settings {
                 'page'        => '',
                 'tab'         => '!modula-general',
                 'tab_name'    => 'General',
-                'parent'      => '',
+                'parent'      => 'type',
                 'type'        => 'subjective',
                 'badge'     => 'setting'
             ),
@@ -336,7 +350,7 @@ class Modula_Search_Settings {
                 'page'        => '',
                 'tab'         => '!modula-general',
                 'tab_name'    => 'General',
-                'parent'      => '',
+                'parent'      => 'type',
                 'type'        => 'subjective',
                 'badge'     => 'setting'
             ),
@@ -418,7 +432,7 @@ class Modula_Search_Settings {
                 'page'        => '',
                 'tab'         => '!modula-general',
                 'tab_name'    => 'General',
-                'parent'      => '',
+                'parent'      => 'type',
                 'type'        => 'subjective',
                 'badge'     => 'setting'
             ),
@@ -428,7 +442,7 @@ class Modula_Search_Settings {
                 'page'        => '',
                 'tab'         => '!modula-general',
                 'tab_name'    => 'General',
-                'parent'      => '',
+                'parent'      => 'type',
                 'type'        => 'subjective',
                 'badge'     => 'setting'
             ),
@@ -438,7 +452,7 @@ class Modula_Search_Settings {
                 'page'        => '',
                 'tab'         => '!modula-general',
                 'tab_name'    => 'General',
-                'parent'      => '',
+                'parent'      => 'type',
                 'type'        => 'subjective',
                 'badge'     => 'setting'
             ),
@@ -448,7 +462,7 @@ class Modula_Search_Settings {
                 'page'        => '',
                 'tab'         => '!modula-general',
                 'tab_name'    => 'General',
-                'parent'      => '',
+                'parent'      => 'type',
                 'type'        => 'subjective',
                 'badge'     => 'setting'
             ),

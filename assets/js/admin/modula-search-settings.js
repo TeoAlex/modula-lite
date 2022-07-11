@@ -113,26 +113,41 @@ function try_find_setting_subjective( $url ){
     jQuery( '.modula-tabs,.modula-tabs-content' ).find( '.active-tab' ).removeClass( 'active-tab' );
     jQuery( '.modula-tabs' ).find( '.' + modulaTabHash ).addClass( 'active-tab' );
     jQuery( '#' + modulaTabHash ).addClass( 'active-tab').trigger('modula-current-tab');
+    
     var postAction = jQuery( "#post" ).attr('action');
     if( postAction ) {
         postAction = postAction.split( '#' )[0];
         jQuery( '#post' ).attr( 'action', postAction + window.location.hash );
     }
     if( 'undefined' !== typeof modulaSettingHash ){
-            jQuery( '.modula-tabs,.modula-tabs-content' ).find( '.found-setting' ).removeClass( 'found-setting' );
+        jQuery( '.modula-tabs,.modula-tabs-content' ).find( '.found-setting' ).removeClass( 'found-setting' );
 
-            $found = jQuery( '.modula-tabs-content' ).find( '[data-container="' + modulaSettingHash + '"]' );
-            if( $found.is(":not(:visible)") ){
-                $found = jQuery( '.modula-tabs-content' ).find( '[data-container="' + modulaSettingParent + '"]' );
-            }
+        $found = jQuery( '.modula-tabs-content' ).find( '[data-container="' + modulaSettingHash + '"]' );
+
+        // Check if setting is visible else target parent
+        if( $found.is(":not(:visible)") ){
+            $found = jQuery( '.modula-tabs-content' ).find( '[data-container="' + modulaSettingParent + '"]' );
+        }
+
+        // Check if a setting is found
+        if( $found.length ){
+
+            $found.addClass( 'found-setting' );
+            jQuery('html, body').animate({
+                scrollTop: ($found.offset().top - 300 )
+            },500);
+        }else{
+
+            $found = jQuery( '#' + modulaTabHash );
+
+            // Lastly check setting tab
             if( $found.length ){
-                $found.addClass( 'found-setting' );
                 jQuery('html, body').animate({
                     scrollTop: ($found.offset().top - 300 )
                 },500);
-            }else{
-                console.log('setting not found');
             }
+
+        }
     }
 }
 
