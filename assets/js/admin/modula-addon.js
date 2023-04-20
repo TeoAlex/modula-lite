@@ -16,6 +16,73 @@
 		});
 	});
 
+	jQuery(document).on('click', '#modula-master-license-btn', (event) => {
+		event.preventDefault();
+		const target     = jQuery(event.target),
+			  action     = target.data('action'),
+			  nextAction = ('activate' === action) ? 'deactivate' : 'activate',
+			  nextText   = ('activate' === action) ? wpmtst_admin.deactivate : wpmtst_admin.activate,
+			  nonce      = target.parent().find('input[type="hidden"]').val(),
+			  license    = jQuery('input#strong_testimonials_license_key').val(),
+			  email      = jQuery('input#strong_testimonials_email').val(),
+			  label      = target.parents('.modula-master-license').find('.strong-testimonials-license-label'),
+			  data       = {
+				  action      : 'modula_license_action',
+				  nonce       : nonce,
+				  license     : license,
+				  email       : email,
+				  click_action: action
+			  };
+
+		jQuery.post(ajaxurl, data, (response) => {
+			if (response.success) {
+				label.html(response.data.message);
+				target.data('action', nextAction);
+				target.html(nextText);
+				// Refresh window after 1.5 seconds.
+				setTimeout(() => { window.location.reload(); }, 1500);
+			} else {
+				if ('undefined' !== typeof response.data) {
+					label.html(response.data.message);
+				} else {
+					label.html(wpmtst_admin.something_wrong);
+				}
+			}
+		});
+	});
+
+	jQuery(document).on('click', '#modula-forgot-license', (event) => {
+		event.preventDefault();
+
+		const target = jQuery(event.target),
+			  nonce  = target.data('nonce'),
+			  email  = target.parent().find('input[type="email"]').val(),
+			  label      = target.parents('.modula-master-license').find('.strong-testimonials-license-label');
+
+		if (!email || '' === email) {
+			label.html(wpmtst_admin.enter_email);
+			return;
+		}
+
+		const data = {
+			action: 'modula_forgot_license',
+			nonce : nonce,
+			email : email
+		};
+
+		jQuery.post(ajaxurl, data, (response) => {
+			if (response.success) {
+				label.html(response.data.message);
+			} else {
+				if ('undefined' !== typeof response.data) {
+					label.html(response.data.message);
+				} else {
+					label.html(wpmtst_admin.something_wrong);
+				}
+			}
+		});
+	});
+
 })( jQuery );
 
 /**

@@ -53,8 +53,9 @@ define( 'MODULA_URL' , plugin_dir_url( __FILE__ ) );
 defined( 'MODULA_PRO_STORE_URL' ) || define( 'MODULA_PRO_STORE_URL' , 'https://wp-modula.com' );
 defined( 'MODULA_PRO_STORE_UPGRADE_URL' ) || define( 'MODULA_PRO_STORE_UPGRADE_URL' , 'https://wp-modula.com/pricing' );
 define( 'MODULA_FILE' , plugin_basename( __FILE__ ) );
-
 define ( 'MODULA_LITE_TRANSLATE', dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+defined( 'MODULA_STORE_URL' ) || define( 'MODULA_STORE_URL', 'https://wp-modula.com' );
+defined( 'MODULA_ALTERNATIVE_STORE_URL' ) || define( 'MODULA_ALTERNATIVE_STORE_URL', 'https://license.wpchill.com/modula/' );
 
 if( ! class_exists( 'Modula_Plugin_Usage_Tracker') ) {
 	require_once dirname( __FILE__ ) . '/includes/tracking/class-plugin-usage-tracker.php';
