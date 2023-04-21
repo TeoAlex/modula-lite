@@ -37,8 +37,10 @@ class Modula_License_Activator {
 		register_deactivation_hook( MODULA_PRO_FILE, array( $this, 'deactivate_license' ) );
 
 		add_action( 'admin_init', array( $this, 'register_license_option' ) );
-		add_action( 'wp_ajax_modula_save_license', array( $this, 'activate_license_ajax' ) );
-		add_action( 'wp_ajax_modula_deactivate_license', array( $this, 'deactivate_license_ajax' ) );
+		add_action( 'wp_ajax_modula_license_action', array( $this, 'ajax_license_action' ) );
+		add_action( 'wp_ajax_modula_forgot_license', array( $this, 'ajax_forgot_license' ) );
+		/*add_action( 'wp_ajax_modula_save_license', array( $this, 'activate_license_ajax' ) );
+		add_action( 'wp_ajax_modula_deactivate_license', array( $this, 'deactivate_license_ajax' ) );*/
 
 	}
 
@@ -64,13 +66,6 @@ class Modula_License_Activator {
 	 * @return void
 	 */
 	public function activate_license_ajax() {
-
-		check_ajax_referer( 'modula_license_save', 'license_security' );
-
-		if ( ! isset( $_POST['license'] ) || '' == $_POST['license'] ) {
-			wp_send_json_error( __( 'No license was found', 'modula-best-grid-gallery' ) );
-			die();
-		}
 
 		// retrieve the license from the AJAX
 		$license      = trim( $_POST['license'] );
@@ -143,7 +138,7 @@ class Modula_License_Activator {
 
 		// Check if anything passed on a message constituting a failure
 		if ( ! empty( $message ) ) {
-			wp_send_json_error( $message );
+			wp_send_json_error( array( 'message' => $message ) );
 			die();
 		}
 
@@ -154,13 +149,11 @@ class Modula_License_Activator {
 		update_option( 'modula_pro_license_key', $license );
 		update_option( 'modula_pro_license_status', $license_data );
 		do_action( 'modula_after_license_save' );
-		wp_send_json( esc_html__( 'License activated', 'modula-best-grid-gallery' ) );
+		wp_send_json_success( array( 'message' => esc_html__( 'License activated', 'modula-best-grid-gallery' ) ) );
 		die();
 	}
 
 	public function deactivate_license_ajax() {
-
-		check_ajax_referer( 'modula_license_save', 'license_security' );
 
 		// retrieve the license from the database
 		$license = trim( get_option( 'modula_pro_license_key' ) );
@@ -195,7 +188,7 @@ class Modula_License_Activator {
 				$message = esc_html__( 'An error occurred, please try again.', 'modula-best-grid-gallery' );
 			}
 
-			wp_send_json_error( $message );
+			wp_send_json_error( array( 'message' =>$message ) );
 			die();
 		}
 
@@ -209,7 +202,7 @@ class Modula_License_Activator {
 
 		do_action( 'modula_after_license_deactivated' );
 
-		wp_send_json( esc_html__( 'License deactivated', 'modula-best-grid-gallery' ) );
+		wp_send_json_success( array( 'message' => esc_html__( 'License deactivated', 'modula-best-grid-gallery' ) ) );
 		die();
 	}
 
@@ -315,6 +308,109 @@ class Modula_License_Activator {
 
 		do_action( 'modula_after_license_deactivated' );
 
+	}
+
+	/**
+	 * AJAX license activation.
+	 *
+	 * @return void
+	 */
+	public function ajax_license_action() {
+		// run a quick security check.
+		if ( ! isset( $_POST['nonce'] ) ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'Nonce not set', 'strong-testimonials' )
+				)
+			);
+		}
+
+		check_admin_referer( 'modula_license_nonce', 'nonce' );
+
+		if ( ! isset( $_POST['click_action'] ) ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'Action not set', 'strong-testimonials' )
+				)
+			);
+		}
+
+		if ( ! isset( $_POST['license'] ) ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'License not set', 'strong-testimonials' )
+				)
+			);
+		}
+
+		$action = sanitize_text_field( $_POST['click_action'] );
+
+		if ( 'activate' === $action ) {
+			$this->activate_license_ajax();
+		} else {
+			$this->deactivate_license_ajax();
+		}
+	}
+
+	/**
+	 * Forgot license functionality.
+	 *
+	 * @return void
+	 */
+	public function ajax_forgot_license() {
+
+		// run a quick security check.
+		if ( ! isset( $_POST['nonce'] ) ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'Nonce not set', 'strong-testimonials' )
+				)
+			);
+		}
+
+		if ( ! isset( $_POST['email'] ) ) {
+			wp_send_json_error(
+				array(
+					'message' => __( 'Email not set', 'strong-testimonials' )
+				)
+			);
+		}
+
+		check_admin_referer( 'modula_license_nonce', 'nonce' );
+		$email = sanitize_email( wp_unslash( $_POST['email'] ) );
+
+		// data to send in our API request.
+		$api_params = array(
+			'edd_action' => 'forgot_license',
+			'url'        => home_url(),
+			'email'      => $email
+
+		);
+
+		// Call the custom API.
+		$response = wp_remote_post(
+			MODULA_STORE_URL,
+			array(
+				'timeout'   => 15,
+				'sslverify' => false,
+				'body'      => $api_params,
+			)
+		);
+
+		// make sure the response came back okay.
+		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
+			// If it's not a regular action it means it's most probably on plugin deactivation.
+			if ( is_wp_error( $response ) ) {
+				$message = $response->get_error_message();
+			} else {
+				$message = __( 'An error occurred, please try again.', 'strong-testimonials-pro' );
+			}
+			wp_send_json_error( array( 'message' => $message ) );
+		}
+		$json_response = json_decode( wp_remote_retrieve_body( $response ), true );
+		if ( $json_response['success'] ) {
+			wp_send_json_success( array( 'message' => $json_response['message'] ) );
+		}
 	}
 }
 

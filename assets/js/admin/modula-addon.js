@@ -21,11 +21,11 @@
 		const target     = jQuery(event.target),
 			  action     = target.data('action'),
 			  nextAction = ('activate' === action) ? 'deactivate' : 'activate',
-			  nextText   = ('activate' === action) ? wpmtst_admin.deactivate : wpmtst_admin.activate,
+			  nextText   = ('activate' === action) ? modulaAddons.deactivate : modulaAddons.activate,
 			  nonce      = target.parent().find('input[type="hidden"]').val(),
-			  license    = jQuery('input#strong_testimonials_license_key').val(),
-			  email      = jQuery('input#strong_testimonials_email').val(),
-			  label      = target.parents('.modula-master-license').find('.strong-testimonials-license-label'),
+			  license    = jQuery('input#modula_pro_license_key').val(),
+			  email      = jQuery('input#modula_license_email').val(),
+			  label      = target.parents('.modula-master-license').find('.modula-license-label'),
 			  data       = {
 				  action      : 'modula_license_action',
 				  nonce       : nonce,
@@ -45,7 +45,7 @@
 				if ('undefined' !== typeof response.data) {
 					label.html(response.data.message);
 				} else {
-					label.html(wpmtst_admin.something_wrong);
+					label.html(modulaAddons.something_wrong);
 				}
 			}
 		});
@@ -57,10 +57,10 @@
 		const target = jQuery(event.target),
 			  nonce  = target.data('nonce'),
 			  email  = target.parent().find('input[type="email"]').val(),
-			  label      = target.parents('.modula-master-license').find('.strong-testimonials-license-label');
+			  label      = target.parents('.modula-master-license').find('.modula-license-label');
 
 		if (!email || '' === email) {
-			label.html(wpmtst_admin.enter_email);
+			label.html(modulaAddons.enter_email);
 			return;
 		}
 
@@ -77,7 +77,7 @@
 				if ('undefined' !== typeof response.data) {
 					label.html(response.data.message);
 				} else {
-					label.html(wpmtst_admin.something_wrong);
+					label.html(modulaAddons.something_wrong);
 				}
 			}
 		});

@@ -83,7 +83,7 @@ class Modula {
 			// Modula Debug Class
 			require_once MODULA_PATH . 'includes/admin/class-modula-debug.php';
 			require_once MODULA_PATH . 'includes/admin/class-modula-onboarding.php';
-
+			require_once MODULA_PATH . 'includes/admin/class-modula-license-activator.php';
 		}
 
 	}
@@ -300,7 +300,12 @@ class Modula {
 				'activated_text'    => esc_html__( 'Addon activated!', 'modula-best-grid-gallery' ),
 				'deactivated_text'  => esc_html__( 'Addon deactivated!', 'modula-best-grid-gallery' ),
 				'activating_text'   => esc_html__( 'Activating addon...', 'modula-best-grid-gallery' ),
-				'deactivating_text' => esc_html__( 'Deactivating addon...', 'modula-best-grid-gallery' )
+				'deactivating_text' => esc_html__( 'Deactivating addon...', 'modula-best-grid-gallery' ),
+				'something_wrong'    => esc_html__( 'Something went wrong. Please try again.', 'modula-best-grid-gallery' ),
+				'email_license_sent' => esc_html__( 'An email containing the license was sent.', 'modula-best-grid-gallery' ),
+				'activate'           => esc_html__( 'Activate', 'modula-best-grid-gallery' ),
+				'deactivate'         => esc_html__( 'Deactivate', 'modula-best-grid-gallery' ),
+				'enter_email'        => esc_html__( 'Please enter your email address.', 'modula-best-grid-gallery' ),
 			) );
 
 		} elseif ( 'modula-gallery_page_modula-lite-vs-pro' == $hook ) {
