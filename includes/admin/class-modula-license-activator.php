@@ -33,8 +33,8 @@ class Modula_License_Activator {
 	 */
 	private function __construct() {
 
-		register_activation_hook( MODULA_PRO_FILE, array( $this, 'activate_license' ) );
-		register_deactivation_hook( MODULA_PRO_FILE, array( $this, 'deactivate_license' ) );
+		register_activation_hook( MODULA_FILE, array( $this, 'activate_license' ) );
+		register_deactivation_hook( MODULA_FILE, array( $this, 'deactivate_license' ) );
 
 		add_action( 'admin_init', array( $this, 'register_license_option' ) );
 		add_action( 'wp_ajax_modula_license_action', array( $this, 'ajax_license_action' ) );
@@ -71,7 +71,7 @@ class Modula_License_Activator {
 		$license      = trim( $_POST['license'] );
 		$license_data = false;
 
-		$this->verify_alternative_server = $_POST['altServer'];
+		$this->verify_alternative_server = isset( $_POST['altServer'] ) ? sanitize_text_field( $_POST['altServer'] ) : 'false';
 
 		update_option( 'modula_pro_alernative_server', $this->verify_alternative_server );
 
@@ -83,6 +83,7 @@ class Modula_License_Activator {
 			'license'    => $license,
 			'item_id'    => $this->modula_pro_id, // The ID of the item in EDD
 			'url'        => home_url(),
+			'extensions' => implode(',',$this->get_installed_extensions() )
 		);
 
 		// Call the custom API.
@@ -123,7 +124,7 @@ class Modula_License_Activator {
 					case 'site_inactive':
 						$message = esc_html__( 'Your license is not active for this URL.', 'modula-best-grid-gallery' );
 						break;
-					case 'item_name_mismatch':
+					case '§':
 						$message = sprintf( __( 'This appears to be an invalid license key for %s.', 'modula-best-grid-gallery' ), $this->main_item_name );
 						break;
 					case 'no_activations_left':
@@ -167,6 +168,7 @@ class Modula_License_Activator {
 			'license'    => $license,
 			'item_id'    => $this->modula_pro_id,
 			'url'        => home_url(),
+			'extensions' => implode(',',$this->get_installed_extensions() )
 		);
 
 		// Call the custom API.
@@ -223,7 +225,7 @@ class Modula_License_Activator {
 
 	public function activate_license() {
 
-		check_admin_referer( 'activate-plugin_' . plugin_basename( MODULA_PRO_FILE ) );
+		check_admin_referer( 'activate-plugin_' . plugin_basename( MODULA_FILE ) );
 
 		$license      = trim( get_option( 'modula_pro_license_key' ) );
 		$license_data = false;
@@ -232,10 +234,12 @@ class Modula_License_Activator {
 
 		// data to send in our API request
 		$api_params = array(
-			'edd_action' => 'activate_license',
-			'license'    => $license,
-			'item_id'    => $this->modula_pro_id,
-			'url'        => home_url(),
+			'edd_action'    => 'activate_license',
+			'license'       => $license,
+			'item_id'       => $this->modula_pro_id,
+			'url'           => home_url(),
+			'extensions'    => implode( ',', $this->get_installed_extensions() ),
+			'action_status' => 'activate-plugin',
 		);
 
 		// Call the custom API.
@@ -292,6 +296,8 @@ class Modula_License_Activator {
 			'license'    => $license,
 			'item_id'    => $this->modula_pro_id,
 			'url'        => home_url(),
+			'extensions' => implode(',',$this->get_installed_extensions() ),
+			'action_status' => 'deactivate-plugin',
 		);
 
 		// Call the custom API.
@@ -411,6 +417,80 @@ class Modula_License_Activator {
 		if ( $json_response['success'] ) {
 			wp_send_json_success( array( 'message' => $json_response['message'] ) );
 		}
+	}
+
+	/**
+	 * Retrieve installed extensions
+	 *
+	 * @return array
+	 */
+	public function get_installed_extensions() {
+		// Get all installed extensions.
+		$plugins    = get_option( 'active_plugins' );
+		$extensions = array();
+		if ( ! empty( $plugins ) ) {
+			foreach ( $plugins as $plugin ) {
+				// Search only for Modula extensions.
+				if ( false !== strpos( $plugin, 'modula-' ) ) {
+					$extensions[] = basename( $plugin, '.php' );
+				}
+			}
+		}
+
+		return $extensions;
+	}
+
+	/**
+	 * Handle extensions activation/deactivation hooks.
+	 *
+	 * @param string $action    Action to be performed.
+	 * @param array  $extension Extension to be activated/deactivated.
+	 *
+	 * @return void
+	 */
+	public function handle_extension_action( $action, $extension ) {
+
+		// Bounce if there is no extension.
+		if ( empty( $extension ) ) {
+			return;
+		}
+
+		// Bounce if there is no action.
+		if ( empty( $action ) ) {
+			return;
+		}
+		$ext_action = 'activate_license';
+		$ext_text   = 'activate-ext';
+
+		if ( 'activate' === $action ) {
+			check_admin_referer( 'activate-plugin_' . plugin_basename( $extension['plugin'] ) );
+		} else {
+			check_admin_referer( 'deactivate-plugin_' . plugin_basename( $extension['plugin'] ) );
+			$ext_action = 'deactivate_license';
+			$ext_text   = 'deactivate-ext';
+		}
+
+		$license   = trim( get_option( 'modula_pro_license_key' ) );
+		$store_url = ( 'true' === get_option( 'modula_pro_alernative_server' ) ) ? MODULA_ALTERNATIVE_STORE_URL : MODULA_STORE_URL;
+		// data to send in our API request.
+		$api_params = array(
+			'edd_action'    => $ext_action,
+			'license'       => $license,
+			'item_id'       => $this->modula_pro_id,
+			'url'           => home_url(),
+			'extensions'    => $extension['slug'],
+			'action_status' => $ext_text,
+		);
+
+		// Call the custom API.
+		$response = wp_remote_post(
+			$store_url,
+			array(
+				'timeout'   => 15,
+				'sslverify' => false,
+				'body'      => $api_params,
+			)
+		);
 	}
 }
 

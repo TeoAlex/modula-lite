@@ -50,8 +50,6 @@
 define( 'MODULA_LITE_VERSION' , '2.7.4' );
 define( 'MODULA_PATH' , plugin_dir_path( __FILE__ ) );
 define( 'MODULA_URL' , plugin_dir_url( __FILE__ ) );
-defined( 'MODULA_PRO_STORE_URL' ) || define( 'MODULA_PRO_STORE_URL' , 'https://wp-modula.com' );
-defined( 'MODULA_PRO_STORE_UPGRADE_URL' ) || define( 'MODULA_PRO_STORE_UPGRADE_URL' , 'https://wp-modula.com/pricing' );
 define( 'MODULA_FILE' , plugin_basename( __FILE__ ) );
 define ( 'MODULA_LITE_TRANSLATE', dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 defined( 'MODULA_STORE_URL' ) || define( 'MODULA_STORE_URL', 'https://env-wpmodulacom-modrazvan.kinsta.cloud/' );
