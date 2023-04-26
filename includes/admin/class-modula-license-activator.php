@@ -39,8 +39,9 @@ class Modula_License_Activator {
 		add_action( 'admin_init', array( $this, 'register_license_option' ) );
 		add_action( 'wp_ajax_modula_license_action', array( $this, 'ajax_license_action' ) );
 		add_action( 'wp_ajax_modula_forgot_license', array( $this, 'ajax_forgot_license' ) );
-		/*add_action( 'wp_ajax_modula_save_license', array( $this, 'activate_license_ajax' ) );
-		add_action( 'wp_ajax_modula_deactivate_license', array( $this, 'deactivate_license_ajax' ) );*/
+		// Remove the license tab.
+		add_filter( 'modula_admin_page_tabs', array( $this, 'remove_license_tab' ), 90 );
+		add_filter( 'modula_troubleshooting_fields', array( $this, 'add_alternative_server' ), 15 );
 
 	}
 
@@ -402,6 +403,7 @@ class Modula_License_Activator {
 				'body'      => $api_params,
 			)
 		);
+		var_dump($response['body']);wp_die();
 
 		// make sure the response came back okay.
 		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
@@ -491,6 +493,41 @@ class Modula_License_Activator {
 				'body'      => $api_params,
 			)
 		);
+	}
+
+	/**
+	 * Unset the license tab.
+	 *
+	 * @param array $tabs Tabs to be displayed.
+	 *
+	 * @return array
+	 */
+	public function remove_license_tab( $tabs ) {
+		if ( isset( $tabs['licenses'] ) ) {
+			// unset the licenses tab.
+			unset( $tabs['licenses'] );
+		}
+
+		return $tabs;
+	}
+
+	/**
+	 * Add alternative server to troubleshooting options.
+	 *
+	 * @param array $info Info to be displayed.
+	 *
+	 * @return array
+	 */
+	public function add_alternative_server( $info ) {
+
+		$info['alternative_server'] = array(
+			'label'       => esc_html__( 'User Alternative server', 'modula-best-grid-gallery' ),
+			'description' => esc_html__( 'Sometimes there can be problems with the activation server, in which case please try the alternative one.', 'modula-best-grid-gallery' ),
+			'type'        => 'toggle',
+			'priority'    => 15,
+		);
+
+		return $info;
 	}
 }
 

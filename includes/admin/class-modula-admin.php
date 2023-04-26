@@ -748,34 +748,8 @@ class Modula_Admin {
 					       value="<?php echo esc_attr( wp_create_nonce( 'modula_license_nonce' ) ); ?>"/>
 					<button class="button button-primary" id="modula-master-license-btn"
 					        data-action="<?php echo ( ! $valid_license ) ? 'activate' : 'deactivate'; ?>"><?php ( ! $valid_license ) ? esc_html_e( 'Activate', 'modula-best-grid-gallery' ) : esc_html_e( 'Deactivate', 'modula-best-grid-gallery' ); ?></button>
-
 					&nbsp;<a href="#" target="_blank" id="modula-forgot-license"
 					         data-nonce="<?php echo esc_attr( wp_create_nonce( 'modula_license_nonce' ) ); ?>"><?php esc_html_e( 'Forgot your license?', 'modula-best-grid-gallery' ); ?></a>
-				</div>
-				<div>
-					<?php esc_html_e( 'Use Alternative Server', 'modula-best-grid-gallery' ); ?>
-					<div class="license-tooltip modula-tooltip"><span>[?]</span>
-						<div class="modula-tooltip-content"><?php echo esc_html__( 'Sometimes there can be problems with the activation server, in which case please try the alternative one.', 'modula-best-grid-gallery' ); ?></div>
-					</div>
-					<div class="modula-toggle">
-								<input class="modula-toggle__input" type="checkbox"
-								       data-setting="modula_pro_alernative_server"
-								       id="modula_pro_alernative_server"
-								       name="modula_pro_alernative_server"
-								       value="1" <?php checked( 'true', $alternative_server, true ) ?>>
-								<div class="modula-toggle__items">
-									<span class="modula-toggle__track"></span>
-									<span class="modula-toggle__thumb"></span>
-									<svg class="modula-toggle__off" width="6" height="6" aria-hidden="true" role="img"
-									     focusable="false" viewBox="0 0 6 6">
-										<path d="M3 1.5c.8 0 1.5.7 1.5 1.5S3.8 4.5 3 4.5 1.5 3.8 1.5 3 2.2 1.5 3 1.5M3 0C1.3 0 0 1.3 0 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"></path>
-									</svg>
-									<svg class="modula-toggle__on" width="2" height="6" aria-hidden="true" role="img"
-									     focusable="false" viewBox="0 0 2 6">
-										<path d="M0 0h2v6H0z"></path>
-									</svg>
-								</div>
-							</div>
 				</div>
 				<label class="description modula-license-label"
 				       for="modula_pro_license_key">

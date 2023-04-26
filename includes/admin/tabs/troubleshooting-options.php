@@ -43,14 +43,14 @@ $troubleshooting_fields = array(
 				'label'       => esc_html__( 'Enqueue assets on all pages.', 'modula-best-grid-gallery' ),
 				'description' => esc_html__( 'If you have problems with displaying or running Modula Galleries you might want to enqueue Modula CSS and JS in all pages.', 'modula-best-grid-gallery' ),
 				'type'        => 'heading',
-				'priority'    => 10,
+				'priority'    => 20,
 		),
 		'enqueue_files'         => array(
 				'label'       => esc_html__( 'Enqueue Modula assets', 'modula-best-grid-gallery' ),
 				'description' => esc_html__( 'Enqueue CSS & JS files on all pages', 'modula-best-grid-gallery' ),
 				'type'        => 'toggle',
 				'default'     => 0,
-				'priority'    => 10,
+				'priority'    => 20,
 		),
 		'gridtypes'             => array(
 				'label'       => esc_html__( 'Grid Types', 'modula-best-grid-gallery' ),

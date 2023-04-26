@@ -366,3 +366,10 @@ p.modula-onboarding-doc > a {
 .modula-helper-guidelines-container.modula-guidelines-display {
 	display: none;
 }
+
+.modula-master-license {
+	padding: 20px;
+}
+.modula-master-license > div {
+	margin-bottom:10px;
+}
