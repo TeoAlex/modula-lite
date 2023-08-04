@@ -67,7 +67,8 @@ class Modula {
 
 		// Compatibility with other plugins/themes
 		require_once MODULA_PATH . 'includes/compatibility/class-modula-compatibility.php';
-
+		
+		require_once MODULA_PATH . 'includes/rest/class-modula-rest-api-ai.php';
 		if ( is_admin() ) {
 			require_once MODULA_PATH . 'includes/admin/class-modula-importer-exporter.php';
 			require_once MODULA_PATH . 'includes/class-modula-upgrades.php';
