@@ -150,11 +150,29 @@ if ( ! class_exists( 'Modula_Rest_Ai' ) ) {
 					'redirection' => 5,
 					'httpversion' => '1.0',
 					'blocking'    => true,
-					'headers'     => array( 'content-type' => 'application/json;' ),
+					'headers'     => array( 'content-type' => 'application/json' ),
 					'body'        => json_encode( $json_data ),
 					'cookies'     => array(),
 				)
 			);
+
+			if ( is_wp_error( $response ) ) {
+				$error_message = $response->get_error_message();
+				echo "Something went wrong: $error_message";
+				wp_die();
+			} else {
+				// Log to file also.
+				global $wp_filesystem;
+				require_once( ABSPATH . '/wp-admin/includes/file.php' );
+				WP_Filesystem();
+				$txt      = wp_remote_retrieve_body($response);
+				$txt      = '[' . date( 'Y-m-d H:i:s' ) . '] - ' . $txt;
+				$old_text = $wp_filesystem->get_contents( __DIR__ . '/log_file.txt' );
+				$text     = $old_text ? $old_text . "\n" . $txt : $txt;
+				// Need double quotes around the \n to make it work.
+				$wp_filesystem->put_contents( __DIR__ . '/log_file.txt', $text );
+			}
+
 			wp_die();
 		}
 	}
