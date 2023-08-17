@@ -323,6 +323,8 @@ class Modula_Debug {
 
 					</p>
 					<?php do_action('modula_debug_metabox_content'); ?>
+					<!-- @todo: Delete the below lines after testing the endpoint api -->
+					<button id="endpoint_ai" class="button button-primary">Test Endpoint</button>
 				</div>
 			</div>
 		</div>

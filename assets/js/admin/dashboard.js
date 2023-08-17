@@ -46,3 +46,19 @@ function activatePlugin(url) {
       activatePlugin(activate_url);
     }
   });
+
+/**
+ *  Endpoint AI testing
+ */
+jQuery(document).on('click', '#endpoint_ai', (e) => {
+  // Prevent default behaviour
+  e.preventDefault();
+  // Get the data
+  const data = {
+    galleryID: jQuery('input#post_ID').val(),
+    action   : 'endpoint_ai'
+  }
+  // Send the data
+  jQuery.post(ajaxurl, data, function (response) {
+  });
+});

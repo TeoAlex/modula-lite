@@ -22,6 +22,7 @@ if ( ! class_exists( 'Modula_Rest_Ai' ) ) {
 
 			add_action( 'rest_api_init', array( $this, 'register_routes' ) );
 			add_action( 'admin_notices', array( $this, 'test' ) );
+			add_action( 'wp_ajax_endpoint_ai', array( $this, 'endpoint_ai_request' ) );
 
 		}
 
@@ -57,7 +58,7 @@ if ( ! class_exists( 'Modula_Rest_Ai' ) ) {
             if ( isset( $batch->gallery_id ) && 0 !== absint( $batch->gallery_id ) ) {
                 $old_images = get_post_meta( $batch->gallery_id, 'modula-images', true );
             }
-            var_dump($old_images);
+
             foreach( $images as $image ) {
 
                 // 1. Check if the id coresponds to an attachment.
@@ -121,7 +122,42 @@ if ( ! class_exists( 'Modula_Rest_Ai' ) ) {
             
             <?php
         }
-    }
+
+		public function endpoint_ai_request() {
+			$gallery_id    = absint( $_POST['galleryID'] );
+			$imagesData    = get_post_meta( $gallery_id, 'modula-images', true );
+			$requestImages = array();
+			if ( $imagesData ) {
+				foreach ( $imagesData as $image ) {
+					$requestImages[] = array(
+						'id'          => (string)$image['id'],
+						'url'         => ( function_exists( 'wp_get_original_image_url' ) ) ? wp_get_original_image_url( $image['id'] ) : wp_get_attachment_url( $image['id'] ),
+						'callbackUrl' => rest_url( 'modula/v1/images_update' ),
+					);
+				}
+			}
+			$json_data = array(
+				'url'       => rest_url( 'modula/v1/images_update' ),
+				'galleryId' => (string)$gallery_id,
+				'images'    => $requestImages
+			);
+
+			$response = wp_remote_post(
+				'http://ec2-35-92-119-243.us-west-2.compute.amazonaws.com:3000/upload-from-urls',
+				array(
+					'method'      => 'POST',
+					'timeout'     => 45,
+					'redirection' => 5,
+					'httpversion' => '1.0',
+					'blocking'    => true,
+					'headers'     => array( 'content-type' => 'application/json;' ),
+					'body'        => json_encode( $json_data ),
+					'cookies'     => array(),
+				)
+			);
+			wp_die();
+		}
+	}
 }
 
 new Modula_Rest_Ai();
