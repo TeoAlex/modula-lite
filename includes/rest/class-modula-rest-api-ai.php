@@ -46,8 +46,17 @@ if ( ! class_exists( 'Modula_Rest_Ai' ) ) {
 		}
 
         public function update_images( WP_REST_Request $request ){
-
+			// Log to file also.
+	        global $wp_filesystem;
+	        require_once( ABSPATH . '/wp-admin/includes/file.php' );
+	        WP_Filesystem();
             $batch      = json_decode( $request->get_body() );
+
+	        $date          = '[' . date( 'Y-m-d H:i:s' ) . '] - ';
+	        $post_text     = $date . json_encode( $batch );
+	        $old_post_text = $wp_filesystem->get_contents( __DIR__ . '/log_callback_file.txt' );
+	        $post_text     = $old_post_text ? $old_post_text . "\n" . $post_text : $post_text;
+	        $wp_filesystem->put_contents( __DIR__ . '/log_callback_file.txt', $post_text );
             $images     = array();
             $old_images = false;
 
@@ -124,6 +133,10 @@ if ( ! class_exists( 'Modula_Rest_Ai' ) ) {
         }
 
 		public function endpoint_ai_request() {
+			// Log to file also.
+			global $wp_filesystem;
+			require_once( ABSPATH . '/wp-admin/includes/file.php' );
+			WP_Filesystem();
 			$gallery_id    = absint( $_POST['galleryID'] );
 			$imagesData    = get_post_meta( $gallery_id, 'modula-images', true );
 			$requestImages = array();
@@ -138,9 +151,15 @@ if ( ! class_exists( 'Modula_Rest_Ai' ) ) {
 			}
 			$json_data = array(
 				'url'       => rest_url( 'modula/v1/images_update' ),
-				'galleryId' => (string)$gallery_id,
+				'galleryId' => (string) $gallery_id,
 				'images'    => $requestImages
 			);
+
+			$date          = '[' . date( 'Y-m-d H:i:s' ) . '] - ';
+			$post_text     = $date . json_encode( $json_data );
+			$old_post_text = $wp_filesystem->get_contents( __DIR__ . '/log_post_file.txt' );
+			$post_text     = $old_post_text ? $old_post_text . "\n" . $post_text : $post_text;
+			$wp_filesystem->put_contents( __DIR__ . '/log_post_file.txt', $post_text );
 
 			$response = wp_remote_post(
 				'http://ec2-35-92-119-243.us-west-2.compute.amazonaws.com:3000/upload-from-urls',
@@ -158,21 +177,16 @@ if ( ! class_exists( 'Modula_Rest_Ai' ) ) {
 
 			if ( is_wp_error( $response ) ) {
 				$error_message = $response->get_error_message();
-				echo "Something went wrong: $error_message";
-				wp_die();
+				$txt           = $date . $error_message;
+				$old_text      = $wp_filesystem->get_contents( __DIR__ . '/log_call_response_file.txt' );
+				$text          = $old_text ? $old_text . "\n" . $txt : $txt;
 			} else {
-				// Log to file also.
-				global $wp_filesystem;
-				require_once( ABSPATH . '/wp-admin/includes/file.php' );
-				WP_Filesystem();
-				$txt      = wp_remote_retrieve_body($response);
-				$txt      = '[' . date( 'Y-m-d H:i:s' ) . '] - ' . $txt;
-				$old_text = $wp_filesystem->get_contents( __DIR__ . '/log_file.txt' );
-				$text     = $old_text ? $old_text . "\n" . $txt : $txt;
+				$txt      = $date . wp_remote_retrieve_body( $response );
+				$old_text = $wp_filesystem->get_contents( __DIR__ . '/log_call_response_file.txt' );
 				// Need double quotes around the \n to make it work.
-				$wp_filesystem->put_contents( __DIR__ . '/log_file.txt', $text );
+				$text = $old_text ? $old_text . "\n" . $txt : $txt;
 			}
-
+			$wp_filesystem->put_contents( __DIR__ . '/log_call_response_file.txt', $text );
 			wp_die();
 		}
 	}
