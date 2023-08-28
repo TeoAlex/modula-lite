@@ -60,12 +60,13 @@ if ( ! class_exists( 'Modula_Rest_Ai' ) ) {
 			$old_images = false;
 			$gallery_id = false;
 
-			if ( empty( $batch ) ) {
+			if ( empty( $batch->images ) ) {
 				wp_die();
 			}
 
-			foreach ( $batch as $image ) {
-				$id         = absint( $image->parentReference );
+			$images = $batch->images;
+			foreach ( $images as $image ) {
+				$id         = absint( $image->id );
 				$alt        = sanitize_text_field( $image->altText );
 				$gallery_id = absint( $image->galleryId );
 
