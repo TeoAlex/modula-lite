@@ -26,13 +26,13 @@ if ( ! class_exists( 'Modula_Rest_Ai' ) ) {
 
 		}
 
-        /**
+		/**
 		 * Register DLM Logs Routes
 		 *
 		 * @since 4.6.0
 		 */
 		public function register_routes() {
-            
+
 			// The REST route for downloads reports.
 			register_rest_route(
 				'modula/v1',
@@ -45,92 +45,98 @@ if ( ! class_exists( 'Modula_Rest_Ai' ) ) {
 
 		}
 
-        public function update_images( WP_REST_Request $request ){
+		public function update_images( WP_REST_Request $request ){
 			// Log to file also.
-	        global $wp_filesystem;
-	        require_once( ABSPATH . '/wp-admin/includes/file.php' );
-	        WP_Filesystem();
-            $batch      = json_decode( $request->get_body() );
+			global $wp_filesystem;
+			require_once( ABSPATH . '/wp-admin/includes/file.php' );
+			WP_Filesystem();
+			$batch      = json_decode( $request->get_body() );
 
-	        $date          = '[' . date( 'Y-m-d H:i:s' ) . '] - ';
-	        $post_text     = $date . json_encode( $batch );
-	        $old_post_text = $wp_filesystem->get_contents( __DIR__ . '/log_callback_file.txt' );
-	        $post_text     = $old_post_text ? $old_post_text . "\n" . $post_text : $post_text;
-	        $wp_filesystem->put_contents( __DIR__ . '/log_callback_file.txt', $post_text );
-            $images     = array();
-            $old_images = false;
+			$date          = '[' . date( 'Y-m-d H:i:s' ) . '] - ';
+			$post_text     = $date . json_encode( $batch );
+			$old_post_text = $wp_filesystem->get_contents( __DIR__ . '/log_callback_file.txt' );
+			$post_text     = $old_post_text ? $old_post_text . "\n" . $post_text : $post_text;
+			$wp_filesystem->put_contents( __DIR__ . '/log_callback_file.txt', $post_text );
+			$old_images = false;
+			$gallery_id = false;
 
-            if ( ! empty( $batch ) ) {
-                $images = $batch->images;
-            }
+			if ( empty( $batch ) ) {
+				wp_die();
+			}
 
-            if ( isset( $batch->gallery_id ) && 0 !== absint( $batch->gallery_id ) ) {
-                $old_images = get_post_meta( $batch->gallery_id, 'modula-images', true );
-            }
+			foreach ( $batch as $image ) {
+				$id         = absint( $image->parentReference );
+				$alt        = sanitize_text_field( $image->altText );
+				$gallery_id = absint( $image->galleryId );
 
-            foreach( $images as $image ) {
+				// Get old images if not already retrieved.
+				if ( 0 !== absint( $gallery_id ) && empty( $old_images ) ) {
+					$old_images = get_post_meta( $gallery_id, 'modula-images', true );
+				}
+				// 1. Check if the id corresponds to an attachment.
+				if ( get_post_type( $id ) && 'attachment' === get_post_type( $id ) ) {
 
-                // 1. Check if the id coresponds to an attachment.
-                if ( get_post_type( $image->id ) && get_post_type( $image->id ) == 'attachment' ) {
+					// 2. Set post new data in array;
+					$img_data = array(
+						'ID'           => $id,
+						'post_content' => $alt,
+						'post_excerpt' => $alt,
+					);
 
-                    // 2. Set post new data in array;
-                    $img_data = array(
-                        'ID'           => $image->id,
-                        'post_title'   => $image->title,
-                        'post_content' => $image->description,
-                        'post_excerpt' => $image->description,
-                    );
+					// 3. Update the post into the database.
+					wp_update_post( $img_data );
 
-                    // 3. Update the post into the database
-                    wp_update_post( $img_data );
+					// 4. Update the image alt text.
+					update_post_meta( $id, '_wp_attachment_image_alt', $alt );
 
-                    // 4. Update the image alt text.
-                    update_post_meta( $image->id, '_wp_attachment_image_alt', $image->alt );
+					// 5. If we can, also update the gallery's image.
+					if ( $old_images ) {
 
-                    // 5. If we can, also update the gallery's image
-                    if ( $old_images ) {
-                        foreach ( $old_images as $key => $old_image ) {
-                            if ( $old_image['id'] == $image->id ) {
-                                $old_images[ $key ]['alt']         = $image->alt;
-                                $old_images[ $key ]['title']       = $image->title;
-                                $old_images[ $key ]['description'] = $image->description;
-                            }
-                        }
-                        update_post_meta( $batch->gallery_id, 'modula-images', $old_images );
-                    }
-                }
-            }
-            die();
-        }
+						foreach ( $old_images as $key => $old_image ) {
+							if ( absint( $old_image['id'] ) === $id ) {
+								$old_images[ $key ]['alt']         = $alt;
+								$old_images[ $key ]['description'] = $alt;
+							}
+						}
+					}
+				}
+			}
+			// Place the update here, so we don't update the gallery meta on every image.
+			if ( $gallery_id ) {
+				update_post_meta( $gallery_id, 'modula-images', $old_images );
+			}
 
-        public function test(){
-            ?>
-            <button class="button butontest"> AAAAAAAAAAAAA </button>
-            <script>
-                jQuery(document).on("click", '.butontest', function (e) {
-                    const date = {
-                        batchid: 12,
-                        gallery_id: 908,
-                        images: [{ id: 935, alt: 'Alt 1', title: 'Title 1', description: 'Desc 1' }, { id: 922, alt: 'Alt 2', title: 'Title 2', description: 'Desc 2' }, { id: 954, alt: 'Alt 3', title: 'Title 3', description: 'Desc 3' }],
-                    };
-                    e.preventDefault();
-                    jQuery.ajax({
-                        type: 'POST',
-                        dataType: 'json',
-                        contentType: 'application/json',
-                        url: 'https://modula.local/wp-json/modula/v1/images_update',
-                        data: JSON.stringify(date),
-                        success: function (response) {
-                            if (response) {
-                                console.log(response); //testing what's in the response
-                            }
-                        }
-                    });
-                });
-            </script>
-            
-            <?php
-        }
+			die();
+		}
+
+		public function test(){
+			?>
+			<button class="button butontest"> AAAAAAAAAAAAA </button>
+			<script>
+				jQuery(document).on("click", '.butontest', function (e) {
+					const date = {
+						batchid: 12,
+						gallery_id: 908,
+						images: [{ id: 935, alt: 'Alt 1', title: 'Title 1', description: 'Desc 1' }, { id: 922, alt: 'Alt 2', title: 'Title 2', description: 'Desc 2' }, { id: 954, alt: 'Alt 3', title: 'Title 3', description: 'Desc 3' }],
+					};
+					e.preventDefault();
+					jQuery.ajax({
+									type: 'POST',
+									dataType: 'json',
+									contentType: 'application/json',
+									url: 'https://modula.local/wp-json/modula/v1/images_update',
+									data: JSON.stringify(date),
+									success: function (response) {
+										if (response) {
+											console.log(response); //testing what's in the response
+										}
+									}
+								});
+				});
+			</script>
+
+			<?php
+		}
 
 		public function endpoint_ai_request() {
 			// Log to file also.
