@@ -205,3 +205,17 @@ String.prototype.template = function (d) {
     });
 };
 
+document.addEventListener('modula_fancybox_Carousel_ready', modulaAlbumsMoveCaption);
+document.addEventListener('modula_fancybox_Carousel_change', modulaAlbumsMoveCaption);
+document.addEventListener('modula_fancybox_resize', modulaAlbumsMoveCaption);
+
+function modulaAlbumsMoveCaption() {
+    document.querySelectorAll('.fancybox__slide').forEach(function (slide) {
+        var content = slide.querySelector('.fancybox__content');
+        var caption = slide.querySelector('.fancybox__caption');
+
+        if (content && caption && !content.contains(caption)) {
+            content.appendChild(caption);
+        }
+    });
+}

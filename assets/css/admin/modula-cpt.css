@@ -1112,6 +1112,7 @@ tr[data-container="effect"] > td {
 
 .media-modal .modula-edit-popup .attachment-details .attachment-info .settings .setting span.name {
     display: block;
+    float: none;
     width: 100%;
     min-width: 100%;
     margin: 0;

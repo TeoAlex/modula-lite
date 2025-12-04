@@ -60,11 +60,10 @@ wp.Modula = 'undefined' === typeof( wp.Modula ) ? {} : wp.Modula;
                         force_p_newlines: false,
                         convert_newlines_to_brs: true,
                         remove_linebreaks: false,
-                        plugins : 'charmap colorpicker compat3x directionality fullscreen hr image lists media paste tabfocus textcolor wordpress wpautoresize wpdialogs wpeditimage wpemoji wpgallery wplink wptextpattern wpview',
-                        toolbar1: 'bold italic underline strikethrough | bullist numlist | blockquote hr wp_more | alignleft aligncenter alignright | link unlink | fullscreen | wp_adv',
-                        toolbar2: 'formatselect alignjustify forecolor | pastetext removeformat charmap | outdent indent | undo redo | wp_help'
+                        plugins : 'lists link',
+                        toolbar1: 'bold italic underline strikethrough | bullist numlist | link unlink',
                     },
-                    quicktags: true
+                    quicktags: false
                 });
             }
         }
