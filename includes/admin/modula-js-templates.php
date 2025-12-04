@@ -70,7 +70,7 @@
 					<!-- Caption Text -->
 					<label class="setting">
 						<span class="name"><?php esc_html_e( 'Caption Text', 'modula-best-grid-gallery' ); ?></span>
-						<textarea name="description">{{ data.description }}</textarea>
+						<textarea id="modula_gallery_caption" name="description">{{ data.description }}</textarea>
 					</label>
 
 					<!-- Alignment -->

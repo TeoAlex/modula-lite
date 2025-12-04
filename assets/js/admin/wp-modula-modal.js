@@ -42,9 +42,32 @@ wp.Modula = 'undefined' === typeof( wp.Modula ) ? {} : wp.Modula;
             wpMediaView.content( modulaModal );
             // Open wpMediaView
             wpMediaView.open();
+            this.initEditor();
+        },
 
+        initEditor: function(){
+            
+            if ( typeof tinymce !== 'undefined' && tinymce.get('modula_gallery_caption') ) {
+                tinymce.get('modula_gallery_caption').remove();
+            }
+
+            if ( typeof wp.editor !== 'undefined' ) {
+                wp.editor.initialize('modula_gallery_caption', {
+                    tinymce: {
+                        wpautop: false,
+                        forced_root_block: false,
+                        forced_br_newlines: true,
+                        force_p_newlines: false,
+                        convert_newlines_to_brs: true,
+                        remove_linebreaks: false,
+                        plugins : 'charmap colorpicker compat3x directionality fullscreen hr image lists media paste tabfocus textcolor wordpress wpautoresize wpdialogs wpeditimage wpemoji wpgallery wplink wptextpattern wpview',
+                        toolbar1: 'bold italic underline strikethrough | bullist numlist | blockquote hr wp_more | alignleft aligncenter alignright | link unlink | fullscreen | wp_adv',
+                        toolbar2: 'formatselect alignjustify forecolor | pastetext removeformat charmap | outdent indent | undo redo | wp_help'
+                    },
+                    quicktags: true
+                });
+            }
         }
-
     } );
 
     var modulaModalView = Backbone.View.extend( {
@@ -305,6 +328,10 @@ wp.Modula = 'undefined' === typeof( wp.Modula ) ? {} : wp.Modula;
             var saved = this.$el.find( '.saved' );
             saved.fadeIn();
 
+            if ( typeof tinymce !== 'undefined' && tinymce.get('modula_gallery_caption') ) {
+                this.item.set( 'description', wp.editor.getContent('modula_gallery_caption') );
+            }
+
             wp.Modula.Save.saveImages( function(){
                 // Tell the view we've finished successfully
                 self.trigger( 'loaded loaded:success' );
@@ -321,6 +348,10 @@ wp.Modula = 'undefined' === typeof( wp.Modula ) ? {} : wp.Modula;
 
             // Tell the View we're loading
             this.trigger( 'loading' );
+
+            if ( typeof tinymce !== 'undefined' && tinymce.get('modula_gallery_caption') ) {
+                this.item.set( 'description', wp.editor.getContent('modula_gallery_caption') );
+            }
 
             clearInterval( wp.Modula.Save.updateInterval );
             wp.Modula.Save.saveImages( function(){
@@ -456,7 +487,7 @@ wp.Modula = 'undefined' === typeof( wp.Modula ) ? {} : wp.Modula;
                 $button.addClass('configure-api');
                 self.isApiConfigured = false;
             }
-        }
+        },
     } );
 
 
