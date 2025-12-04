@@ -622,6 +622,11 @@ html body div.modula-powered svg.modula-logo {
     display: none;
 }
 
+.modula-best-grid-gallery .f-button:not([disabled]) {
+    color: var(--f-button-hover-color);
+    background-color: var(--f-button-hover-bg);
+}
+
 html body .modula-items .modula-item .jtg-social-expandable {
     display: none;
 }
