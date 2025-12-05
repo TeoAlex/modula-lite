@@ -795,3 +795,9 @@ html body .modula.modula-gallery .modula-item-link:focus-visible {
     outline: 2px solid #005fcc;
     outline-offset: -2px;
 }
+
+/* Allows text selection for hover effects titles and captions */
+html body .modula .modula-items .modula-item .figc *{
+    position:relative;
+    z-index: 12;
+}
