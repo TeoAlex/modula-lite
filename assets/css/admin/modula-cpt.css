@@ -1110,7 +1110,7 @@ tr[data-container="effect"] > td {
     border-bottom: 1px solid #ddd;
 }
 
-.media-modal .modula-edit-popup .attachment-details .attachment-info .settings .setting span.name {
+.media-modal .modula-edit-popup .attachment-details .attachment-info .settings .setting .name {
     display: block;
     float: none;
     width: 100%;
