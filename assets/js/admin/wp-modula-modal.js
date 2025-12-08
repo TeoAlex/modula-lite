@@ -42,31 +42,9 @@ wp.Modula = 'undefined' === typeof( wp.Modula ) ? {} : wp.Modula;
             wpMediaView.content( modulaModal );
             // Open wpMediaView
             wpMediaView.open();
-            this.initEditor();
+
+            modulaModal.initEditor();
         },
-
-        initEditor: function(){
-            
-            if ( typeof tinymce !== 'undefined' && tinymce.get('modula_gallery_caption') ) {
-                tinymce.get('modula_gallery_caption').remove();
-            }
-
-            if ( typeof wp.editor !== 'undefined' ) {
-                wp.editor.initialize('modula_gallery_caption', {
-                    tinymce: {
-                        wpautop: false,
-                        forced_root_block: false,
-                        forced_br_newlines: true,
-                        force_p_newlines: false,
-                        convert_newlines_to_brs: true,
-                        remove_linebreaks: false,
-                        plugins : 'lists link',
-                        toolbar1: 'bold italic underline strikethrough | bullist numlist | link unlink',
-                    },
-                    quicktags: false
-                });
-            }
-        }
     } );
 
     var modulaModalView = Backbone.View.extend( {
@@ -178,6 +156,8 @@ wp.Modula = 'undefined' === typeof( wp.Modula ) ? {} : wp.Modula;
                     }, this );
                 }
             }
+
+            this.initEditor();
 
             // Enable / disable the buttons depending on the index
             if ( this.attachment_index == 0 ) {
@@ -327,8 +307,8 @@ wp.Modula = 'undefined' === typeof( wp.Modula ) ? {} : wp.Modula;
             var saved = this.$el.find( '.saved' );
             saved.fadeIn();
 
-            if ( typeof tinymce !== 'undefined' && tinymce.get('modula_gallery_caption') ) {
-                this.item.set( 'description', wp.editor.getContent('modula_gallery_caption') );
+            if ( typeof tinymce !== 'undefined' && tinymce.get('modula_gallery_description') ) {
+                this.item.set( 'description', wp.editor.getContent('modula_gallery_description') );
             }
 
             wp.Modula.Save.saveImages( function(){
@@ -348,8 +328,8 @@ wp.Modula = 'undefined' === typeof( wp.Modula ) ? {} : wp.Modula;
             // Tell the View we're loading
             this.trigger( 'loading' );
 
-            if ( typeof tinymce !== 'undefined' && tinymce.get('modula_gallery_caption') ) {
-                this.item.set( 'description', wp.editor.getContent('modula_gallery_caption') );
+            if ( typeof tinymce !== 'undefined' && tinymce.get('modula_gallery_description') ) {
+                this.item.set( 'description', wp.editor.getContent('modula_gallery_description') );
             }
 
             clearInterval( wp.Modula.Save.updateInterval );
@@ -485,6 +465,35 @@ wp.Modula = 'undefined' === typeof( wp.Modula ) ? {} : wp.Modula;
                 $button.text(modulaHelper.strings.configure_api_key || 'Configure API Key');
                 $button.addClass('configure-api');
                 self.isApiConfigured = false;
+            }
+        },
+
+        initEditor: function(){
+            
+            if ( typeof tinymce !== 'undefined' && tinymce.get('modula_gallery_description') ) {
+                tinymce.get('modula_gallery_description').remove();
+            }
+
+            if ( typeof wp.editor !== 'undefined' ) {
+                wp.editor.initialize('modula_gallery_description', {
+                    tinymce: {
+						resize: false,
+						quicktags: false,
+						branding: false,
+						menubar: false,
+						wpautop: false,
+						statusbar: false,
+						forced_root_block: false,
+						forced_br_newlines: true,
+						force_p_newlines: false,
+						convert_newlines_to_brs: true,
+						remove_linebreaks: false,
+						plugins: 'lists link',
+						toolbar1:
+							'bold italic underline strikethrough | bullist numlist | link unlink',
+                    },
+                    quicktags: false
+                });
             }
         },
     } );
