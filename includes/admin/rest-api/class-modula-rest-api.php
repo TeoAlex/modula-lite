@@ -1,4 +1,5 @@
 <?php
+require_once MODULA_PATH . 'includes/admin/rest-api/class-modula-extensions-base.php';
 
 class Modula_Rest_Api {
 
@@ -7,6 +8,7 @@ class Modula_Rest_Api {
 
 	public function __construct() {
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
+		Modula_Extensions_Base::get_instance();
 		$this->settings = Modula_Settings::get_instance();
 	}
 
@@ -55,6 +57,26 @@ class Modula_Rest_Api {
 			array(
 				'methods'             => 'POST',
 				'callback'            => array( $this, 'vimeo_action' ),
+				'permission_callback' => array( $this, 'settings_permissions_check' ),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/license',
+			array(
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'license_action' ),
+				'permission_callback' => array( $this, 'settings_permissions_check' ),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/extensions',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'get_extensions' ),
 				'permission_callback' => array( $this, 'settings_permissions_check' ),
 			)
 		);
@@ -126,5 +148,45 @@ class Modula_Rest_Api {
 
 		// Check if the user has the capability to manage options
 		return current_user_can( 'manage_options' );
+	}
+
+	public function license_action( $request ) {
+		$body        = $request->get_json_params();
+		$license_key = isset( $body['license_key'] ) ? $body['license_key'] : '';
+		$action      = isset( $body['action'] ) ? $body['action'] : '';
+		$saved       = get_option( 'modula_pro_license_key', '' );
+		if ( empty( $license_key ) && empty( $saved ) ) {
+			return new \WP_REST_Response(
+				array(
+					'message' => 'no_license_key',
+					'status'  => 'error',
+				),
+				200
+			);
+		}
+
+		if ( ! class_exists( 'Modula_Pro\Extensions\Licensing' ) ) {
+			return new \WP_REST_Response( 'Modula Pro is not installed.', 400 );
+		}
+
+		$license = Modula_Pro\Extensions\Licensing::get_instance();
+
+		if ( 'activate' === $action ) {
+			return new \WP_REST_Response( $license->activate_license( $license_key ), 200 );
+		}
+
+		if ( 'deactivate' === $action ) {
+			return new \WP_REST_Response( $license->deactivate_license( $license_key ), 200 );
+		}
+
+		return new \WP_REST_Response( $license->check_license(), 200 );
+	}
+
+	public function get_extensions() {
+		$instance = class_exists( 'Modula_Pro\Extensions\Extensions' )
+			? Modula_Pro\Extensions\Extensions::get_instance()
+			: Modula_Extensions_Base::get_instance();
+
+		return new \WP_REST_Response( $instance->get_extensions(), 200 );
 	}
 }

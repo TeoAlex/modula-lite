@@ -1,0 +1,55 @@
+.pageContent {
+    max-width: var(--theme-normal-container-max-width);
+    margin: 0 auto;
+    padding: var(--theme-content-spacing) 0;
+
+    @media (max-width: 768px) {
+        max-width: var(--theme-narrow-container-max-width);
+        padding: 20px 16px;
+    }
+}
+
+.accordionWrapper {
+    margin-bottom: var(--theme-content-spacing);
+    position: relative;
+
+
+    &.last {
+        margin-bottom: 0;
+    }
+}
+
+.proBadge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: capitalize;
+    letter-spacing: 0.3px;
+    color: #ffffff;
+    background-color: var(--theme-palette-color-4);
+    border-radius: 4px;
+    white-space: nowrap;
+    margin-left: var(--theme-content-spacing);
+}
+
+.accordionTitle {
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.triangleIcon {
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 10px solid var(--theme-palette-color-1);
+    display: inline-block;
+    transition: transform 0.2s ease-in-out;
+    margin-left: 15px;
+    margin-right: 25px;
+    transform: rotate(180deg);
+}

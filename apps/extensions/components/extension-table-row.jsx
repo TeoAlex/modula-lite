@@ -1,27 +1,84 @@
 import { __ } from '@wordpress/i18n';
+import { Spinner, ToggleControl } from '@wordpress/components';
 import styles from './extension-table-row.module.scss';
-import modulaLogo from '../../../assets/images/modula-logo.jpg';
+import { useExtensionMutation } from '../query/useExtensionMutation';
 
 export default function ExtensionTableRow({
 	extension,
 	selected = false,
 	onSelectChange,
+	isPending: rowPending = false,
 }) {
+	const { mutate: toggleExtension, isPending } = useExtensionMutation();
+
 	const handleToggle = () => {
-		if (!extension.available) {
-			return;
-		}
-		// TODO: Implement toggle functionality with tanstack react query
-		console.log('Toggle extension:', extension.id, extension.status);
+		toggleExtension({ extension: extension.slug });
 	};
 
-	const imageSrc = extension.image || modulaLogo;
+	const handleKeyDown = (e) => {
+		if (e.key === 'Enter' || e.key === ' ') {
+			e.preventDefault();
+			handleToggle();
+		}
+	};
+
+	const renderActionText = () => {
+		if (extension.enabled) {
+			return (
+				<>
+					<span
+						className={styles.actionLink}
+						onClick={handleToggle}
+						onKeyDown={handleKeyDown}
+						role="button"
+						tabIndex={0}
+					>
+						{__('Deactivate', 'modula-best-grid-gallery')}
+					</span>
+					{(isPending || rowPending) && (
+						<span className={styles.actionLink}>
+							<Spinner style={{ width: '9px', height: '9px' }} />
+						</span>
+					)}
+					{!isPending && !rowPending && (
+						<>
+							{' '}
+							|{' '}
+							<span className={styles.actionLink}>
+								{__('Settings', 'modula-best-grid-gallery')}
+							</span>
+						</>
+					)}
+				</>
+			);
+		}
+
+		return (
+			<>
+				<span
+					className={styles.actionLink}
+					onClick={handleToggle}
+					onKeyDown={handleKeyDown}
+					role="button"
+					tabIndex={0}
+				>
+					{__('Activate', 'modula-best-grid-gallery')}
+				</span>
+				{(isPending || rowPending) && (
+					<span className={styles.actionLink}>
+						<Spinner style={{ width: '9px', height: '9px' }} />
+					</span>
+				)}
+			</>
+		);
+	};
 
 	return (
 		<tr className={!extension.available ? styles.unavailable : ''}>
 			<td className={styles.checkboxColumn}>
 				<input
 					type="checkbox"
+					disabled={!extension.available}
 					checked={selected}
 					onChange={(e) => onSelectChange(e.target.checked)}
 				/>
@@ -30,59 +87,30 @@ export default function ExtensionTableRow({
 				<div className={styles.extensionInfo}>
 					<div className={styles.extensionDetails}>
 						<strong className={styles.title}>
-							{extension.title}
+							{extension.name}
 						</strong>
 						<div className={styles.actions}>
-							{extension.status === 'active' ? (
-								<span className={styles.actionLink}>
-									{__(
-										'Deactivate',
-										'modula-best-grid-gallery'
-									)}
-								</span>
-							) : (
-								<span className={styles.actionLink}>
-									{__('Activate', 'modula-best-grid-gallery')}
-								</span>
-							)}
-							<span className={styles.separator}>|</span>
-							<span className={styles.actionLink}>
-								{__('Settings', 'modula-best-grid-gallery')}
-							</span>
+							{renderActionText()}
 						</div>
 					</div>
 				</div>
 			</td>
 			<td className={styles.descriptionColumn}>
 				<div className={styles.description}>
-					{extension.description} Version {extension.version}
+					{extension.description}
 				</div>
 			</td>
 			<td className={styles.statusColumn}>
 				<div className={styles.statusActions}>
-					{!extension.available && (
-						<span className={styles.upgradeBadge}>
-							{__('Upgrade Required', 'modula-best-grid-gallery')}
-						</span>
-					)}
-					<label
-						className={styles.toggleWrapper}
-						htmlFor={`toggle-${extension.id}`}
-					>
-						<input
-							id={`toggle-${extension.id}`}
-							type="checkbox"
-							checked={extension.status === 'active'}
-							onChange={handleToggle}
-							disabled={!extension.available}
-							className={styles.toggle}
-							aria-label={__(
-								'Toggle extension status',
-								'modula-best-grid-gallery'
-							)}
-						/>
-						<span className={styles.toggleSlider}></span>
-					</label>
+					<ToggleControl
+						checked={extension.enabled}
+						onChange={handleToggle}
+						disabled={!extension.available}
+						aria-label={__(
+							'Toggle extension status',
+							'modula-best-grid-gallery'
+						)}
+					/>
 				</div>
 			</td>
 		</tr>

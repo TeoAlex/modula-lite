@@ -166,6 +166,9 @@ class Modula {
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_scripts' ), 20 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'general_settings_page_scripts' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'extensions_scripts' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'insights_scripts' ) );
+
 		add_action( 'admin_init', array( $this, 'admin_start' ), 20 );
 		add_action( 'admin_menu', array( $this, 'dashboard_start' ), 20 );
 
@@ -189,13 +192,13 @@ class Modula {
 		// Initiate WPChill Notifications
 		WPChill_Notifications::get_instance();
 
-		if ( get_option( 'use_modula_ai', true ) ) {
+		if ( get_option( 'use_modula_ai', 0 ) ) {
 			new Modula\Gallery_Listing_Output();
 		}
 	}
 
 	public function start_ai_hooks() {
-		if ( get_option( 'use_modula_ai', true ) ) {
+		if ( get_option( 'use_modula_ai', 0 ) ) {
 			new Modula\Ai\Client();
 		}
 
@@ -389,31 +392,6 @@ class Modula {
 			}
 
 			wp_enqueue_style( 'modula-notices-style', MODULA_URL . 'assets/css/admin/modula-notices' . $suffix . '.css', null, MODULA_LITE_VERSION );
-			wp_enqueue_style( 'modula-welcome-style', MODULA_URL . 'assets/css/admin/addons' . $suffix . '.css', null, MODULA_LITE_VERSION );
-			wp_enqueue_script(
-				'modula-addon',
-				MODULA_URL . 'assets/js/admin/modula-addon' . $suffix . '.js',
-				array(
-					'jquery',
-					'updates',
-				),
-				MODULA_LITE_VERSION,
-				true
-			);
-
-			wp_localize_script(
-				'modula-addon',
-				'modulaAddons',
-				array(
-					// Add addon slug to verify addon's slug in wp-plugin-install-success action
-					'free_addons'       => apply_filters( 'modula_free_extensions_install', array() ),
-					'installing_text'   => esc_html__( 'Installing addon...', 'modula-best-grid-gallery' ),
-					'activated_text'    => esc_html__( 'Addon activated!', 'modula-best-grid-gallery' ),
-					'deactivated_text'  => esc_html__( 'Addon deactivated!', 'modula-best-grid-gallery' ),
-					'activating_text'   => esc_html__( 'Activating addon...', 'modula-best-grid-gallery' ),
-					'deactivating_text' => esc_html__( 'Deactivating addon...', 'modula-best-grid-gallery' ),
-				)
-			);
 		} else {
 			wp_enqueue_style( 'modula-header-style', MODULA_URL . 'assets/css/admin/modula-header' . $suffix . '.css', null, MODULA_LITE_VERSION );
 			wp_enqueue_style( 'modula-notices-style', MODULA_URL . 'assets/css/admin/modula-notices' . $suffix . '.css', null, MODULA_LITE_VERSION );
@@ -871,14 +849,14 @@ class Modula {
 
 	public function general_settings_page_scripts() {
 		$screen = get_current_screen();
+
 		if ( 'modula-gallery' !== $screen->post_type ) {
 			return;
 		}
 
-		// @todo readd this
-		// if ( 'modula-gallery_page_modula' !== $screen->base ) {
-		//  return;
-		// }
+		if ( 'modula-gallery_page_modula' !== $screen->base ) {
+			return;
+		}
 
 		wp_enqueue_media();
 
@@ -895,20 +873,75 @@ class Modula {
 			array( 'wp-components' )
 		);
 
-		// $scripts->load_js_asset(
-		//  'modula-extensions',
-		//  'assets/js/admin/extensions',
-		// );
-
-		// $scripts->load_css_asset(
-		//  'modula-extensions',
-		//  'assets/js/admin/extensions',
-		//  array( 'wp-components' )
-		// );
-
 		wp_add_inline_script(
 			'modula-settings',
 			'const modulaUrl = ' . wp_json_encode( MODULA_URL ),
+			'before'
+		);
+	}
+
+	public function extensions_scripts() {
+		$screen = get_current_screen();
+		if ( 'modula-gallery' !== $screen->post_type ) {
+			return;
+		}
+
+		if ( 'modula-gallery_page_modula-addons' !== $screen->base ) {
+			return;
+		}
+
+		$scripts = Modula\Scripts::get_instance();
+		$scripts->load_js_asset(
+			'modula-extensions',
+			'assets/js/admin/extensions',
+		);
+
+		$scripts->load_css_asset(
+			'modula-extensions',
+			'assets/js/admin/extensions',
+			array( 'wp-components' )
+		);
+
+		wp_localize_script(
+			'modula-extensions',
+			'extensionsStrings',
+			array(
+				'proExists' => defined( 'MODULA_PRO_VERSION' ),
+				'offer'     => apply_filters( 'modula_extensions_offer', new \stdClass() ),
+			),
+			'before'
+		);
+	}
+
+	public function insights_scripts() {
+		$screen = get_current_screen();
+		if ( 'modula-gallery' !== $screen->post_type ) {
+			return;
+		}
+
+		if ( 'modula-gallery_page_modula-insights' !== $screen->base ) {
+			return;
+		}
+
+		$scripts = Modula\Scripts::get_instance();
+		$scripts->load_js_asset(
+			'modula-insights',
+			'assets/js/admin/insights',
+		);
+
+		$scripts->load_css_asset(
+			'modula-insights',
+			'assets/js/admin/insights',
+			array( 'wp-components' )
+		);
+
+		wp_localize_script(
+			'modula-insights',
+			'insightsStrings',
+			array(
+				'proExists' => defined( 'MODULA_PRO_VERSION' ),
+				'offer'     => apply_filters( 'modula_extensions_offer', new \stdClass() ),
+			),
 			'before'
 		);
 	}

@@ -108,7 +108,7 @@ export default function ButtonAction() {
 	};
 
 	return (
-		<div className="modula-button-action">
+		<div>
 			{notification && (
 				<Notice
 					status={notification.status}
@@ -117,14 +117,11 @@ export default function ButtonAction() {
 				>
 					{notification.message}
 					{notification.details && (
-						<span className="modula-notice-details">
-							{' '}
-							{notification.details}
-						</span>
+						<span>{notification.details}</span>
 					)}
 				</Notice>
 			)}
-			<p className="modula-description">
+			<p>
 				{__(
 					'With the latest update, we have changed the way the image information is handled, now the information is retrieved from the Media Library. If you wish to set your previous details for the gallery images, please click the below button.',
 					'modula-best-grid-gallery'
@@ -141,8 +138,8 @@ export default function ButtonAction() {
 					: __('Update Gallery Images', 'modula-best-grid-gallery')}
 			</Button>
 
-			<div className="modula-cleanup-section">
-				<p className="modula-description">
+			<div>
+				<p>
 					{__(
 						'Clean up your database by removing all wrongfully created galleries.',
 						'modula-best-grid-gallery'
@@ -150,6 +147,7 @@ export default function ButtonAction() {
 				</p>
 				<Button
 					isDestructive
+					variant="tertiary"
 					isBusy={isCleaning}
 					disabled={isCleaning}
 					onClick={handleCleanupClick}

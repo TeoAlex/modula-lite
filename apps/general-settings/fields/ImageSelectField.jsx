@@ -1,61 +1,76 @@
 import { useState } from '@wordpress/element';
 import { Button } from '@wordpress/components';
+import Label from './Label';
+import styles from './ImageSelectField.module.scss';
 
-export default function ImageSelector( { fieldState, field, handleChange } ) {
-	const [ imageSrc, setImageSrc ] = useState( field.src || null );
+export default function ImageSelector({ fieldState, field, handleChange }) {
+	const [imageSrc, setImageSrc] = useState(field.src || null);
 
 	const openMediaLibrary = () => {
-		const mediaFrame = wp.media( {
-			title: 'Select an image pentru fundal',
+		const mediaFrame = wp.media({
+			title: field.mediaTitle || 'Select an image',
 			button: {
-				text: 'Folosește această imagine',
+				text: field.mediaButtonText || 'Use this image',
 			},
 			multiple: false,
-		} );
-
-		mediaFrame.on( 'select', () => {
-			const selection = mediaFrame.state().get( 'selection' ).first().toJSON();
+		});
+		mediaFrame.on('select', () => {
+			const selection = mediaFrame
+				.state()
+				.get('selection')
+				.first()
+				.toJSON();
 			const attachmentId = selection.id;
 			const attachmentSrc = selection.url;
 
-			handleChange( attachmentId );
-			setImageSrc( attachmentSrc );
-		} );
+			handleChange(attachmentId);
+			setImageSrc(attachmentSrc);
+		});
 
 		mediaFrame.open();
 	};
 
 	const removeImage = () => {
-		handleChange( null );
-		setImageSrc( null );
+		handleChange(null);
+		setImageSrc(null);
 	};
 
 	return (
-		<>
-			{ field.label && field.label.trim() !== '' && (
-				<span className="modula_input_label" htmlFor={ field.name }>
-					{ field.label }
-				</span>
-			) }
-			<div className="modula_image_holder">
-				<div className="modula_image">
-					{ imageSrc && (
-						<img src={ imageSrc } alt="Selected" width={ 200 } />
-					) }
-					{ ! imageSrc && (
-						<Button isPrimary onClick={ openMediaLibrary }>Set watermark image</Button>
-					) }
-					{ imageSrc && (
-						<div className="modula_image_buttons">
-							<Button isSecondary onClick={ openMediaLibrary }>Replace</Button>
-							<Button isDestructive onClick={ removeImage }>Remove</Button>
+		<div className={styles.imageSelectField}>
+			<Label label={field.label} description={field.description} />
+			<div className={styles.imageContainer}>
+				{imageSrc ? (
+					<>
+						<div className={styles.imagePreview}>
+							<img
+								src={imageSrc}
+								alt={field.label || 'Selected image'}
+							/>
 						</div>
-					) }
-				</div>
+						<div className={styles.imageActions}>
+							<Button
+								variant="secondary"
+								onClick={openMediaLibrary}
+							>
+								Replace
+							</Button>
+							<Button
+								isDestructive
+								variant="link"
+								onClick={removeImage}
+							>
+								Remove
+							</Button>
+						</div>
+					</>
+				) : (
+					<div className={styles.uploadPlaceholder}>
+						<Button variant="primary" onClick={openMediaLibrary}>
+							Set watermark image
+						</Button>
+					</div>
+				)}
 			</div>
-			{ field.description && (
-				<p className="modula_input_description" dangerouslySetInnerHTML={ { __html: field.description } } />
-			) }
-		</>
+		</div>
 	);
 }

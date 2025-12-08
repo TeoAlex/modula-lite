@@ -4,9 +4,7 @@
  * Modula Admin class
  */
 class Modula_Admin {
-	private $subtabs;
 	private $menu_links;
-	private $tabs;
 	public function __construct() {
 		// Register our submenus
 		add_action( 'admin_menu', array( $this, 'register_submenus' ) );
@@ -69,115 +67,6 @@ class Modula_Admin {
 	}
 
 	public function register_submenus() {
-
-		/*
-		*  -1 - License
-		*  10 -
-		*  20 - Standalone
-		*  30 -
-		*  40 - Advanced Shortcodes
-		*  50 - Watermark
-		*  60 - SpeedUp Settings
-		*  70 - Image Licensing
-		*  80 - Roles
-		*  90 - Misc
-		* 100 - Migrate galleries
-		* 110 - Import/Export
-		*/
-		$subtabs       = array(
-			'standalone'      => array(
-				'label'    => esc_html__( 'Standalone', 'modula-best-grid-gallery' ),
-				'priority' => 20,
-				'badge'    => 'PRO',
-			),
-			'compression'     => array(
-				'label'    => esc_html__( 'Performance', 'modula-best-grid-gallery' ),
-				'priority' => 30,
-				'badge'    => 'PRO',
-			),
-			'shortcodes'      => array(
-				'label'    => esc_html__( 'Advanced Shortcodes', 'modula-best-grid-gallery' ),
-				'priority' => 40,
-				'badge'    => 'PRO',
-			),
-			'watermark'       => array(
-				'label'    => esc_html__( 'Watermark', 'modula-best-grid-gallery' ),
-				'priority' => 50,
-				'badge'    => 'PRO',
-			),
-			'image_licensing' => array(
-				'label'    => esc_html__( 'Image Licensing', 'modula-best-grid-gallery' ),
-				'priority' => 70,
-			),
-			'roles'           => array(
-				'label'    => esc_html__( 'Roles', 'modula-best-grid-gallery' ),
-				'priority' => 80,
-				'badge'    => 'PRO',
-			),
-			'imageseo'        => array(
-				'label'    => esc_html__( 'Image SEO', 'modula-best-grid-gallery' ),
-				'priority' => 85,
-				'badge'    => 'PRO',
-			),
-			'video'           => array(
-				'label'    => esc_html__( 'Video', 'modula-best-grid-gallery' ),
-				'priority' => 125,
-				'badge'    => 'PRO',
-			),
-			'instagram'       => array(
-				'label'    => esc_html__( 'Instagram', 'modula-best-grid-gallery' ),
-				'priority' => 130,
-				'badge'    => 'PRO',
-			),
-		);
-		$this->subtabs = apply_filters( 'modula_admin_page_tabs', $subtabs );
-
-		$tabs = array(
-			'display'      => array(
-				'label'    => esc_html__( 'Display', 'modula-best-grid-gallery' ),
-				'subtabs'  => array(
-					'standalone'      => $this->subtabs['standalone'],
-					'shortcodes'      => $this->subtabs['shortcodes'],
-					'image_licensing' => $this->subtabs['image_licensing'],
-				),
-				'priority' => 10,
-			),
-			'optimization' => array(
-				'label'    => esc_html__( 'Optimization', 'modula-best-grid-gallery' ),
-				'subtabs'  => array(
-					'compression' => $this->subtabs['compression'],
-					'imageseo'    => $this->subtabs['imageseo'],
-				),
-				'priority' => 20,
-			),
-			'protection'   => array(
-				'label'    => esc_html__( 'Protection', 'modula-best-grid-gallery' ),
-				'subtabs'  => array(
-					'watermark' => $this->subtabs['watermark'],
-					'roles'     => $this->subtabs['roles'],
-				),
-				'priority' => 30,
-			),
-			'social_media' => array(
-				'label'    => esc_html__( 'Social Media', 'modula-best-grid-gallery' ),
-				'subtabs'  => array(
-					'instagram' => $this->subtabs['instagram'],
-					'video'     => $this->subtabs['video'],
-				),
-				'priority' => 40,
-			),
-			'migrate'      => array(
-				'label'    => esc_html__( 'Migrate', 'modula-best-grid-gallery' ),
-				'priority' => 50,
-			),
-			'support'      => array(
-				'label'    => esc_html__( 'Support ', 'modula-best-grid-gallery' ),
-				'priority' => 60,
-			),
-
-		);
-		$this->tabs = apply_filters( 'modula_admin_page_main_tabs', $tabs );
-
 		$links = array(
 			'freevspro' => array(
 				'page_title' => esc_html__( 'Free vs Premium', 'modula-best-grid-gallery' ),
@@ -218,15 +107,23 @@ class Modula_Admin {
 		);
 
 		if ( current_user_can( 'install_plugins' ) ) {
-			$links[] =
-				array(
-					'page_title' => esc_html__( 'Extensions', 'modula-best-grid-gallery' ),
-					'menu_title' => esc_html__( 'Extensions', 'modula-best-grid-gallery' ),
-					'capability' => 'manage_options',
-					'menu_slug'  => 'modula-addons',
-					'function'   => array( $this, 'show_extension_page_tabs' ),
-					'priority'   => 99,
-				);
+			$links[] = array(
+				'page_title' => esc_html__( 'Extensions', 'modula-best-grid-gallery' ),
+				'menu_title' => esc_html__( 'Extensions', 'modula-best-grid-gallery' ),
+				'capability' => 'manage_options',
+				'menu_slug'  => 'modula-addons',
+				'function'   => array( $this, 'add_extensions_react_root' ),
+				'priority'   => 99,
+			);
+
+			$links[] = array(
+				'page_title' => esc_html__( 'Insights', 'modula-best-grid-gallery' ),
+				'menu_title' => esc_html__( 'Insights', 'modula-best-grid-gallery' ),
+				'capability' => 'manage_options',
+				'menu_slug'  => 'modula-insights',
+				'function'   => array( $this, 'add_insights_react_root' ),
+				'priority'   => 100,
+			);
 		}
 
 		$links['modulalicense'] = array(
@@ -280,58 +177,6 @@ class Modula_Admin {
 			}
 		}
 	}
-
-	public function show_extension_page_tabs() {
-
-		$tabs = array(
-			'galleries' => array(
-				'name'     => esc_html__( 'Galleries', 'modula-best-grid-gallery' ),
-				'url'      => admin_url( 'edit.php?post_type=modula-gallery' ),
-				'priority' => '1',
-			),
-		);
-
-		if ( current_user_can( 'install_plugins' ) ) {
-			$tabs['extensions'] = array(
-				'name'     => esc_html__( 'Extensions', 'modula-best-grid-gallery' ),
-				'url'      => admin_url( 'edit.php?post_type=modula-gallery&page=modula-addons' ),
-				'priority' => '5',
-			);
-		}
-
-		$tabs = apply_filters( 'modula_extesions_tabs', $tabs );
-
-		uasort( $tabs, array( 'Modula_Helper', 'sort_data_by_priority' ) );
-
-		$active_tab = 'extensions';
-		if ( isset( $_GET['tab'] ) && isset( $tabs[ $_GET['tab'] ] ) ) {
-			$active_tab = sanitize_text_field( wp_unslash( $_GET['tab'] ) );
-		}
-		?>
-		<div class="wrap">
-		<?php
-		if ( 'extensions' === $active_tab ) {
-			?>
-			<div class="modula-addons-container" id="modula-addons"></div>
-			<?php
-		} else {
-			do_action( "modula_exntesion_{$active_tab}_tab" );
-		}
-	}
-
-	public function show_general_tab() {
-		include 'tabs/general.php';
-	}
-
-	public function admin_custom_css() {
-		?>
-		<style type="text/css">
-			li#menu-posts-modula-gallery .wp-submenu li a[href$="modula-lite-vs-pro"] {color: gold;}
-		</style>
-
-		<?php
-	}
-
 
 	/**
 	 *  Add Import/Export tutorial
@@ -442,7 +287,7 @@ class Modula_Admin {
 			$suggestions[]       = $suggestion;
 		}
 
-		echo json_encode( $suggestions );
+		echo wp_json_encode( $suggestions );
 		exit();
 	}
 
@@ -594,8 +439,6 @@ class Modula_Admin {
 		wp_send_json_success( esc_html( $message ) );
 		die();
 	}
-
-
 
 	/**
 	 * Add bulk actions to Media Library table
@@ -821,6 +664,14 @@ class Modula_Admin {
 
 	public function add_settings_react_root() {
 		echo '<div id="modula-settings-app"></div>';
+	}
+
+	public function add_insights_react_root() {
+		echo '<div class="modula-insights-container" id="modula-insights"></div>';
+	}
+
+	public function add_extensions_react_root() {
+		echo '<div class="modula-addons-container" id="modula-addons"></div>';
 	}
 }
 

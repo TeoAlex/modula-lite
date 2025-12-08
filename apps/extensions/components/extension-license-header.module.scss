@@ -1,21 +1,26 @@
 .licenseHeader {
-	background: #ffffff;
-	border: 1px solid #e5e7eb;
-	border-radius: 8px;
-	padding: 24px;
-	margin-bottom: 24px;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.licenseContent {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex-wrap: wrap;
 }
 
 .licenseActive {
 	.greeting {
 		margin: 0;
-		font-size: 16px;
+		font-size: 13px;
 		line-height: 1.5;
-		color: #374151;
+		color: var(--theme-text-color);
 
 		strong {
 			font-weight: 600;
-			color: #111827;
+			color: var(--theme-text-color);
 		}
 	}
 }
@@ -23,20 +28,99 @@
 .licenseInactive {
 	.greeting {
 		margin: 0;
-		font-size: 16px;
+		font-size: 13px;
 		line-height: 1.5;
-		color: #374151;
+		color: var(--theme-text-color);
 
 		.activationLink {
-			color: #0073aa;
+			color: var(--theme-link-initial-color);
 			text-decoration: none;
 			font-weight: 500;
 
 			&:hover {
-				color: #005177;
+				color: var(--theme-link-hover-color);
 				text-decoration: underline;
 			}
 		}
 	}
 }
 
+.toggleButton {
+	text-decoration: none;
+	font-size: 13px;
+	padding: 0;
+	height: auto;
+	line-height: 1.5;
+	white-space: nowrap;
+
+	&:hover {
+		text-decoration: underline;
+	}
+}
+
+.licenseKeySection {
+	margin-top: 8px;
+	padding-top: var(--theme-content-spacing);
+	border-top: 1px solid var(--theme-border-color);
+	animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+	from {
+		opacity: 0;
+		transform: translateY(-5px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.inputGroup {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.licenseInput {
+	flex: 1;
+	min-width: 300px;
+	padding: 6px 10px;
+	font-size: 13px;
+	line-height: 1.5;
+	color: var(--theme-text-color);
+	background-color: #fff;
+	border: 1px solid var(--theme-border-color);
+	border-radius: 2px;
+	box-shadow: 0 0 0 transparent;
+	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+	&:focus {
+		border-color: var(--theme-link-initial-color);
+		outline: 2px solid transparent;
+	}
+
+	&:disabled {
+		background-color: var(--theme-palette-color-2);
+		cursor: not-allowed;
+		opacity: 0.6;
+	}
+
+	&::placeholder {
+		color: var(--theme-text-color);
+	}
+}
+
+.buttonGroup {
+	display: flex;
+	gap: 8px;
+}
+
+.actionButton {
+	height: 30px;
+	font-size: 13px;
+	padding: 0 12px;
+	white-space: nowrap;
+}

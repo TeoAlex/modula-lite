@@ -807,17 +807,10 @@ class Modula_CPT {
 		<h2 class="nav-tab-wrapper">
 			<?php
 			$tabs = array(
-				'galleries'       => array(
+				'galleries' => array(
 					'name'     => $this->labels['name'],
 					'url'      => admin_url( 'edit.php?post_type=' . $this->cpt_name ),
 					'priority' => '1',
-				),
-				'suggest_feature' => array(
-					'name'     => esc_html__( 'Suggest a feature', 'modula-best-grid-gallery' ),
-					'icon'     => 'dashicons-external',
-					'url'      => 'https://docs.google.com/forms/d/e/1FAIpQLSc5eAZbxGROm_WSntX_3JVji2cMfS3LIbCNDKG1yF_VNe3R4g/viewform',
-					'target'   => '_blank',
-					'priority' => '10',
 				),
 			);
 

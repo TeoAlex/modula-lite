@@ -1,9 +1,11 @@
 import { useState } from '@wordpress/element';
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 import { Button, SelectControl } from '@wordpress/components';
 import styles from './extension-bulk-actions.module.scss';
+import ExtensionLicenseHeader from './extension-license-header';
 
 export default function ExtensionBulkActions({ selectedIds, onBulkAction }) {
+	const { proExists } = window?.extensionsStrings || {};
 	const [selectedAction, setSelectedAction] = useState('');
 
 	const handleApply = () => {
@@ -15,7 +17,10 @@ export default function ExtensionBulkActions({ selectedIds, onBulkAction }) {
 	};
 
 	const bulkActions = [
-		{ value: '', label: __('Bulk Actions', 'modula-best-grid-gallery') },
+		{
+			value: '',
+			label: __('Bulk Actions', 'modula-best-grid-gallery'),
+		},
 		{
 			value: 'activate',
 			label: __('Activate', 'modula-best-grid-gallery'),
@@ -28,12 +33,13 @@ export default function ExtensionBulkActions({ selectedIds, onBulkAction }) {
 
 	return (
 		<div className={styles.bulkActionsBar}>
-			<div className={styles.bulkActionsLeft}>
+			<div className={styles.bulkActionsSelect}>
 				<SelectControl
 					value={selectedAction}
 					options={bulkActions}
 					onChange={setSelectedAction}
 					className={styles.bulkSelect}
+					__next40pxDefaultSize={true}
 				/>
 				<Button
 					variant="secondary"
@@ -44,16 +50,9 @@ export default function ExtensionBulkActions({ selectedIds, onBulkAction }) {
 					{__('Apply', 'modula-best-grid-gallery')}
 				</Button>
 			</div>
-			{selectedIds.length > 0 && (
-				<div className={styles.bulkActionsRight}>
-					{sprintf(
-						/* translators: %d: number of selected items */
-						__('%d item(s) selected', 'modula-best-grid-gallery'),
-						selectedIds.length
-					)}
-				</div>
-			)}
+			<div className={styles.bulkActionsLicense}>
+				{Number(proExists) === 1 && <ExtensionLicenseHeader />}
+			</div>
 		</div>
 	);
 }
-

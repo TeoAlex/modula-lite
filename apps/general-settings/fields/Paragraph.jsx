@@ -1,14 +1,17 @@
-export default function Paragraph( { field, className } ) {
+import styles from './Paragraph.module.scss';
+
+export default function Paragraph({ field }) {
 	return (
-		<div className={ `modula_field_wrapp ${ className || '' }` }>
-			{ field.label && field.label.trim() !== '' && (
-				<span className="modula_input_label">
-					{ field.label }
-				</span>
-			) }
-			{ field.value && (
-				<p className="modula_input_description" dangerouslySetInnerHTML={ { __html: field.value } } />
-			) }
+		<div className={styles.paragraph}>
+			{field?.label && (
+				<span className={styles.label}>{field.label}</span>
+			)}
+			{field?.description && (
+				<div
+					className={styles.description}
+					dangerouslySetInnerHTML={{ __html: field.description }}
+				/>
+			)}
 		</div>
 	);
 }

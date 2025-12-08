@@ -5,19 +5,18 @@ import { queryClient } from './query/client';
 import { SettingsProvider } from './context/settings-context';
 import './index.scss';
 
-document.addEventListener( 'DOMContentLoaded', () => {
-	const settings = document.getElementById( 'modula-settings-app' );
+document.addEventListener('DOMContentLoaded', () => {
+	const settings = document.getElementById('modula-settings-app');
 
-	if ( ! settings ) {
+	if (!settings) {
 		return;
 	}
-	const root = createRoot( settings );
-
+	const root = createRoot(settings);
 	root.render(
-		<QueryClientProvider client={ queryClient }>
+		<QueryClientProvider client={queryClient}>
 			<SettingsProvider>
 				<SettingsPage />
 			</SettingsProvider>
-		</QueryClientProvider>,
+		</QueryClientProvider>
 	);
-} );
+});
