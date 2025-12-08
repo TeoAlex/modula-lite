@@ -409,16 +409,23 @@ class Modula_Gallery_Upload {
 	 * @return void
 	 */
 	public function check_folder( $folder ) {
-		// If no folder is specified, return false
 		if ( empty( $folder ) ) {
 			return false;
 		}
-		// If not dir, return false
-		if ( ! is_dir( $folder ) ) {
+
+		$real_path  = realpath( $folder );
+		$upload_dir = wp_upload_dir();
+		$base_path  = realpath( $upload_dir['basedir'] );
+
+		if ( ! $real_path || ! $base_path || 0 !== strpos( $real_path, $base_path ) ) {
 			return false;
 		}
-		// If the folder does not exist, return false
-		$files_folders = scandir( $folder );
+
+		if ( ! is_dir( $real_path ) ) {
+			return false;
+		}
+
+		$files_folders = scandir( $real_path );
 		if ( ! $files_folders ) {
 			return false;
 		}
