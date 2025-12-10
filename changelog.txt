@@ -1,3 +1,6 @@
+= 2.13.4 - TBD =
+Added: TinyMCE editor for captions.
+
 = 2.13.3 - 02.12.2025 =
 Fixed: Vulnerability in zip import.
 

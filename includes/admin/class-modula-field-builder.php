@@ -675,7 +675,7 @@ class Modula_Field_Builder {
 					$effect .= '<div class="' . esc_attr( implode( ' ', $class ) ) . '">';
 
 					if ( 'under' === $key ) {
-						$effect .= '<div class="modula-item-image-conainer"><img src="' . esc_url( MODULA_URL . '/assets/images/effect.jpg' ) . '" class="pic"></div>';
+						$effect .= '<div class="modula-item-image-container"><img src="' . esc_url( MODULA_URL . '/assets/images/effect.jpg' ) . '" class="pic"></div>';
 					} else {
 						$effect .= '<img src="' . esc_url( MODULA_URL . '/assets/images/effect.jpg' ) . '" class="pic">';
 					}

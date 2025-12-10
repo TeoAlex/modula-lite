@@ -355,10 +355,10 @@ class Modula_Shortcode {
 		}
 
 		if ( '' != $settings['captionFontSize'] && 0 != $settings['captionFontSize'] ) {
-			$css .= "#{$gallery_id} .modula-items .figc p.description { font-size:" . absint( $settings['captionFontSize'] ) . 'px; }';
+			$css .= "#{$gallery_id} .modula-items .figc p.description,#{$gallery_id} .modula-items .figc .jtg-description { font-size:" . absint( $settings['captionFontSize'] ) . 'px; }';
 		}
 
-		$css .= "#{$gallery_id} .modula-items .figc p.description { color:" . Modula_Helper::sanitize_rgba_colour( $settings['captionColor'] ) . ';}';
+		$css .= "#{$gallery_id} .modula-items .figc p.description,#{$gallery_id} .modula-items .figc .jtg-description { color:" . Modula_Helper::sanitize_rgba_colour( $settings['captionColor'] ) . ';}';
 		if ( '' != $settings['titleColor'] ) {
 			$css .= "#{$gallery_id} .modula-items .figc .jtg-title { color:" . Modula_Helper::sanitize_rgba_colour( $settings['titleColor'] ) . '; }';
 		}
@@ -379,7 +379,7 @@ class Modula_Shortcode {
 			$css .= "#{$gallery_id} .modula-item .figc .jtg-title {  font-size: " . absint( $settings['mobileTitleFontSize'] ) . 'px; }';
 		}
 
-		$css .= "#{$gallery_id} .modula-items .figc p.description { color:" . Modula_Helper::sanitize_rgba_colour( $settings['captionColor'] ) . ';font-size:' . absint( $settings['mobileCaptionFontSize'] ) . 'px; }';
+		$css .= "#{$gallery_id} .modula-items .figc p.description,#{$gallery_id} .modula-items .figc .jtg-description { color:" . Modula_Helper::sanitize_rgba_colour( $settings['captionColor'] ) . ';font-size:' . absint( $settings['mobileCaptionFontSize'] ) . 'px; }';
 
 		$css .= '}';
 
