@@ -14,6 +14,7 @@ export default function TextField({
 			placeholder={field.placeholder}
 			onChange={(val) => handleChange(val)}
 			disabled={disabled}
+			readOnly={field.readonly}
 			help={
 				field?.description ? (
 					<span

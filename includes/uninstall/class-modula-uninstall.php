@@ -29,8 +29,8 @@ class Modula_Uninstall {
 	public function uninstall_scripts() {
 
 		$current_screen = get_current_screen();
-		if ( in_array( $current_screen->base, array( 'plugins', 'plugins-network' ) ) ) {
-			wp_enqueue_style( 'modula-uninstall', MODULA_URL . 'assets/css/admin/uninstall.css' );
+		if ( in_array( $current_screen->base, array( 'plugins', 'plugins-network' ), true ) ) {
+			wp_enqueue_style( 'modula-uninstall', MODULA_URL . 'assets/css/admin/uninstall.css', array(), MODULA_LITE_VERSION );
 			wp_enqueue_script( 'modula-uninstall', MODULA_URL . 'assets/js/admin/modula-uninstall.js', array( 'jquery' ), MODULA_LITE_VERSION, true );
 			wp_localize_script(
 				'modula-uninstall',
@@ -206,17 +206,6 @@ class Modula_Uninstall {
 				$wpdb->query( $sql );
 				$wpdb->query( $sql_meta );
 			}
-		}
-
-		// Delete old tables ( `prefix`_modula and `prefix`_modula_images ) from the DB
-		if ( '1' == $uninstall_option['delete_old_tables'] ) {
-			$modula_table        = $wpdb->prefix . 'modula';
-			$modula_images_table = $wpdb->prefix . 'modula_images';
-
-			$sql_modula_table        = $wpdb->prepare( "DROP TABLE IF EXISTS $modula_table" );
-			$sql_modula_images_table = $wpdb->prepare( "DROP TABLE IF EXISTS $modula_images_table" );
-			$wpdb->query( $sql_modula_table );
-			$wpdb->query( $sql_modula_images_table );
 		}
 
 		do_action( 'modula_uninstall' );

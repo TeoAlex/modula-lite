@@ -465,19 +465,8 @@ class Modula_Field_Builder {
 					$value = 'creative-gallery';
 				}
 
-				$wpchill_upsell = false;
-				if ( class_exists( 'WPChill_Upsells' ) ) {
-					// Initialize WPChill upsell class
-					$args = apply_filters(
-						'modula_upsells_args',
-						array(
-							'shop_url' => 'https://wp-modula.com',
-							'slug'     => 'modula',
-						)
-					);
+				$instance = Modula_Extensions_Base::get_instance();
 
-					$wpchill_upsell = WPChill_Upsells::get_instance( $args );
-				}
 				$html .= '<div class="modula-icons-radio-wrapper">';
 				foreach ( $field['values'] as $key => $name ) {
 					$html .= '<div class="modula-icons-radio-item">';
@@ -489,7 +478,7 @@ class Modula_Field_Builder {
 
 				foreach ( $field['disabled']['values'] as $key => $name ) {
 					$addon = 'bnb' === $key ? 'modula' : 'modula-' . $key;
-					if ( $wpchill_upsell && ! $wpchill_upsell->is_upgradable_addon( $addon ) ) {
+					if ( $instance->is_upgradable_addon( $addon ) ) {
 						$class = 'modula-radio-icon-install';
 					} else {
 						$class = 'modula-radio-icon-disabled';

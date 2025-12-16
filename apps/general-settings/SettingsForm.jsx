@@ -6,11 +6,13 @@ import Paragraph from './fields/Paragraph';
 import { ComboField } from './fields/ComboField';
 import { RoleField } from './fields/RoleField';
 import UpsellBlock from './UpsellBlock';
-import RolesToggle from './RolesToggle';
 import useStateContext from './context/useStateContext';
 import { setOptions } from './context/actions';
 import LockedForm from './LockedForm';
 import styles from './SettingsForm.module.scss';
+import OAuthField from './fields/OAuthField';
+import SubmenuToggle from './SubMenuToggle';
+import CredentialsGroup from './fields/CredentialsGroup';
 
 function setDefaultValue(acc, option, name, defaultValue) {
 	if (!name) {
@@ -69,9 +71,17 @@ export default function SettingsForm({ config, locked, badge }) {
 
 				case 'button':
 				case 'paragraph':
-					// We skip these
+				case 'oauth':
+				case 'credentials_group':
+					field.fields?.forEach((subField) => {
+						setDefaultValue(
+							acc,
+							option,
+							subField.name,
+							subField.default
+						);
+					});
 					break;
-
 				default:
 					setDefaultValue(acc, option, field.name, field.default);
 					break;
@@ -155,14 +165,20 @@ export default function SettingsForm({ config, locked, badge }) {
 		return <div>⚙️ No settings found.</div>;
 	}
 
+	const grid = config.option === 'modula_roles' ? styles.grid : '';
+
 	return (
 		<>
-			<form className={styles.fieldWrapper}>
+			{config.submenu && (
+				<SubmenuToggle form={form} submenu={config.submenu} />
+			)}
+			<form className={`${styles.fieldWrapper} ${grid}`}>
 				{locked && <LockedForm badge={badge} />}
-				{config.submenu && (
-					<RolesToggle form={form} submenu={config.submenu} />
-				)}
+
 				{fields.map((field, index) => {
+					const fieldLocked = !!field.locked;
+					const fieldBadge = field.badge || badge;
+
 					if (!evaluateConditions(field.conditions)) {
 						return null;
 					}
@@ -204,6 +220,9 @@ export default function SettingsForm({ config, locked, badge }) {
 									handleChange={handleChange}
 									evaluateConditions={evaluateConditions}
 								/>
+								{fieldLocked && (
+									<LockedForm badge={fieldBadge} />
+								)}
 							</div>
 						);
 					}
@@ -215,6 +234,9 @@ export default function SettingsForm({ config, locked, badge }) {
 								className={styles.fieldWrapper}
 							>
 								<ButtonField field={field} />
+								{fieldLocked && (
+									<LockedForm badge={fieldBadge} />
+								)}
 							</div>
 						);
 					}
@@ -226,6 +248,9 @@ export default function SettingsForm({ config, locked, badge }) {
 								className={styles.fieldWrapper}
 							>
 								<Paragraph field={field} />
+								{fieldLocked && (
+									<LockedForm badge={fieldBadge} />
+								)}
 							</div>
 						);
 					}
@@ -238,6 +263,47 @@ export default function SettingsForm({ config, locked, badge }) {
 							/>
 						);
 					}
+
+					if (field.type === 'oauth') {
+						return (
+							<div
+								key={field?.name || index}
+								className={styles.fieldWrapper}
+							>
+								<OAuthField
+									field={field}
+									locked={fieldLocked}
+									badge={fieldBadge}
+								/>
+								{fieldLocked && (
+									<LockedForm badge={fieldBadge} />
+								)}
+							</div>
+						);
+					}
+
+					if (field.type === 'credentials_group') {
+						return (
+							<div
+								key={field?.name || index}
+								className={styles.fieldWrapper}
+							>
+								<CredentialsGroup
+									field={field}
+									form={form}
+									option={option}
+									handleChange={handleChange}
+									evaluateConditions={evaluateConditions}
+									locked={fieldLocked}
+									badge={fieldBadge}
+								/>
+								{fieldLocked && (
+									<LockedForm badge={fieldBadge} />
+								)}
+							</div>
+						);
+					}
+
 					return (
 						<div
 							key={field?.name || index}
@@ -256,10 +322,17 @@ export default function SettingsForm({ config, locked, badge }) {
 											field={field}
 											fieldState={fieldState}
 											handleChange={handleChange}
-											disabled={field.disabled || false}
+											disabled={
+												field.disabled ||
+												fieldLocked ||
+												false
+											}
 										/>
 									)}
 								</form.Field>
+								{fieldLocked && (
+									<LockedForm badge={fieldBadge} />
+								)}
 							</div>
 						</div>
 					);

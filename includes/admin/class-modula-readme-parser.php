@@ -1,17 +1,18 @@
 <?php
-
-
-if ( ! class_exists( 'WPChill_Readme_Parser' ) ) {
-	require_once MODULA_PATH . 'includes/admin/parser/class-readme-parser.php'; //added by Cristi in 2.7.8
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
+
+require_once MODULA_PATH . 'includes/libraries/parser/class-readme-parser.php';
+
 
 
 /**
- * Class WPChill_Modula_Readme_Parser
+ * Class Modula_Readme_Parser
  *
  * @link   https://meta.trac.wordpress.org/browser/sites/trunk/wordpress.org/public_html/wp-content/plugins/plugin-directory/readme/class-parser.php
  */
-class WPChill_Modula_Readme_Parser extends WPChill_Readme_Parser {
+class Modula_Readme_Parser extends WPChill_Readme_Parser {
 
 	/**
 	 * Constructor.
@@ -33,7 +34,7 @@ class WPChill_Modula_Readme_Parser extends WPChill_Readme_Parser {
 	 */
 	public function parse_markdown( $text ) {
 		if ( ! class_exists( 'Parsedown' ) ) {
-			require_once MODULA_PATH . 'includes/admin/parser/Parsedown.php'; //added by Cristi in 2.7.8
+			require_once MODULA_PATH . 'includes/libraries/parser/Parsedown.php';
 		}
 		static $markdown = null;
 
@@ -83,7 +84,7 @@ class WPChill_Modula_Readme_Parser extends WPChill_Readme_Parser {
 	 */
 	private function create_contributors( $users ) {
 		global $wp_version;
-		$contributors = [];
+		$contributors = array();
 		foreach ( (array) $users as $contributor ) {
 			$contributors[ $contributor ]['display_name'] = $contributor;
 			$contributors[ $contributor ]['profile']      = '//profiles.wordpress.org/' . $contributor;
@@ -163,5 +164,4 @@ class WPChill_Modula_Readme_Parser extends WPChill_Readme_Parser {
 
 		return trim( $desc );
 	}
-
 }

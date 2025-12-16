@@ -95,15 +95,7 @@ class Modula_Gutenberg {
 	 * @since 2.5.0
 	 */
 	public function generate_js_vars() {
-		// Initialize WPChill upsell class
-		$args           = apply_filters(
-			'modula_upsells_args',
-			array(
-				'shop_url' => 'https://wp-modula.com',
-				'slug'     => 'modula',
-			)
-		);
-		$wpchill_upsell = WPChill_Upsells::get_instance( $args );
+		$instance = Modula_Extensions_Base::get_instance();
 
 		wp_localize_script(
 			'modula-gutenberg',
@@ -116,7 +108,7 @@ class Modula_Gutenberg {
 					'nonce'          => wp_create_nonce( 'modula_nonce' ),
 					'gutenbergTitle' => esc_html__( 'Modula Gallery', 'modula-best-grid-gallery' ),
 					'restURL'        => get_rest_url(),
-					'proInstalled'   => $wpchill_upsell && $wpchill_upsell->is_upgradable_addon( 'modula-defaults' ) ? 'false' : 'true',
+					'proInstalled'   => $instance->is_upgradable_addon( 'modula-defaults' ) ? 'false' : 'true',
 				)
 			)
 		);

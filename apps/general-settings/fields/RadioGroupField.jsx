@@ -1,4 +1,4 @@
-import styles from './radioGroupField.module.scss';
+import styles from './RadioGroupField.module.scss';
 
 export default function RadioGroupField({
 	fieldState,

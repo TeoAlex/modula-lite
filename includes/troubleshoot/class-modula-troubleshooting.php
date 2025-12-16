@@ -54,7 +54,7 @@ class Modula_Troubleshooting {
 
 		$current_screen = get_current_screen();
 
-		if ( 'modula-gallery_page_modula' == $current_screen->base ) {
+		if ( 'modula-gallery_page_modula' === $current_screen->base ) {
 			wp_enqueue_style( 'modula-cpt-style', MODULA_URL . 'assets/css/admin/modula-cpt.css', null, MODULA_LITE_VERSION );
 		}
 	}

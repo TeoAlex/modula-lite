@@ -1,12 +1,9 @@
 <?php
 // Exit if accessed directly.
-if ( !defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-/**
- *
- */
 class Modula_Grid {
 
 	/**
@@ -35,8 +32,7 @@ class Modula_Grid {
 		// Filter for $css
 		add_filter( 'modula_shortcode_css', array( $this, 'generate_grid_css' ), 10, 3 );
 
-		add_filter('modula_gallery_template_data',array($this,'template_data_config'),15,1);
-
+		add_filter( 'modula_gallery_template_data', array( $this, 'template_data_config' ), 15, 1 );
 	}
 
 	/**
@@ -50,8 +46,7 @@ class Modula_Grid {
 	 * @since 2.3.0
 	 */
 	public function js_grid_config( $js_config, $settings ) {
-		if ( 'grid' == $settings['type'] ) {
-
+		if ( 'grid' === $settings['type'] ) {
 			$js_new_config = array(
 				'grid_type' => $settings['grid_type'],
 				'rowHeight' => isset( $settings['grid_row_height'] ) ? absint( $settings['grid_row_height'] ) : 640,
@@ -62,7 +57,6 @@ class Modula_Grid {
 			if ( isset( $js_config['height'] ) ) {
 				unset( $js_config['height'] );
 			}
-
 		}
 		return $js_config;
 	}
@@ -77,11 +71,11 @@ class Modula_Grid {
 	 *
 	 * @since 2.3.0
 	 */
-	public function template_data_config($template_data){
+	public function template_data_config( $template_data ) {
 
 		$settings = $template_data['settings'];
 
-		if('grid' == $settings['type']){
+		if ( 'grid' === $settings['type'] ) {
 			$template_data['items_container']['class'][] = 'grid-gallery';
 		}
 
@@ -107,14 +101,12 @@ class Modula_Grid {
 		if ( $grid_size ) {
 			$image['width']  = $grid_size['width'];
 			$image['height'] = $grid_size['height'];
-		} else {
-			if ( 'default' == $settings['grid_image_size'] ) {
+		} elseif ( 'default' === $settings['grid_image_size'] ) {
 				$image['width']  = $settings['grid_image_dimensions']['width'];
 				$image['height'] = $settings['grid_image_dimensions']['height'];
-			} else {
-				$image['width']  = 0;
-				$image['height'] = 0;
-			}
+		} else {
+			$image['width']  = 0;
+			$image['height'] = 0;
 		}
 
 		return $image;
@@ -130,7 +122,7 @@ class Modula_Grid {
 	 * @since 2.3.0
 	 */
 	public function modula_grid_sizer( $settings ) {
-		if ( 'grid' == $settings['type'] && 'automatic' != $settings['grid_type'] ) {
+		if ( 'grid' === $settings['type'] && 'automatic' !== $settings['grid_type'] ) {
 			echo '<div class="modula-grid-sizer"> </div>';
 		}
 	}
@@ -148,29 +140,24 @@ class Modula_Grid {
 	 */
 	public function generate_grid_css( $css, $gallery_id, $settings ) {
 
-		if ( 'grid' == $settings['type'] ) {
-
-			if ( 'automatic' != $settings['grid_type'] ) {
-
-				$css .= "#{$gallery_id}.modula-gallery .modula-item, #{$gallery_id}.modula-gallery .modula-grid-sizer { width: calc(" . 100 / absint( $settings['grid_type'] ) . "% - " . ( absint( $settings['gutter'] ) - absint( $settings['gutter'] ) / absint( $settings['grid_type'] ) ) . "px) ; } ";
+		if ( 'grid' === $settings['type'] ) {
+			if ( 'automatic' !== $settings['grid_type'] ) {
+				$css .= "#{$gallery_id}.modula-gallery .modula-item, #{$gallery_id}.modula-gallery .modula-grid-sizer { width: calc(" . 100 / absint( $settings['grid_type'] ) . '% - ' . ( absint( $settings['gutter'] ) - absint( $settings['gutter'] ) / absint( $settings['grid_type'] ) ) . 'px) ; } ';
 
 				// Make the modula-item and grid-sizer width
-				if ( '1' == $settings['enable_responsive'] ) {
-
-					$tablet_width = 100 / absint( $settings['tablet_columns'] ) . "% - " . ( absint( $settings['tablet_gutter'] ) - absint( $settings['tablet_gutter'] ) / absint( $settings['tablet_columns'] ) ) . 'px';
-					$mobile_width = 100 / absint( $settings['mobile_columns'] ). "% - " . ( absint( $settings['mobile_gutter'] ) - absint( $settings['mobile_gutter'] ) / absint( $settings['mobile_columns'] ) . 'px' );
+				if ( 1 === (int) $settings['enable_responsive'] ) {
+					$tablet_width = 100 / absint( $settings['tablet_columns'] ) . '% - ' . ( absint( $settings['tablet_gutter'] ) - absint( $settings['tablet_gutter'] ) / absint( $settings['tablet_columns'] ) ) . 'px';
+					$mobile_width = 100 / absint( $settings['mobile_columns'] ) . '% - ' . ( absint( $settings['mobile_gutter'] ) - absint( $settings['mobile_gutter'] ) / absint( $settings['mobile_columns'] ) . 'px' );
 				} else {
-
-					$tablet_width = 100 / absint( $settings['grid_type'] ) . "% - " . ( absint( $settings['tablet_gutter'] ) - absint( $settings['tablet_gutter'] ) / absint( $settings['grid_type'] ) ) . 'px';
-					$mobile_width = 100 / absint( $settings['grid_type'] ) . "% - " . ( absint( $settings['mobile_gutter'] ) - absint( $settings['mobile_gutter'] ) / absint( $settings['grid_type'] ) ) . 'px';
+					$tablet_width = 100 / absint( $settings['grid_type'] ) . '% - ' . ( absint( $settings['tablet_gutter'] ) - absint( $settings['tablet_gutter'] ) / absint( $settings['grid_type'] ) ) . 'px';
+					$mobile_width = 100 / absint( $settings['grid_type'] ) . '% - ' . ( absint( $settings['mobile_gutter'] ) - absint( $settings['mobile_gutter'] ) / absint( $settings['grid_type'] ) ) . 'px';
 				}
 
-				$css .= "@media (min-width: 768px) and (max-width:992px) { html body #{$gallery_id}.modula-gallery .modula-item, html body  #{$gallery_id}.modula-gallery .modula-grid-sizer {width: calc(" . esc_attr( $tablet_width ) . " ) ; } }";
+				$css .= "@media (min-width: 768px) and (max-width:992px) { html body #{$gallery_id}.modula-gallery .modula-item, html body  #{$gallery_id}.modula-gallery .modula-grid-sizer {width: calc(" . esc_attr( $tablet_width ) . ' ) ; } }';
 
-				$css .= "@media (max-width: 768px) { html body #{$gallery_id}.modula-gallery .modula-item, html body  #{$gallery_id}.modula-gallery .modula-grid-sizer {width: calc(" . esc_attr( $mobile_width ) . " ) ; } }";
+				$css .= "@media (max-width: 768px) { html body #{$gallery_id}.modula-gallery .modula-item, html body  #{$gallery_id}.modula-gallery .modula-grid-sizer {width: calc(" . esc_attr( $mobile_width ) . ' ) ; } }';
 
 				$css .= "#{$gallery_id} .modula-items{position:relative;}";
-
 			}
 		}
 
@@ -186,13 +173,12 @@ class Modula_Grid {
 	 */
 	public static function get_instance() {
 
-		if ( !isset( self::$instance ) && !( self::$instance instanceof Modula_Grid ) ) {
+		if ( ! isset( self::$instance ) && ! ( self::$instance instanceof Modula_Grid ) ) {
 			self::$instance = new Modula_Grid();
 		}
 
 		return self::$instance;
 	}
-
 }
 
 $modula_grid = Modula_Grid::get_instance();

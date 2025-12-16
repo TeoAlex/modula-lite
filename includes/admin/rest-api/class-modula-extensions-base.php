@@ -23,6 +23,12 @@ class Modula_Extensions_Base {
 	 */
 	private $active_extensions = 'modula_pro_active_extensions';
 	/**
+	 * Current plan option
+	 *
+	 * @var string
+	 */
+	private $current_plan = 'modula_pro_current_plan';
+	/**
 	 * Plan map
 	 *
 	 * @var array
@@ -509,24 +515,161 @@ class Modula_Extensions_Base {
 		return $extensions_with_divider;
 	}
 
+	/**
+	 * Calculate the numeric tier for a given plan.
+	 *
+	 * @param array  $plan_hierarchy Plan to tier mapping.
+	 * @param string $plan           Current plan.
+	 *
+	 * @return int
+	 */
+	private function get_plan_tier( $plan_hierarchy, $plan ) {
+		return $plan_hierarchy[ $plan ] ?? 0;
+	}
+
+	/**
+	 * Apply badges for fields belonging to a tab with multiple plan mappings.
+	 *
+	 * @param array $fields          Fields configuration (by reference).
+	 * @param array $plans_to_fields Required plans mapped to field ids.
+	 * @param array $plan_hierarchy  Plan to tier mapping.
+	 * @param int   $current_tier    Current plan tier.
+	 */
+	private function apply_field_badges( array &$fields, array $plans_to_fields, array $plan_hierarchy, $current_tier ) {
+		foreach ( $plans_to_fields as $required_plan => $field_ids ) {
+			$required_tier = $this->get_plan_tier( $plan_hierarchy, $required_plan );
+
+			foreach ( $fields as &$field ) {
+				if ( empty( $field['id'] ) || ! in_array( $field['id'], (array) $field_ids, true ) ) {
+					continue;
+				}
+
+				if ( $current_tier >= $required_tier ) {
+					$field['badge']  = null;
+					$field['locked'] = false;
+					continue;
+				}
+
+				$field['badge']  = $required_plan;
+				$field['locked'] = true;
+			}
+			unset( $field );
+		}
+	}
+
+	/**
+	 * Apply badge for a tab that maps to a single required plan.
+	 *
+	 * @param array  $subtab         Tab configuration.
+	 * @param string $required_plan  Plan required for unlocking.
+	 * @param array  $plan_hierarchy Plan to tier mapping.
+	 * @param int    $current_tier   Current plan tier.
+	 *
+	 * @return array
+	 */
+	private function apply_tab_badge( array $subtab, $required_plan, array $plan_hierarchy, $current_tier ) {
+		$required_tier = $this->get_plan_tier( $plan_hierarchy, $required_plan );
+
+		if ( $current_tier >= $required_tier ) {
+			$subtab['badge']  = null;
+			$subtab['locked'] = false;
+
+			return $subtab;
+		}
+
+		$subtab['badge']  = $required_plan;
+		$subtab['locked'] = true;
+
+		return $subtab;
+	}
+
+	/**
+	 * Replace proper badges for the subtabs.
+	 *
+	 * @param array $subtabs Subtabs configuration.
+	 * @return array Subtabs configuration with proper badges.
+	 */
 	public function replace_proper_badges( $subtabs ) {
 		$tabs = array(
-			'standalone'      => 'trio',
-			'compression'     => 'trio',
-			'shortcodes'      => 'trio',
-			'watermark'       => 'business',
-			'image_licensing' => 'trio',
-			'roles'           => 'business',
-			'video'           => 'starter',
-			'instagram'       => 'trio',
+			'standalone'   => 'trio',
+			'compression'  => 'trio',
+			'shortcodes'   => 'trio',
+			'watermark'    => 'business',
+			'roles'        => 'business',
+			'video'        => 'starter',
+			'social_media' => array(
+				'trio'    => array( 'instagram' ),
+				'starter' => array( 'youtube', 'vimeo', 'vimeo_credentials' ),
+			),
 		);
 
-		foreach ( $tabs as $key => $value ) {
-			if ( isset( $subtabs[ $key ] ) ) {
-				$subtabs[ $key ]['badge'] = $value;
+		$current_plan   = 'free';
+		$plan_hierarchy = array(
+			'free'     => 0,
+			'starter'  => 1,
+			'trio'     => 2,
+			'business' => 3,
+		);
+		$current_tier   = $this->get_plan_tier( $plan_hierarchy, $current_plan );
+
+		foreach ( $tabs as $tab_key => $required_plan ) {
+			if ( ! isset( $subtabs[ $tab_key ] ) ) {
+				continue;
 			}
+
+			// When a tab maps to multiple plans, badge the matching fields.
+			if ( is_array( $required_plan ) ) {
+				if ( isset( $subtabs[ $tab_key ]['config']['fields'] ) ) {
+					$this->apply_field_badges(
+						$subtabs[ $tab_key ]['config']['fields'],
+						$required_plan,
+						$plan_hierarchy,
+						$current_tier
+					);
+				}
+
+				$subtabs[ $tab_key ]['badge'] = null;
+				continue;
+			}
+
+			// Simple tab-to-plan mapping.
+			$subtabs[ $tab_key ] = $this->apply_tab_badge(
+				$subtabs[ $tab_key ],
+				$required_plan,
+				$plan_hierarchy,
+				$current_tier
+			);
 		}
 
 		return $subtabs;
+	}
+
+	/**
+	 * Check if an addon is upgradable
+	 *
+	 * @param string $addon Addon slug.
+	 * @return bool True if upgradable, false otherwise.
+	 */
+	public function is_upgradable_addon( $addon = null ) {
+		if ( ! $addon ) {
+			return false;
+		}
+
+		$current_plan = get_option( $this->current_plan, 'free' );
+		if ( ! isset( $this->plan_map[ $current_plan ] ) ) {
+			$current_plan = 'free';
+		}
+
+		if ( ! defined( 'MODULA_PRO_VERSION' ) ) {
+			return true;
+		}
+
+		if ( 'modula' === $addon ) {
+			return false;
+		}
+
+		$owned_extensions = $this->plan_map[ $current_plan ] ?? array();
+
+		return ! in_array( $addon, $owned_extensions, true );
 	}
 }

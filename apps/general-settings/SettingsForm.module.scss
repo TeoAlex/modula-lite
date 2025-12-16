@@ -3,6 +3,12 @@
     margin-bottom: var(--theme-content-spacing);
 }
 
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--theme-content-spacing);
+}
+
 .disabledClass {
     opacity: 0.5;
     pointer-events: none;

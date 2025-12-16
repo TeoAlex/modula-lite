@@ -19,6 +19,18 @@ export default function Content() {
 		return null;
 	}
 
+	const showButton = (subtabData) => {
+		if (subtabData?.locked === true) {
+			return false;
+		}
+
+		if (subtabData?.config?.remove_button === true) {
+			return false;
+		}
+
+		return true;
+	};
+
 	return (
 		<div className={styles.pageContent}>
 			{Object.entries(activeTab.subtabs).map(
@@ -31,21 +43,21 @@ export default function Content() {
 						<Panel
 							className={styles.accordionWrapper}
 							key={subtabSlug}
+							header={
+								<span className={styles.accordionTitle}>
+									<span>{subtabData.label}</span>
+									{subtabData.badge && (
+										<span className={styles.proBadge}>
+											{' '}
+											{subtabData.badge}{' '}
+										</span>
+									)}
+								</span>
+							}
 						>
 							<PanelBody
 								className={styles.accordionPannel}
 								key={subtabSlug}
-								title={
-									<span className={styles.accordionTitle}>
-										<span>{subtabData.label}</span>
-										{subtabData.badge && (
-											<span className={styles.proBadge}>
-												{' '}
-												{subtabData.badge}{' '}
-											</span>
-										)}
-									</span>
-								}
 								initialOpen={true}
 							>
 								<SettingsForm
@@ -53,7 +65,7 @@ export default function Content() {
 									locked={subtabData?.locked || false}
 									badge={subtabData?.badge || ''}
 								/>
-								{subtabData?.locked === false && <SaveButton />}
+								{showButton(subtabData) && <SaveButton />}
 							</PanelBody>
 						</Panel>
 					);

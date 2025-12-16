@@ -1,18 +1,21 @@
-.modulaImageRadioGroup{
+.modulaImageRadioGroup {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
     padding: 10px 0;
-    .modulaImageRadioGroupOption{
+
+    .modulaImageRadioGroupOption {
         display: flex;
         flex-direction: column;
         align-items: center;
-        .modulaImageRadioGroupInput{
-           position: absolute;
-           opacity: 0;
-           pointer-events: none;
+
+        .modulaImageRadioGroupInput {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
         }
-        .modulaImageRadioGroupLabel{
+
+        .modulaImageRadioGroupLabel {
             padding: 30px 25px;
             background-color: #F0F0F1;
             border-radius: 4px;
@@ -25,11 +28,13 @@
             cursor: pointer;
             justify-content: center;
             text-align: center;
+            border: 1px solid #f0f0f1;
         }
-        .modulaImageRadioGroupLabelChecked{
-            border: 1px solid #00A4F3;
-            box-shadow: 0 0 5px #00A4F3;
-            background-color: #EAF7FB;
+
+        .modulaImageRadioGroupLabelChecked {
+            border: 1px solid var(--wp-admin-theme-color);
+            box-shadow: 0 0 5px var(--wp-admin-theme-color);
+            background-color: #f0f0f1;
         }
     }
 }

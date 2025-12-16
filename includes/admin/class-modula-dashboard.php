@@ -28,7 +28,7 @@ class Modula_Dashboard {
 		$this->images_url    = $images_url;
 		$this->plugin_link   = $links;
 		$this->header_hook   = $page_header_hook; // Like modula_page_header, dlm_page_header, wpmtst_page_header
-		$this->readme_parser = new WPChill_Modula_Readme_Parser( MODULA_PATH . 'readme.txt' );
+		$this->readme_parser = new Modula_Readme_Parser( MODULA_PATH . 'readme.txt' );
 
 		$this->menu_slug = 'wpchill-dashboard';
 		$this->tabs      = apply_filters(

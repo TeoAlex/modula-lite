@@ -1,6 +1,8 @@
 <?php
 namespace Modula\Ai;
 
+use Modula\Ai\Admin_Area\Rest_Api;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -31,9 +33,12 @@ class Client {
 	 * Initializes the Image_Descriptor instance.
 	 */
 	public function __construct() {
-		$this->image_descriptor = new Image_Descriptor();
+		$this->rest_api = Rest_Api::get_instance();
 
-		$this->include_action_scheduler();
+		if ( get_option( 'use_modula_ai', 0 ) ) {
+			$this->image_descriptor = new Image_Descriptor();
+			$this->include_action_scheduler();
+		}
 	}
 
 	/**

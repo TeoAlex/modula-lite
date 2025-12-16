@@ -1,5 +1,5 @@
 <?php
-namespace Modula;
+namespace Modula\Compatibility;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

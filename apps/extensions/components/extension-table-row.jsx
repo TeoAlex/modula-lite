@@ -1,7 +1,11 @@
 import { __ } from '@wordpress/i18n';
-import { Spinner, ToggleControl } from '@wordpress/components';
+import { Button, Spinner, ToggleControl } from '@wordpress/components';
 import styles from './extension-table-row.module.scss';
 import { useExtensionMutation } from '../query/useExtensionMutation';
+
+function Divider() {
+	return <> | </>;
+}
 
 export default function ExtensionTableRow({
 	extension,
@@ -22,11 +26,16 @@ export default function ExtensionTableRow({
 		}
 	};
 
+	const handleSettings = (url) => {
+		window.open(url, '_blank');
+	};
+
 	const renderActionText = () => {
 		if (extension.enabled) {
 			return (
 				<>
-					<span
+					<Button
+						variant="link"
 						className={styles.actionLink}
 						onClick={handleToggle}
 						onKeyDown={handleKeyDown}
@@ -34,19 +43,27 @@ export default function ExtensionTableRow({
 						tabIndex={0}
 					>
 						{__('Deactivate', 'modula-best-grid-gallery')}
-					</span>
+					</Button>
 					{(isPending || rowPending) && (
 						<span className={styles.actionLink}>
 							<Spinner style={{ width: '9px', height: '9px' }} />
 						</span>
 					)}
-					{!isPending && !rowPending && (
+					{!isPending && !rowPending && extension?.settings && (
 						<>
-							{' '}
-							|{' '}
-							<span className={styles.actionLink}>
+							<Divider />
+							<Button
+								variant="link"
+								className={styles.actionLink}
+								onClick={() =>
+									handleSettings(extension.settings)
+								}
+								onKeyDown={handleKeyDown}
+								role="button"
+								tabIndex={0}
+							>
 								{__('Settings', 'modula-best-grid-gallery')}
-							</span>
+							</Button>
 						</>
 					)}
 				</>
@@ -55,7 +72,8 @@ export default function ExtensionTableRow({
 
 		return (
 			<>
-				<span
+				<Button
+					variant="link"
 					className={styles.actionLink}
 					onClick={handleToggle}
 					onKeyDown={handleKeyDown}
@@ -63,7 +81,7 @@ export default function ExtensionTableRow({
 					tabIndex={0}
 				>
 					{__('Activate', 'modula-best-grid-gallery')}
-				</span>
+				</Button>
 				{(isPending || rowPending) && (
 					<span className={styles.actionLink}>
 						<Spinner style={{ width: '9px', height: '9px' }} />

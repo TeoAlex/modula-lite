@@ -20,7 +20,6 @@ class Modula_Licensing {
 		add_action( 'modula_after_gallery', array( $this, 'display_licensing_license' ) );
 		add_action( 'modula_shortcode_after_item', array( $this, 'generate_licensing_ld_json' ), 10, 2 );
 		add_action( 'modula_shortcode_after_items', array( $this, 'display_licensing_ld_json' ) );
-
 	}
 
 
@@ -41,10 +40,9 @@ class Modula_Licensing {
 				$html = Modula_Helper::render_license_box( $image_attrib_options['image_licensing'] );
 			}
 		}
-		if ( '' != $html ) {
+		if ( ! empty( $html ) ) {
 			echo wp_kses_post( $html );
 		}
-
 	}
 
 	/**
@@ -94,7 +92,7 @@ class Modula_Licensing {
 		?>
 
 		<script type="application/ld+json">
-            <?php echo json_encode( $this->ld_json, JSON_PRETTY_PRINT ); ?>
+			<?php echo json_encode( $this->ld_json, JSON_PRETTY_PRINT ); ?>
 
 
 		</script>

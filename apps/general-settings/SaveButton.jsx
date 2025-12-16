@@ -39,7 +39,7 @@ export default function SaveButton() {
 			>
 				{settingsMutation.isLoading
 					? __('Saving…', 'modula-best-grid-gallery')
-					: __('Apply', 'modula-best-grid-gallery')}
+					: __('Save', 'modula-best-grid-gallery')}
 			</Button>
 
 			{showNotice && (

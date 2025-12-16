@@ -13,9 +13,10 @@ import { useSettingsQuery } from '../../query/useSettingsQuery';
 import { LANGUAGES } from './languages';
 import useStateContext from '../../context/useStateContext';
 import { setOptions } from '../../context/actions';
+import LoadingSkeleton from '../loading-skeleton';
 
 export default function ClaimCredits() {
-	const { data } = useSettingsQuery();
+	const { data, isLoading } = useSettingsQuery();
 	const { state, dispatch } = useStateContext();
 
 	const form = useForm({
@@ -55,6 +56,10 @@ export default function ClaimCredits() {
 				data?.readonly?.credits
 			)
 		: __('Insert an API key', 'modula-best-grid-gallery');
+
+	if (isLoading) {
+		return <LoadingSkeleton />;
+	}
 
 	return (
 		<div className={styles.container}>

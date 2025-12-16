@@ -17,7 +17,7 @@ class Modula_Admin_Helpers {
 	 *
 	 * @since 2.5.0
 	 */
-	function __construct() {
+	public function __construct() {
 
 		$this->load_hooks();
 
@@ -35,12 +35,11 @@ class Modula_Admin_Helpers {
 	 */
 	public static function get_instance() {
 
-		if ( !isset( self::$instance ) && !( self::$instance instanceof Modula_Admin_Helpers ) ) {
+		if ( ! isset( self::$instance ) && ! ( self::$instance instanceof Modula_Admin_Helpers ) ) {
 			self::$instance = new Modula_Admin_Helpers();
 		}
 
 		return self::$instance;
-
 	}
 
 	/**
@@ -48,15 +47,13 @@ class Modula_Admin_Helpers {
 	 *
 	 * @since 2.5.3
 	 */
-	public function load_hooks(){
-
+	public function load_hooks() {
 	}
 
 	/**
 	 * Load our admin hooks
 	 */
 	public function load_admin_hooks() {
-
 	}
 
 	/**
@@ -64,7 +61,7 @@ class Modula_Admin_Helpers {
 	 *
 	 * @param bool $extra_class
 	 */
-	public static function modula_page_header($extra_class = '') {
+	public static function modula_page_header( $extra_class = '' ) {
 
 		// Only display the header on pages that belong to Modula
 		if ( ! self::page_header_locations( false ) ) {
@@ -212,7 +209,6 @@ class Modula_Admin_Helpers {
 
 		foreach ( $image_attributes as $attribute ) {
 			if ( isset( $image[ $attribute ] ) ) {
-
 				switch ( $attribute ) {
 					case 'alt':
 						$new_image[ $attribute ] = sanitize_text_field( $image[ $attribute ] );
@@ -267,7 +263,6 @@ class Modula_Admin_Helpers {
 
 		return $new_image;
 	}
-
 }
 
 $modula_admin_helpers = Modula_Admin_Helpers::get_instance();

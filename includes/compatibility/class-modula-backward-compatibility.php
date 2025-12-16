@@ -5,7 +5,7 @@
  */
 class Modula_Backward_Compatibility {
 
-	function __construct() {
+	public function __construct() {
 
 		// Backwards compatibility to ver. 2.3.0
 		// Margin from creative gallery
@@ -190,7 +190,6 @@ class Modula_Backward_Compatibility {
 
 		// Backwards compatibility for tablet & mobile gutter.
 		if ( isset( $settings['gutter'] ) ) {
-
 			if ( ! isset( $settings['tablet_gutter'] ) ) {
 				$settings['tablet_gutter'] = absint( $settings['gutter'] );
 			}
@@ -257,10 +256,8 @@ class Modula_Backward_Compatibility {
 
 		// Backwards compatibility for tablet & mobile height.
 		if ( isset( $settings['height'] ) ) {
-
 			if ( ! is_array( $settings['height'] ) ) {
 				$settings['height'] = array( absint( $settings['height'] ), absint( $settings['height'] ), absint( $settings['height'] ) );
-
 			}
 		}
 
@@ -303,7 +300,6 @@ class Modula_Backward_Compatibility {
 
 		// Set image sizes
 		if ( 'grid_image_dimensions' == $key && isset( $settings['img_size'] ) && 'custom-grid' != $settings['type'] ) {
-
 			return array(
 				'width'  => absint( $settings['img_size'] ),
 				'height' => absint( $settings['img_size'] ),
@@ -324,7 +320,6 @@ class Modula_Backward_Compatibility {
 	public function backward_compatibility_backbone_thumb_size( $settings ) {
 
 		if ( isset( $settings['img_size'] ) ) {
-
 			$settings['grid_image_size'] = 'custom';
 			if ( 'custom-grid' == $settings['type'] && ! isset( $settings['img_crop'] ) ) {
 				$settings['img_crop'] = 1;
@@ -410,7 +405,6 @@ class Modula_Backward_Compatibility {
 						case 'slideShow':
 							$options['Toolbar']['display']['right'][] = 'slideshow';
 							break;
-
 					}
 				}
 				// This is required to show the toolbar if there aren't
@@ -510,7 +504,6 @@ class Modula_Backward_Compatibility {
 			);
 
 			if ( isset( $settings['loop-videos'] ) && 1 == $settings['loop-videos'] ) {
-
 				$video_attrs[] = 'loop';
 			}
 

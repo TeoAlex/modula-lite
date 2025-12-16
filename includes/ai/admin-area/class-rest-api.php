@@ -24,7 +24,27 @@ class Rest_Api {
 	protected $namespace = 'modula-ai-image-descriptor/v1';
 
 	/**
-	 * Constructor for the Image_Descriptor class.
+	 * Class instance.
+	 *
+	 * @var Rest_Api
+	 */
+	private static $instance;
+
+	/**
+	 * Gets the singleton instance of the Rest_Api class.
+	 *
+	 * @return Rest_Api The single instance of the Rest_Api class
+	 */
+	public static function get_instance() {
+		if ( ! isset( self::$instance ) || ! ( self::$instance instanceof Rest_Api ) ) {
+			self::$instance = new Rest_Api();
+		}
+
+		return self::$instance;
+	}
+
+	/**
+	 * Constructor for the Rest_Api class.
 	 */
 	public function __construct() {
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );

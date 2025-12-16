@@ -6,12 +6,27 @@
 
 .licenseContent {
 	display: flex;
-	align-items: center;
-	gap: 12px;
+	align-items: flex-start;
+	gap: 16px;
 	flex-wrap: wrap;
 }
 
 .licenseActive {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 16px;
+	flex: 1;
+	min-width: 0;
+
+	.licenseTextWrapper {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		flex: 1;
+		min-width: 0;
+	}
+
 	.greeting {
 		margin: 0;
 		font-size: 13px;
@@ -23,14 +38,30 @@
 			color: var(--theme-text-color);
 		}
 	}
+
+	.activationInfo {
+		font-size: 12px;
+		line-height: 1.5;
+		color: var(--theme-text-color);
+		opacity: 0.65;
+		margin: 0;
+	}
 }
 
 .licenseInactive {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 16px;
+	flex: 1;
+	min-width: 0;
+
 	.greeting {
 		margin: 0;
 		font-size: 13px;
 		line-height: 1.5;
 		color: var(--theme-text-color);
+		flex: 1;
 
 		.activationLink {
 			color: var(--theme-link-initial-color);
@@ -46,15 +77,24 @@
 }
 
 .toggleButton {
-	text-decoration: none;
 	font-size: 13px;
 	padding: 0;
 	height: auto;
 	line-height: 1.5;
 	white-space: nowrap;
+	flex-shrink: 0;
+	text-decoration: none;
+	color: var(--theme-link-initial-color);
 
 	&:hover {
 		text-decoration: underline;
+		color: var(--theme-link-hover-color);
+	}
+
+	&:focus {
+		box-shadow: none;
+		outline: 1px solid transparent;
+		outline-offset: 2px;
 	}
 }
 
@@ -80,13 +120,20 @@
 .inputGroup {
 	display: flex;
 	gap: 8px;
-	align-items: center;
+	align-items: flex-start;
 	flex-wrap: wrap;
 }
 
-.licenseInput {
+.inputWrapper {
 	flex: 1;
 	min-width: 300px;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.licenseInput {
+	width: 100%;
 	padding: 6px 10px;
 	font-size: 13px;
 	line-height: 1.5;
@@ -95,7 +142,8 @@
 	border: 1px solid var(--theme-border-color);
 	border-radius: 2px;
 	box-shadow: 0 0 0 transparent;
-	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out,
+		background-color 0.15s ease-in-out;
 
 	&:focus {
 		border-color: var(--theme-link-initial-color);
@@ -110,6 +158,37 @@
 
 	&::placeholder {
 		color: var(--theme-text-color);
+	}
+
+	&.error {
+		border-color: #d63638;
+		background-color: #fcf0f1;
+
+		&:focus {
+			border-color: #d63638;
+			box-shadow: 0 0 0 1px #d63638;
+		}
+	}
+}
+
+.errorMessage {
+	font-size: 12px;
+	line-height: 1.5;
+	color: #d63638;
+	margin: 0;
+	padding: 0;
+	animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(-2px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
 	}
 }
 

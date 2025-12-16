@@ -161,6 +161,13 @@ class Modula_CPT_Fields_Helper {
 					'docs_url' => 'https://wp-modula.com/kb-cat/custom-css-customizations/',
 					'priority' => 140,
 				),
+				'comments'             => array(
+					'title'    => esc_html__( 'Comments', 'modula-best-grid-gallery' ),
+					'label'    => esc_html__( 'Comments', 'modula-best-grid-gallery' ),
+					'icon'     => 'dashicons dashicons-admin-comments',
+					'docs_url' => 'https://wp-modula.com/kb/modula-comments/',
+					'priority' => 150,
+				),
 
 			)
 		);

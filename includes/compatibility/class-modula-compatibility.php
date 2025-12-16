@@ -17,7 +17,7 @@ class Modula_Compatibility {
 	 *
 	 * @since 2.5.0
 	 */
-	function __construct() {
+	public function __construct() {
 
 		add_filter( 'modula_speedup_tab_content', array( $this, 'modula_lazyloading_compatibilty_admin' ), 5 );
 		add_filter(
@@ -157,7 +157,7 @@ class Modula_Compatibility {
 
 		$jetpack_modules = get_option( 'jetpack_active_modules' );
 
-		if ( $jetpack_modules && in_array( 'lazy-images', $jetpack_modules ) ) {
+		if ( $jetpack_modules && in_array( 'lazy-images', $jetpack_modules, true ) ) {
 			return true;
 		}
 
@@ -191,7 +191,7 @@ class Modula_Compatibility {
 	public function modula_lazyloading_compatibilty_admin_field( $format, $field ) {
 
 		if ( $this->check_lazyloading() ) {
-			if ( 'lazy_load' == $field['id'] ) {
+			if ( 'lazy_load' === $field['id'] ) {
 				$format .= '<div class="modula-compatibility-block"></div>';
 			}
 		}
@@ -222,7 +222,7 @@ class Modula_Compatibility {
 	 * @return bool
 	 * @since 2.5.0
 	 */
-	public function modula_lazyload_compatibility_script( $return ) {
+	public function modula_lazyload_compatibility_script( $return_flag ) {
 
 		if ( $this->check_lazyloading() ) {
 			if ( ! $this->jetpack_check() ) {
@@ -232,7 +232,7 @@ class Modula_Compatibility {
 			}
 		}
 
-		return $return;
+		return $return_flag;
 	}
 
 	/**
@@ -260,9 +260,9 @@ class Modula_Compatibility {
 	 * @return int
 	 * @since 2.5.0
 	 */
-	public function lazyload_admin_compatibility( $value, $key, $settings ) {
+	public function lazyload_admin_compatibility( $value, $key ) {
 
-		if ( 'lazy_load' == $key && $this->check_lazyloading() ) {
+		if ( 'lazy_load' === $key && $this->check_lazyloading() ) {
 			if ( ! $this->jetpack_check() ) {
 				return 0;
 			} else {

@@ -1,5 +1,6 @@
 <?php
 require_once MODULA_PATH . 'includes/admin/rest-api/class-modula-extensions-base.php';
+require_once MODULA_PATH . 'includes/admin/rest-api/class-modula-settings-sanitizer.php';
 
 class Modula_Rest_Api {
 
@@ -8,7 +9,9 @@ class Modula_Rest_Api {
 
 	public function __construct() {
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
+		
 		Modula_Extensions_Base::get_instance();
+
 		$this->settings = Modula_Settings::get_instance();
 	}
 
@@ -93,13 +96,26 @@ class Modula_Rest_Api {
 			return new \WP_REST_Response( 'No settings to save.', 400 );
 		}
 
+		$sanitization_schema = $this->settings->settings_sanitization();
+		$sanitizer           = Modula_Settings_Sanitizer::get_instance();
+
+		$sanitized_settings = array();
+
 		foreach ( $settings as $option => $value ) {
+			if ( ! isset( $sanitization_schema[ $option ] ) || ! is_array( $sanitization_schema[ $option ] ) ) {
+				continue;
+			}
+
+			$value = $this->sanitize_setting_value( $value, $sanitization_schema[ $option ], $sanitizer );
+
 			update_option( $option, $value );
 
 			do_action( 'modula_settings_api_update_' . $option, $value );
+
+			$sanitized_settings[ $option ] = $value;
 		}
 
-		return new \WP_REST_Response( $settings, 200 );
+		return new \WP_REST_Response( $sanitized_settings, 200 );
 	}
 
 	public function get_tabs() {
@@ -188,5 +204,84 @@ class Modula_Rest_Api {
 			: Modula_Extensions_Base::get_instance();
 
 		return new \WP_REST_Response( $instance->get_extensions(), 200 );
+	}
+
+	/**
+	 * Sanitize settings payload based on provided sanitization schema.
+	 *
+	 * @param mixed                    $value   Value to sanitize.
+	 * @param array|string             $schema  Sanitization schema for the value.
+	 * @param Modula_Settings_Sanitizer $sanitizer Sanitizer instance.
+	 *
+	 * @return mixed
+	 */
+	private function sanitize_setting_value( $value, $schema, $sanitizer ) {
+		if ( is_array( $value ) && $this->is_associative_array( $schema ) ) {
+			$sanitized = array();
+
+			foreach ( $value as $key => $sub_value ) {
+				if ( isset( $schema[ $key ] ) ) {
+					$sanitized[ $key ] = $this->sanitize_setting_value( $sub_value, $schema[ $key ], $sanitizer );
+				} else {
+					$sanitized[ $key ] = $sub_value;
+				}
+			}
+
+			return $sanitized;
+		}
+
+		if ( ! is_array( $value ) && is_array( $schema ) ) {
+			$is_numeric_indexed = array_keys( $schema ) === range( 0, count( $schema ) - 1 );
+
+			if ( $is_numeric_indexed && isset( $schema[0] ) && is_string( $schema[0] ) ) {
+				return $this->run_sanitizer( $schema[0], $value, $sanitizer );
+			}
+
+			if ( ! $is_numeric_indexed && 1 === count( $schema ) ) {
+				$sanitizer_key = array_keys( $schema )[0];
+				$args          = $schema[ $sanitizer_key ];
+
+				return $this->run_sanitizer( $sanitizer_key, $value, $sanitizer, $args );
+			}
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Run a sanitizer method or custom handler based on schema.
+	 *
+	 * @param string                   $sanitizer_key Sanitizer key.
+	 * @param mixed                    $value         Value to sanitize.
+	 * @param Modula_Settings_Sanitizer $sanitizer     Sanitizer instance.
+	 * @param mixed                    $args          Optional args for sanitizer (used for enum).
+	 *
+	 * @return mixed
+	 */
+	private function run_sanitizer( $sanitizer_key, $value, $sanitizer, $args = array() ) {
+		if ( 'enum' === $sanitizer_key && is_array( $args ) && ! empty( $args ) ) {
+			return in_array( $value, $args, true ) ? $value : reset( $args );
+		}
+
+		if ( method_exists( $sanitizer, $sanitizer_key ) ) {
+			return $sanitizer->$sanitizer_key( $value );
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Check if an array is associative.
+	 *
+	 * @param array $unknown_array Array to check.
+	 *
+	 * @return bool
+	 */
+	private function is_associative_array( $unknown_array ) {
+		if ( ! is_array( $unknown_array ) || array() === $unknown_array ) {
+			return false;
+		}
+
+		return array_keys( $unknown_array ) !== range( 0, count( $unknown_array ) - 1 );
 	}
 }

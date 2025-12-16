@@ -17,6 +17,8 @@ const FieldRenderer = ({
 	handleChange,
 	disabled = false,
 }) => {
+	const isDisabled = disabled || field.readonly;
+
 	switch (field.type) {
 		case 'toggle':
 			return (
@@ -26,7 +28,7 @@ const FieldRenderer = ({
 					handleChange={(val) =>
 						handleChange(fieldState, field.name, val)
 					}
-					disabled={disabled}
+					disabled={isDisabled}
 				/>
 			);
 		case 'options_toggle':
@@ -39,7 +41,7 @@ const FieldRenderer = ({
 					}
 					trueValue={field.trueValue}
 					falseValue={field.falseValue}
-					disabled={disabled}
+					disabled={isDisabled}
 				/>
 			);
 		case 'select':
@@ -50,7 +52,7 @@ const FieldRenderer = ({
 					handleChange={(val) =>
 						handleChange(fieldState, field.name, val)
 					}
-					disabled={disabled}
+					disabled={isDisabled}
 				/>
 			);
 		case 'text':
@@ -61,7 +63,7 @@ const FieldRenderer = ({
 					handleChange={(val) =>
 						handleChange(fieldState, field.name, val)
 					}
-					disabled={disabled}
+					disabled={isDisabled}
 				/>
 			);
 		case 'number':
@@ -72,7 +74,7 @@ const FieldRenderer = ({
 					handleChange={(val) =>
 						handleChange(fieldState, field.name, val)
 					}
-					disabled={disabled}
+					disabled={isDisabled}
 				/>
 			);
 		case 'radio':
@@ -136,7 +138,7 @@ const FieldRenderer = ({
 				/>
 			);
 		case 'paragraph':
-			return <Paragraph field={field} />;
+			return <Paragraph fieldState={fieldState} field={field} />;
 		default:
 			return null;
 	}

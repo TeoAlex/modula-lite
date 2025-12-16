@@ -16,7 +16,7 @@ class Image_Descriptor {
 	public function __construct() {
 		$this->_register_gallery_actions();
 
-		new Rest_Api();
+		Rest_Api::get_instance();
 		new Admin_Area();
 	}
 

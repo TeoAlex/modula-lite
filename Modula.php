@@ -63,11 +63,7 @@ define( 'MODULA_AI_ENDPOINT', 'https://api.imageseo.com' );
  * The code that runs during plugin activation.
  * This action is documented in includes/class-modula-activator.php
  */
-function modula_activate() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-modula-upgrades.php';
-	$upgrades = Modula_Upgrades::get_instance();
-	$upgrades->check_on_activate();
-}
+function modula_activate() {}
 
 register_activation_hook( __FILE__, 'modula_activate' );
 
