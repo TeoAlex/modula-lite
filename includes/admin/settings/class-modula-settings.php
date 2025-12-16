@@ -1,7 +1,77 @@
 <?php
 
+/**
+ * Modula Settings Class
+ *
+ * Handles the configuration and structure of all Modula settings tabs and fields.
+ * Provides a centralized way to define settings fields with proper sanitization schemas.
+ *
+ * @since 2.11.0
+ */
 class Modula_Settings {
+
+	// =============================================================================
+	// Constants
+	// =============================================================================
+
+	/**
+	 * Option names
+	 */
+	const OPTION_STANDALONE      = 'modula_standalone';
+	const OPTION_COMPRESSION     = 'modula_speedup';
+	const OPTION_WATERMARK       = 'modula_watermark';
+	const OPTION_IMAGE_LICENSING = 'modula_image_licensing_option';
+	const OPTION_ROLES           = 'modula_roles';
+	const OPTION_VIMEO_CREDS     = 'modula_video_vimeo_creds';
+	const OPTION_SHORTCODES      = 'mas_gallery_link';
+	const OPTION_MODULA_AI       = 'use_modula_ai';
+	const OPTION_SETTINGS        = 'modula_settings';
+
+	/**
+	 * Field types
+	 */
+	const FIELD_TYPE_TOGGLE            = 'toggle';
+	const FIELD_TYPE_OPTIONS_TOGGLE    = 'options_toggle';
+	const FIELD_TYPE_TEXT              = 'text';
+	const FIELD_TYPE_SELECT            = 'select';
+	const FIELD_TYPE_COMBO             = 'combo';
+	const FIELD_TYPE_NUMBER            = 'number';
+	const FIELD_TYPE_IMAGE_SELECT      = 'image_select';
+	const FIELD_TYPE_RANGE_SELECT      = 'range_select';
+	const FIELD_TYPE_PARAGRAPH         = 'paragraph';
+	const FIELD_TYPE_OAUTH             = 'oauth';
+	const FIELD_TYPE_CREDENTIALS_GROUP = 'credentials_group';
+	const FIELD_TYPE_IA_RADIO          = 'ia_radio';
+	const FIELD_TYPE_MODULA_AI         = 'modula_ai';
+	const FIELD_TYPE_ROLE              = 'role';
+
+	/**
+	 * Default values
+	 */
+	const DEFAULT_GALLERY_SLUG         = 'modula-gallery';
+	const DEFAULT_ALBUM_SLUG           = 'modula-album';
+	const DEFAULT_ENABLED              = 'enabled';
+	const DEFAULT_DISABLED             = 'disabled';
+	const DEFAULT_WATERMARK_POSITION   = 'bottom_right';
+	const DEFAULT_WATERMARK_MARGIN     = 10;
+	const DEFAULT_COMPRESSION_TYPE     = 'lossy';
+	const DEFAULT_LIGHTBOX_COMPRESSION = 'lossless';
+
+	// =============================================================================
+	// Properties
+	// =============================================================================
+
+	/**
+	 * Instance of the class
+	 *
+	 * @var Modula_Settings
+	 */
 	public static $instance = null;
+
+	// =============================================================================
+	// Singleton Pattern
+	// =============================================================================
+
 	/**
 	 * Create an instance of the class
 	 *
@@ -17,14 +87,396 @@ class Modula_Settings {
 		return self::$instance;
 	}
 
+	/**
+	 * Constructor
+	 *
+	 * @since 2.11.0
+	 */
 	public function __construct() {
 		add_action( 'modula_settings_api_update_modula_roles', array( $this, 'set_capabilities' ) );
 	}
 
+	// =============================================================================
+	// Public API Methods
+	// =============================================================================
+
+	/**
+	 * Get all Modula settings
+	 *
+	 * @return array Settings array
+	 *
+	 * @since 2.11.0
+	 */
 	public static function get_settings() {
-		return get_option( 'modula_settings', array() );
+		return get_option( self::OPTION_SETTINGS, array() );
 	}
 
+	// =============================================================================
+	// Helper Methods - Option Value Retrieval
+	// =============================================================================
+
+	/**
+	 * Get option value with safe default handling
+	 *
+	 * @param string $option_name Option name to retrieve.
+	 * @param string $key_path    Dot-notation path to nested value (e.g., 'gallery.slug').
+	 * @param mixed  $default     Default value if not found.
+	 *
+	 * @return mixed Option value or default
+	 *
+	 * @since 2.11.0
+	 */
+	private function get_option_value( $option_name, $key_path = null, $default = null ) {
+		$option = get_option( $option_name, array() );
+
+		if ( null === $key_path ) {
+			return $option;
+		}
+
+		return $this->get_nested_option_value( $option, $key_path, $default );
+	}
+
+	/**
+	 * Get nested option value using dot-notation path
+	 *
+	 * @param array  $data    Data array to search.
+	 * @param string $path    Dot-notation path (e.g., 'gallery.slug').
+	 * @param mixed  $default Default value if not found.
+	 *
+	 * @return mixed Value or default
+	 *
+	 * @since 2.11.0
+	 */
+	private function get_nested_option_value( $data, $path, $default = null ) {
+		if ( ! is_array( $data ) || empty( $path ) ) {
+			return $default;
+		}
+
+		$parts = explode( '.', $path );
+		$value = $data;
+
+		foreach ( $parts as $part ) {
+			if ( ! isset( $value[ $part ] ) ) {
+				return $default;
+			}
+			$value = $value[ $part ];
+		}
+
+		return $value;
+	}
+
+	// =============================================================================
+	// Helper Methods - Field Builders
+	// =============================================================================
+
+	/**
+	 * Build a generic field definition
+	 *
+	 * @param string $type Field type.
+	 * @param string $name Field name.
+	 * @param array  $args Field arguments.
+	 *
+	 * @return array Field definition array
+	 *
+	 * @since 2.11.0
+	 */
+	private function build_field( $type, $name, $args = array() ) {
+		$field = array_merge(
+			array(
+				'type' => $type,
+				'name' => $name,
+			),
+			$args
+		);
+
+		return $field;
+	}
+
+	/**
+	 * Build a toggle field
+	 *
+	 * @param string $name    Field name.
+	 * @param string $label   Field label.
+	 * @param mixed  $default Default value.
+	 * @param array  $args    Additional field arguments.
+	 *
+	 * @return array Field definition array
+	 *
+	 * @since 2.11.0
+	 */
+	private function build_toggle_field( $name, $label, $default, $args = array() ) {
+		return $this->build_field(
+			self::FIELD_TYPE_TOGGLE,
+			$name,
+			array_merge(
+				array(
+					'label'        => $label,
+					'default'      => $default,
+					'sanitization' => array( 'bool' ),
+				),
+				$args
+			)
+		);
+	}
+
+	/**
+	 * Build an options toggle field
+	 *
+	 * @param string $name        Field name.
+	 * @param string $label       Field label.
+	 * @param mixed  $default     Default value.
+	 * @param string $true_value  Value when enabled.
+	 * @param string $false_value Value when disabled.
+	 * @param array  $args        Additional field arguments.
+	 *
+	 * @return array Field definition array
+	 *
+	 * @since 2.11.0
+	 */
+	private function build_options_toggle_field( $name, $label, $default, $true_value = null, $false_value = null, $args = array() ) {
+		if ( null === $true_value ) {
+			$true_value = self::DEFAULT_ENABLED;
+		}
+		if ( null === $false_value ) {
+			$false_value = self::DEFAULT_DISABLED;
+		}
+
+		return $this->build_field(
+			self::FIELD_TYPE_OPTIONS_TOGGLE,
+			$name,
+			array_merge(
+				array(
+					'label'        => $label,
+					'default'      => $default,
+					'trueValue'    => $true_value,
+					'falseValue'   => $false_value,
+					'sanitization' => array(
+						'enum' => array( $true_value, $false_value ),
+					),
+				),
+				$args
+			)
+		);
+	}
+
+	/**
+	 * Build a text field
+	 *
+	 * @param string $name    Field name.
+	 * @param string $label   Field label.
+	 * @param mixed  $default Default value.
+	 * @param array  $args    Additional field arguments.
+	 *
+	 * @return array Field definition array
+	 *
+	 * @since 2.11.0
+	 */
+	private function build_text_field( $name, $label, $default, $args = array() ) {
+		return $this->build_field(
+			self::FIELD_TYPE_TEXT,
+			$name,
+			array_merge(
+				array(
+					'label'        => $label,
+					'default'      => $default,
+					'sanitization' => array( 'text' ),
+				),
+				$args
+			)
+		);
+	}
+
+	/**
+	 * Build a select field
+	 *
+	 * @param string $name    Field name.
+	 * @param string $label   Field label.
+	 * @param array  $options Select options array.
+	 * @param mixed  $default Default value.
+	 * @param array  $args    Additional field arguments.
+	 *
+	 * @return array Field definition array
+	 *
+	 * @since 2.11.0
+	 */
+	private function build_select_field( $name, $label, $options, $default, $args = array() ) {
+		$sanitization = array();
+		if ( ! empty( $options ) && is_array( $options ) ) {
+			if ( isset( $options[0]['value'] ) ) {
+				// Options are in format array( array( 'value' => ..., 'label' => ... ) ).
+				$sanitization = array( 'enum' => array_column( $options, 'value' ) );
+			} else {
+				// Options are simple key-value pairs.
+				$sanitization = array( 'enum' => array_keys( $options ) );
+			}
+		}
+
+		return $this->build_field(
+			self::FIELD_TYPE_SELECT,
+			$name,
+			array_merge(
+				array(
+					'label'        => $label,
+					'options'      => $options,
+					'default'      => $default,
+					'sanitization' => $sanitization,
+				),
+				$args
+			)
+		);
+	}
+
+	/**
+	 * Build a combo field (group of fields)
+	 *
+	 * @param array $fields Array of field definitions.
+	 * @param array $args   Additional field arguments.
+	 *
+	 * @return array Field definition array
+	 *
+	 * @since 2.11.0
+	 */
+	private function build_combo_field( $fields, $args = array() ) {
+		return $this->build_field(
+			self::FIELD_TYPE_COMBO,
+			'',
+			array_merge(
+				array(
+					'fields' => $fields,
+				),
+				$args
+			)
+		);
+	}
+
+	/**
+	 * Build a number field
+	 *
+	 * @param string $name    Field name.
+	 * @param string $label   Field label.
+	 * @param mixed  $default Default value.
+	 * @param array  $args    Additional field arguments.
+	 *
+	 * @return array Field definition array
+	 *
+	 * @since 2.11.0
+	 */
+	private function build_number_field( $name, $label, $default, $args = array() ) {
+		return $this->build_field(
+			self::FIELD_TYPE_NUMBER,
+			$name,
+			array_merge(
+				array(
+					'label'        => $label,
+					'default'      => $default,
+					'sanitization' => array( 'number' ),
+				),
+				$args
+			)
+		);
+	}
+
+	/**
+	 * Build a paragraph field
+	 *
+	 * @param string $name        Field name.
+	 * @param string $label       Field label.
+	 * @param string $description Description text.
+	 * @param array  $args        Additional field arguments.
+	 *
+	 * @return array Field definition array
+	 *
+	 * @since 2.11.0
+	 */
+	private function build_paragraph_field( $name, $label, $description, $args = array() ) {
+		return $this->build_field(
+			self::FIELD_TYPE_PARAGRAPH,
+			$name,
+			array_merge(
+				array(
+					'label'       => $label,
+					'description' => $description,
+				),
+				$args
+			)
+		);
+	}
+
+	// =============================================================================
+	// Helper Methods - Data Arrays
+	// =============================================================================
+
+	/**
+	 * Get compression type options
+	 *
+	 * @return array Compression options array
+	 *
+	 * @since 2.11.0
+	 */
+	private function get_compression_options() {
+		return array(
+			array(
+				'label' => esc_html__( 'Lossless Compresion', 'modula-best-grid-gallery' ),
+				'value' => 'lossless',
+			),
+			array(
+				'label' => esc_html__( 'Lossy Compresion', 'modula-best-grid-gallery' ),
+				'value' => 'lossy',
+			),
+			array(
+				'label' => esc_html__( 'Glossy Compresion', 'modula-best-grid-gallery' ),
+				'value' => 'glossy',
+			),
+			array(
+				'label' => esc_html__( 'Disable Compresion', 'modula-best-grid-gallery' ),
+				'value' => 'disabled',
+			),
+		);
+	}
+
+	/**
+	 * Get watermark position options
+	 *
+	 * @return array Watermark position options array
+	 *
+	 * @since 2.11.0
+	 */
+	private function get_watermark_positions() {
+		return array(
+			array(
+				'label' => esc_html__( 'Top left', 'modula-best-grid-gallery' ),
+				'value' => 'top_left',
+			),
+			array(
+				'label' => esc_html__( 'Top right', 'modula-best-grid-gallery' ),
+				'value' => 'top_right',
+			),
+			array(
+				'label' => esc_html__( 'Bottom right', 'modula-best-grid-gallery' ),
+				'value' => 'bottom_right',
+			),
+			array(
+				'label' => esc_html__( 'Bottom left', 'modula-best-grid-gallery' ),
+				'value' => 'bottom_left',
+			),
+			array(
+				'label' => esc_html__( 'Center', 'modula-best-grid-gallery' ),
+				'value' => 'center',
+			),
+		);
+	}
+
+	// =============================================================================
+	// Public Methods - Tabs Configuration
+	// =============================================================================
+
+	/**
+	 * Get all settings tabs configuration
+	 *
+	 * @return array Tabs array with subtabs
+	 *
+	 * @since 2.11.0
+	 */
 	public function get_tabs() {
 		$subtabs = array(
 			'standalone'      => array(
@@ -111,293 +563,388 @@ class Modula_Settings {
 				),
 			),
 		);
+
 		return apply_filters( 'modula_admin_page_main_tabs', $tabs );
 	}
 
+	// =============================================================================
+	// Private Methods - Settings Tab Builders
+	// =============================================================================
+
+	/**
+	 * Get standalone settings configuration
+	 *
+	 * @return array Standalone settings configuration
+	 *
+	 * @since 2.11.0
+	 */
 	private function get_standalone() {
-		$standalone = get_option( 'modula_standalone', array() );
+		$standalone = $this->get_option_value( self::OPTION_STANDALONE );
 
 		return array(
-			'option' => 'modula_standalone',
+			'option' => self::OPTION_STANDALONE,
 			'fields' => array(
-				array(
-					'type'   => 'combo',
-					'fields' => array(
-						array(
-							'type'         => 'options_toggle',
-							'name'         => 'gallery.enable_rewrite',
-							'label'        => esc_html__( 'Enable for Galleries', 'modula-best-grid-gallery' ),
-							'default'      => ( isset( $standalone['gallery'] ) && isset( $standalone['gallery']['enable_rewrite'] ) ) ? $standalone['gallery']['enable_rewrite'] : 'disabled',
-							'trueValue'    => 'enabled',
-							'falseValue'   => 'disabled',
-							'size'         => 'small',
-							'sanitization' => array(
-								'enum' => array( 'enabled', 'disabled' ),
-							),
-						),
-						array(
-							'type'         => 'text',
-							'name'         => 'gallery.slug',
-							'label'        => esc_html__( 'Gallery Slug', 'modula-best-grid-gallery' ),
-							'size'         => 'small',
-							'default'      => ( isset( $standalone['gallery'] ) && isset( $standalone['gallery']['slug'] ) ) ? $standalone['gallery']['slug'] : 'modula-gallery',
-							'conditions'   => array(
-								array(
-									'field'      => 'gallery.enable_rewrite',
-									'comparison' => '===',
-									'value'      => 'enabled',
-								),
-							),
-							'sanitization' => array( 'text' ),
-						),
-						array(
-							'name'        => 'gallery.enable_rewrite_description',
-							'type'        => 'paragraph',
-							'description' => esc_html__( 'This option allows you to access galleries created through the post type with unique URLs. Now your galleries can have dedicated gallery pages.', 'modula-best-grid-gallery' ),
-							'label'       => esc_html__( 'INFO', 'modula-best-grid-gallery' ),
-							'size'        => 'large',
-						),
-					),
-				),
-				array(
-					'type'   => 'combo',
-					'fields' => array(
-						array(
-							'type'         => 'options_toggle',
-							'name'         => 'album.enable_rewrite',
-							'label'        => esc_html__( 'Enable for Albums', 'modula-best-grid-gallery' ),
-							'default'      => ( isset( $standalone['album'] ) && isset( $standalone['album']['enable_rewrite'] ) ) ? $standalone['album']['enable_rewrite'] : 'disabled',
-							'trueValue'    => 'enabled',
-							'falseValue'   => 'disabled',
-							'size'         => 'small',
-							'sanitization' => array( 'enum' => array( 'enabled', 'disabled' ) ),
-						),
-						array(
-							'type'         => 'text',
-							'name'         => 'album.slug',
-							'label'        => esc_html__( 'Album Slug', 'modula-best-grid-gallery' ),
-							'default'      => ( isset( $standalone['album'] ) && isset( $standalone['album']['slug'] ) ) ? $standalone['album']['slug'] : 'modula-album',
-							'conditions'   => array(
-								array(
-									'field'      => 'album.enable_rewrite',
-									'comparison' => '===',
-									'value'      => 'enabled',
-								),
-							),
-							'size'         => 'small',
-							'sanitization' => array( 'text' ),
-						),
-						array(
-							'name'        => 'album.enable_rewrite_description',
-							'type'        => 'paragraph',
-							'size'        => 'large',
-							'description' => esc_html__( 'This option allows you to access albums created through the post type with unique URLs. Now your albums can have dedicated album pages.', 'modula-best-grid-gallery' ),
-							'label'       => esc_html__( 'INFO', 'modula-best-grid-gallery' ),
-						),
-					),
-				),
+				$this->build_gallery_standalone_fields( $standalone ),
+				$this->build_album_standalone_fields( $standalone ),
 			),
 		);
 	}
 
-	private function get_compression() {
-		$run_compression    = apply_filters( 'modula_speedup_run_local_compression', 'production' === wp_get_environment_type() );
-		$run_compression    = true;
-		$compression        = get_option( 'modula_speedup', array() );
-		$compression_values = array(
+	/**
+	 * Build gallery standalone fields
+	 *
+	 * @param array $standalone Standalone option data.
+	 *
+	 * @return array Combo field with gallery standalone fields
+	 *
+	 * @since 2.11.0
+	 */
+	private function build_gallery_standalone_fields( $standalone ) {
+		$enable_default = $this->get_nested_option_value( $standalone, 'gallery.enable_rewrite', self::DEFAULT_DISABLED );
+		$slug_default   = $this->get_nested_option_value( $standalone, 'gallery.slug', self::DEFAULT_GALLERY_SLUG );
+
+		return $this->build_combo_field(
 			array(
-				'label' => esc_html__( 'Lossless Compresion', 'modula-best-grid-gallery' ),
-				'value' => 'lossless',
-			),
-			array(
-				'label' => esc_html__( 'Lossy Compresion', 'modula-best-grid-gallery' ),
-				'value' => 'lossy',
-			),
-			array(
-				'label' => esc_html__( 'Glossy Compresion', 'modula-best-grid-gallery' ),
-				'value' => 'glossy',
-			),
-			array(
-				'label' => esc_html__( 'Disable Compresion', 'modula-best-grid-gallery' ),
-				'value' => 'disabled',
-			),
+				$this->build_options_toggle_field(
+					'gallery.enable_rewrite',
+					esc_html__( 'Enable for Galleries', 'modula-best-grid-gallery' ),
+					$enable_default,
+					self::DEFAULT_ENABLED,
+					self::DEFAULT_DISABLED,
+					array( 'size' => 'small' )
+				),
+				$this->build_text_field(
+					'gallery.slug',
+					esc_html__( 'Gallery Slug', 'modula-best-grid-gallery' ),
+					$slug_default,
+					array(
+						'size'       => 'small',
+						'conditions' => array(
+							array(
+								'field'      => 'gallery.enable_rewrite',
+								'comparison' => '===',
+								'value'      => self::DEFAULT_ENABLED,
+							),
+						),
+					)
+				),
+				$this->build_paragraph_field(
+					'gallery.enable_rewrite_description',
+					esc_html__( 'INFO', 'modula-best-grid-gallery' ),
+					esc_html__( 'This option allows you to access galleries created through the post type with unique URLs. Now your galleries can have dedicated gallery pages.', 'modula-best-grid-gallery' ),
+					array( 'size' => 'large' )
+				),
+			)
 		);
+	}
+
+	/**
+	 * Build album standalone fields
+	 *
+	 * @param array $standalone Standalone option data.
+	 *
+	 * @return array Combo field with album standalone fields
+	 *
+	 * @since 2.11.0
+	 */
+	private function build_album_standalone_fields( $standalone ) {
+		$enable_default = $this->get_nested_option_value( $standalone, 'album.enable_rewrite', self::DEFAULT_DISABLED );
+		$slug_default   = $this->get_nested_option_value( $standalone, 'album.slug', self::DEFAULT_ALBUM_SLUG );
+
+		return $this->build_combo_field(
+			array(
+				$this->build_options_toggle_field(
+					'album.enable_rewrite',
+					esc_html__( 'Enable for Albums', 'modula-best-grid-gallery' ),
+					$enable_default,
+					self::DEFAULT_ENABLED,
+					self::DEFAULT_DISABLED,
+					array( 'size' => 'small' )
+				),
+				$this->build_text_field(
+					'album.slug',
+					esc_html__( 'Album Slug', 'modula-best-grid-gallery' ),
+					$slug_default,
+					array(
+						'size'       => 'small',
+						'conditions' => array(
+							array(
+								'field'      => 'album.enable_rewrite',
+								'comparison' => '===',
+								'value'      => self::DEFAULT_ENABLED,
+							),
+						),
+					)
+				),
+				$this->build_paragraph_field(
+					'album.enable_rewrite_description',
+					esc_html__( 'INFO', 'modula-best-grid-gallery' ),
+					esc_html__( 'This option allows you to access albums created through the post type with unique URLs. Now your albums can have dedicated album pages.', 'modula-best-grid-gallery' ),
+					array( 'size' => 'large' )
+				),
+			)
+		);
+	}
+
+	/**
+	 * Get compression settings configuration
+	 *
+	 * @return array Compression settings configuration
+	 *
+	 * @since 2.11.0
+	 */
+	private function get_compression() {
+		$run_compression     = apply_filters( 'modula_speedup_run_local_compression', 'production' === wp_get_environment_type() );
+		$run_compression     = true; // Override for now.
+		$compression         = $this->get_option_value( self::OPTION_COMPRESSION );
+		$compression_options = $this->get_compression_options();
 
 		$fields = array(
-			'option' => 'modula_speedup',
+			'option' => self::OPTION_COMPRESSION,
 			'fields' => array(
-				array(
-					'type'         => 'options_toggle',
-					'name'         => 'enable_optimization',
-					'label'        => 'Compression',
-					'default'      => isset( $compression['enable_optimization'] ) ? $compression['enable_optimization'] : 'enabled',
-					'trueValue'    => 'enabled',
-					'falseValue'   => 'disabled',
-					'disabled'     => ! $run_compression,
-					'description'  => esc_html__( 'Enable this option if you want to compress your gallery images. Then, choose the desired compression type: Lossless (full quality, fewer bytes), Lossy (balanced quality and size), Glossy (optimized for web), or Disable to turn off image compression.', 'modula-best-grid-gallery' ),
-					'sanitization' => array( 'enum' => array( 'enabled', 'disabled' ) ),
-
-				),
-				array(
-					'type'   => 'combo',
-					'fields' => array(
-						array(
-							'type'         => 'select',
-							'name'         => 'thumbnail_optimization',
-							'label'        => 'Thumbnail Compression',
-							'default'      => isset( $compression['thumbnail_optimization'] ) ? $compression['thumbnail_optimization'] : 'lossy',
-							'options'      => $compression_values,
-							'disabled'     => ! $run_compression,
-							'description'  => esc_html__( 'Choose the compression type for your gallery thumbnails.', 'modula-best-grid-gallery' ),
-							'size'         => 'large',
-							'sanitization' => array( 'enum' => $compression_values ),
-						),
-						array(
-							'type'         => 'select',
-							'name'         => 'lightbox_optimization',
-							'label'        => 'Lightbox Compression',
-							'default'      => isset( $compression['lightbox_optimization'] ) ? $compression['lightbox_optimization'] : 'lossless',
-							'options'      => $compression_values,
-							'disabled'     => ! $run_compression,
-							'description'  => esc_html__( 'Choose the compression type for your gallery lightbox images.', 'modula-best-grid-gallery' ),
-							'size'         => 'large',
-							'sanitization' => array( 'enum' => $compression_values ),
-						),
-					),
-				),
+				$this->build_compression_toggle_field( $compression, $run_compression ),
+				$this->build_compression_select_fields( $compression, $compression_options, $run_compression ),
 			),
 		);
+
 		if ( ! $run_compression ) {
-			$fields['fields'][] = array(
-				'type'  => 'paragraph',
-				// translators: %1$s and %3$s = <strong>, </strong>; %2$s = environment type (e.g., production); %4$s and %5$s = <a href="mailto:...">, </a>
-				'value' => sprintf( esc_html__( 'We\'ve detected that your site is running in a %1$s %2$s environment%3$s, and as a result, our image optimization services have been disabled. If you have questions, please contact us at %4$shello@wp-modula.com%5$s', 'modula-best-grid-gallery' ), '<strong>', wp_get_environment_type(), '</strong>', '<a target="_BLANK" href="mailto:support@wpchill.com">', '</a>' ),
-			);
+			$fields['fields'][] = $this->build_compression_environment_notice();
 		}
 
 		return $fields;
 	}
 
+	/**
+	 * Build compression toggle field
+	 *
+	 * @param array $compression    Compression option data.
+	 * @param bool  $run_compression Whether compression can run.
+	 *
+	 * @return array Field definition
+	 *
+	 * @since 2.11.0
+	 */
+	private function build_compression_toggle_field( $compression, $run_compression ) {
+		$default = isset( $compression['enable_optimization'] ) ? $compression['enable_optimization'] : self::DEFAULT_ENABLED;
+
+		return $this->build_options_toggle_field(
+			'enable_optimization',
+			'Compression',
+			$default,
+			self::DEFAULT_ENABLED,
+			self::DEFAULT_DISABLED,
+			array(
+				'disabled'    => ! $run_compression,
+				'description' => esc_html__( 'Enable this option if you want to compress your gallery images. Then, choose the desired compression type: Lossless (full quality, fewer bytes), Lossy (balanced quality and size), Glossy (optimized for web), or Disable to turn off image compression.', 'modula-best-grid-gallery' ),
+			)
+		);
+	}
+
+	/**
+	 * Build compression select fields (thumbnail and lightbox)
+	 *
+	 * @param array $compression        Compression option data.
+	 * @param array $compression_options Compression options array.
+	 * @param bool  $run_compression    Whether compression can run.
+	 *
+	 * @return array Combo field with compression selects
+	 *
+	 * @since 2.11.0
+	 */
+	private function build_compression_select_fields( $compression, $compression_options, $run_compression ) {
+		$thumbnail_default = isset( $compression['thumbnail_optimization'] ) ? $compression['thumbnail_optimization'] : self::DEFAULT_COMPRESSION_TYPE;
+		$lightbox_default  = isset( $compression['lightbox_optimization'] ) ? $compression['lightbox_optimization'] : self::DEFAULT_LIGHTBOX_COMPRESSION;
+
+		return $this->build_combo_field(
+			array(
+				$this->build_select_field(
+					'thumbnail_optimization',
+					'Thumbnail Compression',
+					$compression_options,
+					$thumbnail_default,
+					array(
+						'disabled'    => ! $run_compression,
+						'description' => esc_html__( 'Choose the compression type for your gallery thumbnails.', 'modula-best-grid-gallery' ),
+						'size'        => 'large',
+					)
+				),
+				$this->build_select_field(
+					'lightbox_optimization',
+					'Lightbox Compression',
+					$compression_options,
+					$lightbox_default,
+					array(
+						'disabled'    => ! $run_compression,
+						'description' => esc_html__( 'Choose the compression type for your gallery lightbox images.', 'modula-best-grid-gallery' ),
+						'size'        => 'large',
+					)
+				),
+			)
+		);
+	}
+
+	/**
+	 * Build compression environment notice
+	 *
+	 * @return array Paragraph field with notice
+	 *
+	 * @since 2.11.0
+	 */
+	private function build_compression_environment_notice() {
+		$message = sprintf(
+			// translators: %1$s and %3$s = <strong>, </strong>; %2$s = environment type (e.g., production); %4$s and %5$s = <a href="mailto:...">, </a>
+			esc_html__( 'We\'ve detected that your site is running in a %1$s %2$s environment%3$s, and as a result, our image optimization services have been disabled. If you have questions, please contact us at %4$shello@wp-modula.com%5$s', 'modula-best-grid-gallery' ),
+			'<strong>',
+			wp_get_environment_type(),
+			'</strong>',
+			'<a target="_BLANK" href="mailto:support@wpchill.com">',
+			'</a>'
+		);
+
+		return $this->build_paragraph_field(
+			'',
+			'',
+			$message,
+			array(
+				'type'  => 'paragraph',
+				'value' => $message,
+			)
+		);
+	}
+
+	/**
+	 * Get shortcodes settings configuration
+	 *
+	 * @return array Shortcodes settings configuration
+	 *
+	 * @since 2.11.0
+	 */
 	private function get_shortcodes() {
-		$shortcodes = get_option( 'mas_gallery_link', 'gallery_id' );
+		$shortcodes = $this->get_option_value( self::OPTION_SHORTCODES, null, 'gallery_id' );
+
 		return array(
 			'fields' => array(
-				array(
-					'type'         => 'text',
-					'name'         => 'mas_gallery_link',
-					'label'        => esc_html__( 'Gallery link attribute', 'modula-best-grid-gallery' ),
-					'default'      => $shortcodes,
-					'description'  => sprintf( 'Add this shortcode <span class="modula_highlight">[modula_all_galleries]</span> on the page/post/product you want to display your galleries.  Then add at the end of that url :<span class="modula_highlight"> ?%s=[gallery_id], where [gallery_id] </span> is the ID of the gallery. ', $shortcodes ),
-					'sanitization' => array( 'text' ),
+				$this->build_text_field(
+					self::OPTION_SHORTCODES,
+					esc_html__( 'Gallery link attribute', 'modula-best-grid-gallery' ),
+					$shortcodes,
+					array(
+						'description' => sprintf(
+							'Add this shortcode <span class="modula_highlight">[modula_all_galleries]</span> on the page/post/product you want to display your galleries.  Then add at the end of that url :<span class="modula_highlight"> ?%s=[gallery_id], where [gallery_id] </span> is the ID of the gallery. ',
+							$shortcodes
+						),
+					)
 				),
 			),
 		);
 	}
 
+	/**
+	 * Get watermark settings configuration
+	 *
+	 * @return array Watermark settings configuration
+	 *
+	 * @since 2.11.0
+	 */
 	private function get_watermark() {
-		$watermark        = get_option( 'modula_watermark', array() );
-		$watermark_values = array(
-			array(
-				'label' => esc_html__( 'Top left', 'modula-best-grid-gallery' ),
-				'value' => 'top_left',
-			),
-			array(
-				'label' => esc_html__( 'Top right', 'modula-best-grid-gallery' ),
-				'value' => 'top_right',
-			),
-			array(
-				'label' => esc_html__( 'Bottom right', 'modula-best-grid-gallery' ),
-				'value' => 'bottom_right',
-			),
-			array(
-				'label' => esc_html__( 'Bottom left', 'modula-best-grid-gallery' ),
-				'value' => 'bottom_left',
-			),
-			array(
-				'label' => esc_html__( 'Center', 'modula-best-grid-gallery' ),
-				'value' => 'center',
-			),
-		);
+		$watermark           = $this->get_option_value( self::OPTION_WATERMARK );
+		$watermark_positions = $this->get_watermark_positions();
+
+		$watermark_image_id  = isset( $watermark['watermark_image'] ) ? $watermark['watermark_image'] : null;
+		$watermark_image_src = $watermark_image_id ? wp_get_attachment_image_url( absint( $watermark_image_id ) ) : null;
 
 		return array(
-			'option' => 'modula_watermark',
+			'option' => self::OPTION_WATERMARK,
 			'fields' => array(
-				array(
-					'type'         => 'image_select',
-					'name'         => 'watermark_image',
-					'label'        => esc_html__( 'Watermark Image', 'modula-best-grid-gallery' ),
-					'default'      => isset( $watermark['watermark_image'] ) ? $watermark['watermark_image'] : null,
-					'src'          => isset( $watermark['watermark_image'] ) ? wp_get_attachment_image_url( absint( $watermark['watermark_image'] ) ) : null,
-					'sanitization' => array( 'number' ),
+				$this->build_field(
+					self::FIELD_TYPE_IMAGE_SELECT,
+					'watermark_image',
+					array(
+						'label'        => esc_html__( 'Watermark Image', 'modula-best-grid-gallery' ),
+						'default'      => $watermark_image_id,
+						'src'          => $watermark_image_src,
+						'sanitization' => array( 'number' ),
+					)
 				),
-				array(
-					'type'   => 'combo',
-					'fields' => array(
-						array(
-							'type'         => 'select',
-							'name'         => 'watermark_position',
-							'label'        => esc_html__( 'Watermark Position', 'modula-best-grid-gallery' ),
-							'default'      => isset( $watermark['watermark_position'] ) ? $watermark['watermark_position'] : 'bottom_right',
-							'options'      => $watermark_values,
-							'size'         => 'small',
-							'sanitization' => array( 'enum' => array_column( $watermark_values, 'value' ) ),
-						),
-						array(
-							'type'         => 'range_select',
-							'name'         => 'watermark_margin',
-							'label'        => esc_html__( 'Watermark Margin', 'modula-best-grid-gallery' ),
-							'default'      => isset( $watermark['watermark_margin'] ) ? $watermark['watermark_margin'] : 10,
-							'min'          => 0,
-							'max'          => 50,
-							'size'         => 'medium',
-							'sanitization' => array( 'number' ),
-						),
-						array(
-							'type'         => 'number',
-							'name'         => 'watermark_image_dimension_width',
-							'label'        => esc_html__( 'Width', 'modula-best-grid-gallery' ),
-							'default'      => isset( $watermark['watermark_image_dimension_width'] ) ? $watermark['watermark_image_dimension_width'] : 0,
-							'size'         => 'small',
-							'sanitization' => array( 'number' ),
-						),
-						array(
-							'type'         => 'number',
-							'name'         => 'watermark_image_dimension_height',
-							'label'        => esc_html__( 'Height', 'modula-best-grid-gallery' ),
-							'default'      => isset( $watermark['watermark_image_dimension_height'] ) ? $watermark['watermark_image_dimension_height'] : 0,
-							'size'         => 'small',
-							'sanitization' => array( 'number' ),
-						),
-					),
-				),
-				array(
-					'type'         => 'toggle',
-					'name'         => 'watermark_enable_backup',
-					'label'        => esc_html__( 'Enable image backup', 'modula-best-grid-gallery' ),
-					'default'      => isset( $watermark['watermark_enable_backup'] ) ? $watermark['watermark_enable_backup'] : '',
-					'description'  => esc_html__( 'Save original images (without watermark) in case you decide to delete the watermark from them you will be able to restore the original images to your gallery/media library.', 'modula-best-grid-gallery' ),
-					'sanitization' => array( 'bool' ),
+				$this->build_watermark_combo_fields( $watermark, $watermark_positions ),
+				$this->build_toggle_field(
+					'watermark_enable_backup',
+					esc_html__( 'Enable image backup', 'modula-best-grid-gallery' ),
+					isset( $watermark['watermark_enable_backup'] ) ? $watermark['watermark_enable_backup'] : '',
+					array(
+						'description' => esc_html__( 'Save original images (without watermark) in case you decide to delete the watermark from them you will be able to restore the original images to your gallery/media library.', 'modula-best-grid-gallery' ),
+					)
 				),
 			),
 		);
 	}
 
+	/**
+	 * Build watermark combo fields (position, margin, dimensions)
+	 *
+	 * @param array $watermark          Watermark option data.
+	 * @param array $watermark_positions Watermark position options.
+	 *
+	 * @return array Combo field with watermark settings
+	 *
+	 * @since 2.11.0
+	 */
+	private function build_watermark_combo_fields( $watermark, $watermark_positions ) {
+		$position_default = isset( $watermark['watermark_position'] ) ? $watermark['watermark_position'] : self::DEFAULT_WATERMARK_POSITION;
+		$margin_default   = isset( $watermark['watermark_margin'] ) ? $watermark['watermark_margin'] : self::DEFAULT_WATERMARK_MARGIN;
+		$width_default    = isset( $watermark['watermark_image_dimension_width'] ) ? $watermark['watermark_image_dimension_width'] : 0;
+		$height_default   = isset( $watermark['watermark_image_dimension_height'] ) ? $watermark['watermark_image_dimension_height'] : 0;
+
+		return $this->build_combo_field(
+			array(
+				$this->build_select_field(
+					'watermark_position',
+					esc_html__( 'Watermark Position', 'modula-best-grid-gallery' ),
+					$watermark_positions,
+					$position_default,
+					array( 'size' => 'small' )
+				),
+				$this->build_field(
+					self::FIELD_TYPE_RANGE_SELECT,
+					'watermark_margin',
+					array(
+						'label'        => esc_html__( 'Watermark Margin', 'modula-best-grid-gallery' ),
+						'default'      => $margin_default,
+						'min'          => 0,
+						'max'          => 50,
+						'size'         => 'medium',
+						'sanitization' => array( 'number' ),
+					)
+				),
+				$this->build_number_field(
+					'watermark_image_dimension_width',
+					esc_html__( 'Width', 'modula-best-grid-gallery' ),
+					$width_default,
+					array( 'size' => 'small' )
+				),
+				$this->build_number_field(
+					'watermark_image_dimension_height',
+					esc_html__( 'Height', 'modula-best-grid-gallery' ),
+					$height_default,
+					array( 'size' => 'small' )
+				),
+			)
+		);
+	}
+
+	/**
+	 * Get image licensing settings configuration
+	 *
+	 * @return array Image licensing settings configuration
+	 *
+	 * @since 2.11.0
+	 */
 	private function get_image_licensing() {
-		$licensing = get_option( 'modula_image_licensing_option', array() );
-
-		$licenses = array();
-
-		foreach ( Modula_Helper::get_image_licenses() as $slug => $license ) {
-			$licenses[] = array(
-				'value' => $slug,
-				'image' => $license['image'],
-				'label' => $license['license'],
-				'name'  => $license['name'],
-			);
-		}
+		$licensing = $this->get_option_value( self::OPTION_IMAGE_LICENSING );
+		$licenses  = $this->build_license_options();
 
 		return array(
-			'option' => 'modula_image_licensing_option',
+			'option' => self::OPTION_IMAGE_LICENSING,
 			'fields' => array(
 				array(
 					'type'   => 'combo',
@@ -442,9 +989,72 @@ class Modula_Settings {
 		);
 	}
 
+	/**
+	 * Build license options array from Modula_Helper
+	 *
+	 * @return array License options array
+	 *
+	 * @since 2.11.0
+	 */
+	private function build_license_options() {
+		$licenses = array();
+
+		foreach ( Modula_Helper::get_image_licenses() as $slug => $license ) {
+			$licenses[] = array(
+				'value' => $slug,
+				'image' => $license['image'],
+				'label' => $license['license'],
+				'name'  => $license['name'],
+			);
+		}
+
+		return $licenses;
+	}
+
+	/**
+	 * Build image licensing combo fields (author and company)
+	 *
+	 * @param array $licensing Licensing option data.
+	 *
+	 * @return array Combo field with author and company fields
+	 *
+	 * @since 2.11.0
+	 */
+	private function build_image_licensing_combo_fields( $licensing ) {
+		return $this->build_combo_field(
+			array(
+				$this->build_text_field(
+					'image_licensing_author',
+					esc_html__( 'Author', 'modula-best-grid-gallery' ),
+					isset( $licensing['image_licensing_author'] ) ? $licensing['image_licensing_author'] : '',
+					array(
+						'size'        => 'large',
+						'description' => esc_html__( 'Name used by Google to filter the images based on the author\'s name', 'modula-best-grid-gallery' ),
+					)
+				),
+				$this->build_text_field(
+					'image_licensing_company',
+					esc_html__( 'Company', 'modula-best-grid-gallery' ),
+					isset( $licensing['image_licensing_company'] ) ? $licensing['image_licensing_company'] : '',
+					array(
+						'size'        => 'large',
+						'description' => esc_html__( 'Company used by Google to filter the images based on the company\'s name', 'modula-best-grid-gallery' ),
+					)
+				),
+			)
+		);
+	}
+
+	/**
+	 * Get roles settings configuration
+	 *
+	 * @return array Roles settings configuration
+	 *
+	 * @since 2.11.0
+	 */
 	private function get_roles() {
 		$roles = array(
-			'option' => 'modula_roles',
+			'option' => self::OPTION_ROLES,
 			'fields' => array_merge( $this->get_gallery_roles(), $this->get_album_roles() ),
 		);
 
@@ -467,12 +1077,19 @@ class Modula_Settings {
 		return $roles;
 	}
 
+	/**
+	 * Get social media settings configuration
+	 *
+	 * @return array Social media settings configuration
+	 *
+	 * @since 2.11.0
+	 */
 	private function get_social_media() {
 		$instagram_status = false;
 		$ig_connect_link  = '#';
 		$youtube_oauth    = null;
 		$vimeo_oauth      = null;
-		$vimeo_creds      = get_option( 'modula_video_vimeo_creds', array() );
+		$vimeo_creds      = $this->get_option_value( self::OPTION_VIMEO_CREDS );
 		$vimeo_connected  = false;
 		$vimeo_connect    = '#';
 		$vimeo_redirect   = admin_url( '/edit.php?post_type=modula-gallery&page=modula&modula-tab=video&sub=vi&action=save_modula_video_vimeo_token' );
@@ -632,36 +1249,80 @@ class Modula_Settings {
 		);
 	}
 
+	/**
+	 * Get Modula AI settings configuration
+	 *
+	 * @return array Modula AI settings configuration
+	 *
+	 * @since 2.11.0
+	 */
 	public function get_modula_ai() {
-		$enabled = (int) get_option( 'use_modula_ai', 0 ) ? true : false;
+		$enabled = (int) $this->get_option_value( self::OPTION_MODULA_AI, null, 0 ) ? true : false;
 
 		return array(
 			'fields' => array(
-				array(
-					'type'         => 'toggle',
-					'name'         => 'use_modula_ai',
-					'label'        => esc_html__( 'Use AI Features', 'modula-best-grid-gallery' ),
-					'default'      => $enabled,
-					'sanitization' => array( 'bool' ),
+				$this->build_toggle_field(
+					'use_modula_ai',
+					esc_html__( 'Use AI Features', 'modula-best-grid-gallery' ),
+					$enabled
 				),
-				array(
-					'type'         => 'modula_ai',
-					//todo this does not save
-					'conditions'   => array(
-						array(
-							'field'      => 'use_modula_ai',
-							'comparison' => '===',
-							'value'      => true,
+				$this->build_field(
+					self::FIELD_TYPE_MODULA_AI,
+					'',
+					array(
+						'conditions' => array(
+							array(
+								'field'      => 'use_modula_ai',
+								'comparison' => '===',
+								'value'      => true,
+							),
 						),
-					),
+					)
+				),
+				$this->build_text_field(
+					'modula_ai_api_key',
+					'',
+					'',
+					array(
+						'conditions' => array(
+							array(
+								'field'      => 'use_modula_ai',
+								'comparison' => '===',
+								// TRICK TO ADD SANITIZATION SCHEMA FOR THE MODULA_AI FIELD
+								'value'      => 'hello world',
+							),
+						),
+					)
+				),
+				$this->build_field(
+					self::FIELD_TYPE_SELECT,
+					'modula_ai_language',
+					array(
+						'sanitization' => array( 'text' ),
+						'conditions'   => array(
+							array(
+								'field'      => 'use_modula_ai',
+								'comparison' => '===',
+								// TRICK TO ADD SANITIZATION SCHEMA FOR THE MODULA_AI FIELD
+								'value'      => 'hello world',
+							),
+						),
+					)
 				),
 			),
 		);
 	}
 
+	/**
+	 * Get gallery roles configuration
+	 *
+	 * @return array Gallery roles array
+	 *
+	 * @since 2.11.0
+	 */
 	private function get_gallery_roles() {
 		global $wp_roles;
-		$options      = get_option( 'modula_roles' );
+		$options      = $this->get_option_value( self::OPTION_ROLES );
 		$roles_array  = array();
 		$capabilities = array(
 			'edit_galleries'          => __( 'View & Edit Own Gallery', 'modula-best-grid-gallery' ),
@@ -679,7 +1340,7 @@ class Modula_Settings {
 			$role       = get_role( $key );
 			$option     = isset( $options[ $key ]['enabled'] ) ? $options[ $key ]['enabled'] : false;
 			$role_array = array(
-				'type'    => 'role',
+				'type'    => self::FIELD_TYPE_ROLE,
 				'name'    => $key . '.enabled',
 				'label'   => translate_user_role( $wp_role['name'] ),
 				'default' => $this->is_role_enabled( $key, $option, $capabilities ),
@@ -688,22 +1349,18 @@ class Modula_Settings {
 			);
 
 			foreach ( $capabilities as $capability => $capability_name ) {
-				$role_array['fields'][] = array(
-					'type'         => 'toggle',
-					'name'         => $key . '.' . $capability,
-					'label'        => $capability_name,
-					'default'      => $role->has_cap( $capability ),
-					'sanitization' => array( 'bool' ),
+				$role_array['fields'][] = $this->build_toggle_field(
+					$key . '.' . $capability,
+					$capability_name,
+					$role->has_cap( $capability )
 				);
 			}
 
 			if ( ! in_array( $key, array( 'editor', 'author' ), true ) ) {
-				$role_array['fields'][] = array(
-					'type'         => 'toggle',
-					'name'         => $key . '.upload_files',
-					'label'        => __( 'Upload Files', 'modula-best-grid-gallery' ),
-					'default'      => $role->has_cap( 'upload_files' ),
-					'sanitization' => array( 'bool' ),
+				$role_array['fields'][] = $this->build_toggle_field(
+					$key . '.upload_files',
+					__( 'Upload Files', 'modula-best-grid-gallery' ),
+					$role->has_cap( 'upload_files' )
 				);
 			}
 
@@ -713,13 +1370,20 @@ class Modula_Settings {
 		return $roles_array;
 	}
 
+	/**
+	 * Get album roles configuration
+	 *
+	 * @return array Album roles array
+	 *
+	 * @since 2.11.0
+	 */
 	private function get_album_roles() {
 		if ( ! class_exists( 'Modula_Pro\Extensions\Albums\Albums' ) ) {
 			return array();
 		}
 
 		global $wp_roles;
-		$options     = get_option( 'modula_roles' );
+		$options     = $this->get_option_value( self::OPTION_ROLES );
 		$roles_array = array();
 
 		$album_capabilities = array(
@@ -739,7 +1403,7 @@ class Modula_Settings {
 			$option     = isset( $options[ $key . '_album' ]['enabled'] ) ? $options[ $key . '_album' ]['enabled'] : false;
 			$role       = get_role( $key );
 			$role_array = array(
-				'type'         => 'role',
+				'type'         => self::FIELD_TYPE_ROLE,
 				'name'         => $key . '_album.enabled',
 				'label'        => translate_user_role( $wp_role['name'] ),
 				'default'      => $this->is_role_enabled( $key, $option, $album_capabilities ),
@@ -749,22 +1413,18 @@ class Modula_Settings {
 			);
 
 			foreach ( $album_capabilities as $capability => $capability_name ) {
-				$role_array['fields'][] = array(
-					'type'         => 'toggle',
-					'name'         => $key . '.' . $capability,
-					'label'        => $capability_name,
-					'default'      => $role->has_cap( $capability ),
-					'sanitization' => array( 'bool' ),
+				$role_array['fields'][] = $this->build_toggle_field(
+					$key . '.' . $capability,
+					$capability_name,
+					$role->has_cap( $capability )
 				);
 			}
 
 			if ( ! in_array( $key, array( 'editor', 'author' ), true ) ) {
-				$role_array['fields'][] = array(
-					'type'         => 'toggle',
-					'name'         => $key . '.upload_files',
-					'label'        => __( 'Upload Files', 'modula-best-grid-gallery' ),
-					'default'      => $role->has_cap( 'upload_files' ),
-					'sanitization' => array( 'bool' ),
+				$role_array['fields'][] = $this->build_toggle_field(
+					$key . '.upload_files',
+					__( 'Upload Files', 'modula-best-grid-gallery' ),
+					$role->has_cap( 'upload_files' )
 				);
 			}
 
@@ -774,6 +1434,21 @@ class Modula_Settings {
 		return $roles_array;
 	}
 
+	// =============================================================================
+	// Helper Methods - Role Management
+	// =============================================================================
+
+	/**
+	 * Check if a role is enabled based on option and capabilities
+	 *
+	 * @param string $key          Role key.
+	 * @param mixed  $option       Option value.
+	 * @param array  $capabilities Capabilities array.
+	 *
+	 * @return bool Whether role is enabled
+	 *
+	 * @since 2.11.0
+	 */
 	private function is_role_enabled( $key, $option, $capabilities ) {
 		if ( $option || false === $option ) {
 			$role = get_role( $key );
@@ -783,23 +1458,46 @@ class Modula_Settings {
 				}
 			}
 		} elseif ( true === boolval( $option ) ) {
-				return true;
+			return true;
 		}
 
 		return false;
 	}
 
+	// =============================================================================
+	// Public Methods - Settings Management
+	// =============================================================================
+
+	/**
+	 * Set capabilities for roles
+	 *
+	 * @param array $settings Settings array.
+	 *
+	 * @since 2.11.0
+	 */
 	public function set_capabilities( $settings ) {
 		$roles = new Modula_Pro\Extensions\Roles\Roles();
 		$roles->sanitize_option( $settings );
 	}
 
+	/**
+	 * Check if user has permission to manage settings
+	 *
+	 * @return bool Whether user can manage options
+	 *
+	 * @since 2.11.0
+	 */
 	public function settings_permissions_check() {
-
-		// Check if the user has the capability to manage options
 		return current_user_can( 'manage_options' );
 	}
 
+	/**
+	 * Get sanitization schema for all settings
+	 *
+	 * @return array Sanitization map
+	 *
+	 * @since 2.11.0
+	 */
 	public function settings_sanitization() {
 		$sanitization_map = array();
 		$tabs             = $this->get_tabs();

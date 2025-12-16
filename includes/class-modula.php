@@ -115,7 +115,7 @@ class Modula {
 		require_once MODULA_PATH . 'includes/core/class-modula-hook-manager.php';
 		require_once MODULA_PATH . 'includes/core/class-modula-feature-initializer.php';
 		require_once MODULA_PATH . 'includes/core/class-modula-i18n.php';
-		require_once MODULA_PATH . 'includes/core/class-modula-admin-utils.php';
+		require_once MODULA_PATH . 'includes/core/helpers/class-modula-admin-utils.php';
 	}
 
 	// =============================================================================

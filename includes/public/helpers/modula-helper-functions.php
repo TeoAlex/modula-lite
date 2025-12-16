@@ -9,7 +9,7 @@ function modula_generate_image_links( $item_data, $item, $settings ) {
 	$gallery_type      = isset( $settings['type'] ) ? $settings['type'] : 'creative-gallery';
 	$allowed_galleries = array( 'creative-gallery', 'custom-grid', 'grid' );
 
-	if ( ! in_array( $gallery_type, $allowed_galleries ) ) {
+	if ( ! in_array( $gallery_type, $allowed_galleries, true ) ) {
 		return $item_data;
 	}
 
@@ -17,9 +17,8 @@ function modula_generate_image_links( $item_data, $item, $settings ) {
 	// This is safe to call every time, as resize_image() will check if the image already exists, preventing thumbnails from being generated every single time.
 	$resizer = new Modula_Image();
 
-	if ( 'custom' == $settings['grid_image_size'] ) {
-
-		if ( 'custom-grid' == $settings['type'] ) {
+	if ( 'custom' === $settings['grid_image_size'] ) {
+		if ( 'custom-grid' === $settings['type'] ) {
 			$grid_sizes = array(
 				'width'  => absint( $settings['img_size'] ) * absint( $item['width'] ),
 				'height' => absint( $settings['img_size'] ) * absint( $item['height'] ),
@@ -36,8 +35,8 @@ function modula_generate_image_links( $item_data, $item, $settings ) {
 
 	$crop = false;
 
-	if ( 'custom' == $settings['grid_image_size'] ) {
-		if ( 'custom-grid' == $settings['type'] ) {
+	if ( 'custom' === $settings['grid_image_size'] ) {
+		if ( 'custom-grid' === $settings['type'] ) {
 			$settings['img_crop'] = isset( $settings['img_crop'] ) ? $settings['img_crop'] : 1;
 			$crop                 = boolval( $settings['img_crop'] );
 		} else {
@@ -55,7 +54,7 @@ function modula_generate_image_links( $item_data, $item, $settings ) {
 
 	if ( 'full' === $grid_sizes ) {
 		$original_image = wp_get_original_image_url( $item['id'] );
-		$mime_type = get_post_mime_type( $item['id'] );
+		$mime_type      = get_post_mime_type( $item['id'] );
 		if ( 'image/heic' === $mime_type || 'image/heif' === $mime_type ) {
 			$original_image = wp_get_attachment_image_src( $item['id'], 'full' );
 			if ( ! $original_image || ! isset( $original_image[0] ) ) {
@@ -107,8 +106,7 @@ function modula_check_lightboxes_and_links( $item_data, $item, $settings ) {
 
 	$caption = '';
 
-	if ( isset( $item['description'] ) && '' != $item['description'] ) {
-
+	if ( isset( $item['description'] ) && '' !== $item['description'] ) {
 		$caption = $item['description'];
 	} else {
 		$caption = wp_get_attachment_caption( $item['id'] );
@@ -116,17 +114,15 @@ function modula_check_lightboxes_and_links( $item_data, $item, $settings ) {
 
 	$item_data['img_attributes']['data-caption'] = $caption;
 
-	if ( '' == $settings['lightbox'] || 'no-link' == $settings['lightbox'] ) {
-
+	if ( '' === $settings['lightbox'] || 'no-link' === $settings['lightbox'] ) {
 		return $item_data;
 	}
 
-	if ( 'external-url' == $settings['lightbox'] || 'attachment-page' === $settings['lightbox'] ) {
-
+	if ( 'external-url' === $settings['lightbox'] || 'attachment-page' === $settings['lightbox'] ) {
 		$item_data['link_attributes']['class'][]    = 'modula-simple-link';
 		$item_data['item_classes'][]                = 'modula-simple-link';
 		$item_data['link_attributes']['aria-label'] = esc_html__( 'Open external link', 'modula-best-grid-gallery' );
-		if ( '' != $item['link'] ) {
+		if ( '' !== $item['link'] ) {
 			$item_data['link_attributes']['href'] = $item['link'];
 			if ( isset( $item['target'] ) && '1' == $item['target'] ) {
 				$item_data['link_attributes']['target'] = '_blank';
@@ -134,12 +130,11 @@ function modula_check_lightboxes_and_links( $item_data, $item, $settings ) {
 		} else {
 			$item_data['link_attributes']['href'] = get_attachment_link( $item['id'] );
 		}
-	} elseif ( 'direct' == $settings['lightbox'] ) {
+	} elseif ( 'direct' === $settings['lightbox'] ) {
 		$item_data['link_attributes']['href']       = $item_data['image_full'];
 		$item_data['link_attributes']['class'][]    = 'modula-simple-link';
 		$item_data['item_classes'][]                = 'modula-simple-link';
 		$item_data['link_attributes']['aria-label'] = esc_html__( 'Open image', 'modula-best-grid-gallery' );
-
 	} else {
 		if ( modula_href_required() ) {
 			$item_data['link_attributes']['href'] = $item_data['image_full'];
@@ -148,7 +143,6 @@ function modula_check_lightboxes_and_links( $item_data, $item, $settings ) {
 		$item_data['link_attributes']['data-caption'] = $caption;
 		$item_data['link_attributes']['aria-label']   = esc_html__( 'Open image in lightbox', 'modula-best-grid-gallery' );
 		$item_data['link_attributes']['role']         = 'button';
-
 	}
 
 	return $item_data;
@@ -170,7 +164,7 @@ function modula_check_hover_effect( $item_data, $item, $settings ) {
 		$item_data['hide_socials'] = true;
 	}
 
-	if ( 'none' != $settings['effect'] ) {
+	if ( 'none' !== $settings['effect'] ) {
 		$item_data['item_classes'][] = 'effect-' . $settings['effect'];
 	}
 
@@ -179,7 +173,7 @@ function modula_check_hover_effect( $item_data, $item, $settings ) {
 
 function modula_check_custom_grid( $item_data, $item, $settings ) {
 
-	if ( 'custom-grid' != $settings['type'] ) {
+	if ( 'custom-grid' !== $settings['type'] ) {
 		return $item_data;
 	}
 
@@ -195,7 +189,7 @@ function modula_enable_lazy_load( $item_data, $item, $settings ) {
 		return $item_data;
 	}
 
-	if ( 'grid' == $settings['type'] && 'automatic' == $settings['grid_type'] ) {
+	if ( 'grid' === $settings['type'] && 'automatic' === $settings['grid_type'] ) {
 
 		// Fix for lazyload scripts when working with Automatic Grid
 		if ( ! apply_filters( 'modula_lazyload_compatibility_item', true ) ) {
@@ -219,7 +213,7 @@ function modula_enable_lazy_load( $item_data, $item, $settings ) {
 
 function modula_add_align_classes( $template_data ) {
 
-	if ( '' != $template_data['settings']['align'] ) {
+	if ( '' !== $template_data['settings']['align'] ) {
 		$template_data['gallery_container']['class'][] = 'align' . $template_data['settings']['align'];
 	}
 
@@ -250,7 +244,7 @@ function modula_show_schemaorg() {
 
 function modula_edit_gallery( $settings ) {
 	$troubleshooting_options = get_option( 'modula_troubleshooting_option', array() );
-	$disable_edit = isset( $troubleshooting_options['disable_edit'] ) ? $troubleshooting_options['disable_edit'] : false;
+	$disable_edit            = isset( $troubleshooting_options['disable_edit'] ) ? $troubleshooting_options['disable_edit'] : false;
 	if ( apply_filters( 'modula_troubleshooting_disable_edit', $disable_edit ) ) {
 		return;
 	}
@@ -284,14 +278,14 @@ function modula_add_scripts( $scripts, $settings ) {
 		$needed_scripts[] = 'modula-lazysizes';
 	}
 
-	if ( 'grid' == $settings['type'] && 'automatic' == $settings['grid_type'] ) {
+	if ( 'grid' === $settings['type'] && 'automatic' === $settings['grid_type'] ) {
 		$needed_scripts[] = 'modula-grid-justified-gallery';
 	} else {
 		$needed_scripts[] = 'modula-isotope';
 		$needed_scripts[] = 'modula-isotope-packery';
 	}
 
-	if ( 'fancybox' == $settings['lightbox'] ) {
+	if ( 'fancybox' === $settings['lightbox'] ) {
 		$needed_scripts[] = 'modula-fancybox';
 		$needed_scripts[] = 'modulaFancybox';
 	}
@@ -365,7 +359,6 @@ function modula_sources_and_sizes( $data ) {
 	// Bail early if an image has been inserted and later edited.
 	if ( preg_match( '/-e[0-9]{13}/', $image_meta['file'], $img_edit_hash ) &&
 		strpos( wp_basename( $image_src ), $img_edit_hash[0] ) === false ) {
-
 		echo $image;
 
 		return;
@@ -451,7 +444,7 @@ function modula_href_required() {
 	return true;
 }
 
-function modula_mobile_share( $data ){
+function modula_mobile_share( $data ) {
 
 	$any_social = $data->enableTwitter || $data->enableFacebook || $data->enableWhatsapp || $data->enablePinterest || $data->enableLinkedin || $data->enableEmail;
 
@@ -460,33 +453,33 @@ function modula_mobile_share( $data ){
 	}
 
 	?>
-	<div class="jtg-social-expandable <?php  echo $data->socialDesktopCollapsed ? esc_attr( 'jtg-social-desktop-collapsed' ) : ''; ?>">
-		<a class="modula-icon-share" aria-label="<?php echo esc_html__( 'Click to share', 'modula-best-grid-gallery' ); ?>" href="#"><?php echo Modula_Helper::get_icon( 'share' ) ?></a>
+	<div class="jtg-social-expandable <?php echo $data->socialDesktopCollapsed ? esc_attr( 'jtg-social-desktop-collapsed' ) : ''; ?>">
+		<a class="modula-icon-share" aria-label="<?php echo esc_html__( 'Click to share', 'modula-best-grid-gallery' ); ?>" href="#"><?php echo Modula_Helper::get_icon( 'share' ); ?></a>
 	</div>
-	<div class="jtg-social-expandable-icons <?php  echo $data->socialDesktopCollapsed ? esc_attr( 'jtg-social-desktop-collapsed' ) : ''; ?>">
-			<?php if ( $data->enableTwitter ): ?>
-				<a class="modula-icon-twitter" aria-label="<?php echo esc_html__( 'Share on X', 'modula-best-grid-gallery' ); ?>" <?php echo ( ! empty( $data->social_attributes ) ) ?  Modula_Helper::generate_attributes( $data->social_attributes ) : ''; ?> href="#"><?php echo Modula_Helper::get_icon( 'twitter' ) ?></a>
+	<div class="jtg-social-expandable-icons <?php echo $data->socialDesktopCollapsed ? esc_attr( 'jtg-social-desktop-collapsed' ) : ''; ?>">
+			<?php if ( $data->enableTwitter ) : ?>
+				<a class="modula-icon-twitter" aria-label="<?php echo esc_html__( 'Share on X', 'modula-best-grid-gallery' ); ?>" <?php echo ( ! empty( $data->social_attributes ) ) ? Modula_Helper::generate_attributes( $data->social_attributes ) : ''; ?> href="#"><?php echo Modula_Helper::get_icon( 'twitter' ); ?></a>
 			<?php endif ?>
-			<?php if ( $data->enableFacebook ): ?>
-				<a class="modula-icon-facebook" aria-label="<?php echo esc_html__( 'Share on Facebook', 'modula-best-grid-gallery' ); ?>" <?php echo ( ! empty( $data->social_attributes ) ) ?  Modula_Helper::generate_attributes( $data->social_attributes ) : ''; ?>
-				href="#"><?php echo Modula_Helper::get_icon( 'facebook' ) ?></a>
+			<?php if ( $data->enableFacebook ) : ?>
+				<a class="modula-icon-facebook" aria-label="<?php echo esc_html__( 'Share on Facebook', 'modula-best-grid-gallery' ); ?>" <?php echo ( ! empty( $data->social_attributes ) ) ? Modula_Helper::generate_attributes( $data->social_attributes ) : ''; ?>
+				href="#"><?php echo Modula_Helper::get_icon( 'facebook' ); ?></a>
 			<?php endif ?>
-			<?php if ( $data->enableWhatsapp ): ?>
-				<a class="modula-icon-whatsapp" aria-label="<?php echo esc_html__( 'Share on Whatsapp', 'modula-best-grid-gallery' ); ?>" <?php echo ( ! empty( $data->social_attributes ) ) ?  Modula_Helper::generate_attributes( $data->social_attributes ) : ''; ?>
-				href="#"><?php echo Modula_Helper::get_icon( 'whatsapp' ) ?></a>
+			<?php if ( $data->enableWhatsapp ) : ?>
+				<a class="modula-icon-whatsapp" aria-label="<?php echo esc_html__( 'Share on Whatsapp', 'modula-best-grid-gallery' ); ?>" <?php echo ( ! empty( $data->social_attributes ) ) ? Modula_Helper::generate_attributes( $data->social_attributes ) : ''; ?>
+				href="#"><?php echo Modula_Helper::get_icon( 'whatsapp' ); ?></a>
 			<?php endif ?>
-			<?php if ( $data->enablePinterest ): ?>
-				<a class="modula-icon-pinterest" aria-label="<?php echo esc_html__( 'Share on Pinterest', 'modula-best-grid-gallery' ); ?>" <?php echo ( ! empty( $data->social_attributes ) ) ?  Modula_Helper::generate_attributes( $data->social_attributes ) : ''; ?>
-				href="#"><?php echo Modula_Helper::get_icon( 'pinterest' ) ?></a>
+			<?php if ( $data->enablePinterest ) : ?>
+				<a class="modula-icon-pinterest" aria-label="<?php echo esc_html__( 'Share on Pinterest', 'modula-best-grid-gallery' ); ?>" <?php echo ( ! empty( $data->social_attributes ) ) ? Modula_Helper::generate_attributes( $data->social_attributes ) : ''; ?>
+				href="#"><?php echo Modula_Helper::get_icon( 'pinterest' ); ?></a>
 			<?php endif ?>
-			<?php if ( $data->enableLinkedin ): ?>
-				<a class="modula-icon-linkedin" aria-label="<?php echo esc_html__( 'Share on LinkedIn', 'modula-best-grid-gallery' ); ?>" <?php echo ( ! empty( $data->social_attributes ) ) ?  Modula_Helper::generate_attributes( $data->social_attributes ) : ''; ?>
-				href="#"><?php echo Modula_Helper::get_icon( 'linkedin' ) ?></a>
+			<?php if ( $data->enableLinkedin ) : ?>
+				<a class="modula-icon-linkedin" aria-label="<?php echo esc_html__( 'Share on LinkedIn', 'modula-best-grid-gallery' ); ?>" <?php echo ( ! empty( $data->social_attributes ) ) ? Modula_Helper::generate_attributes( $data->social_attributes ) : ''; ?>
+				href="#"><?php echo Modula_Helper::get_icon( 'linkedin' ); ?></a>
 			<?php endif ?>
-			<?php if ( $data->enableEmail ): ?>
-				<a class="modula-icon-email" aria-label="<?php echo esc_html__( 'Share by Email', 'modula-best-grid-gallery' ); ?>" <?php echo ( ! empty( $data->social_attributes ) ) ?  Modula_Helper::generate_attributes( $data->social_attributes ) : ''; ?> href="#"><?php echo Modula_Helper::get_icon( 'email' ) ?></a>
+			<?php if ( $data->enableEmail ) : ?>
+				<a class="modula-icon-email" aria-label="<?php echo esc_html__( 'Share by Email', 'modula-best-grid-gallery' ); ?>" <?php echo ( ! empty( $data->social_attributes ) ) ? Modula_Helper::generate_attributes( $data->social_attributes ) : ''; ?> href="#"><?php echo Modula_Helper::get_icon( 'email' ); ?></a>
 			<?php endif ?>
-			<?php do_action('modula_extra_socials',$data); ?>
+			<?php do_action( 'modula_extra_socials', $data ); ?>
 		</div>
 	<?php
 }

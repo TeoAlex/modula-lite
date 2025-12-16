@@ -29,11 +29,11 @@ export default [
 		type: 'link',
 		target: false,
 	},
-	{
-		label: __('Insights', 'modula-best-grid-gallery'),
-		slug: 'insights',
-		href: 'edit.php?post_type=modula-gallery&page=modula-insights',
-		type: 'link',
-		target: false,
-	},
+	// {
+	// 	label: __('Insights', 'modula-best-grid-gallery'),
+	// 	slug: 'insights',
+	// 	href: 'edit.php?post_type=modula-gallery&page=modula-insights',
+	// 	type: 'link',
+	// 	target: false,
+	// },
 ];

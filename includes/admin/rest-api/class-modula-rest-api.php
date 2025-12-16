@@ -1,6 +1,7 @@
 <?php
 require_once MODULA_PATH . 'includes/admin/rest-api/class-modula-extensions-base.php';
 require_once MODULA_PATH . 'includes/admin/rest-api/class-modula-settings-sanitizer.php';
+require_once MODULA_PATH . 'includes/admin/rest-api/class-modula-insights-base.php';
 
 class Modula_Rest_Api {
 
@@ -9,7 +10,7 @@ class Modula_Rest_Api {
 
 	public function __construct() {
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
-		
+
 		Modula_Extensions_Base::get_instance();
 
 		$this->settings = Modula_Settings::get_instance();
@@ -80,6 +81,16 @@ class Modula_Rest_Api {
 			array(
 				'methods'             => 'GET',
 				'callback'            => array( $this, 'get_extensions' ),
+				'permission_callback' => array( $this, 'settings_permissions_check' ),
+			)
+		);
+
+		register_rest_route(
+			$this->namespace,
+			'/insights',
+			array(
+				'methods'             => 'GET',
+				'callback'            => array( $this, 'get_insights' ),
 				'permission_callback' => array( $this, 'settings_permissions_check' ),
 			)
 		);
@@ -204,6 +215,19 @@ class Modula_Rest_Api {
 			: Modula_Extensions_Base::get_instance();
 
 		return new \WP_REST_Response( $instance->get_extensions(), 200 );
+	}
+
+	public function get_insights() {
+		$extensions_instance = class_exists( 'Modula_Pro\Extensions\Extensions' )
+			? Modula_Pro\Extensions\Extensions::get_instance()
+			: Modula_Extensions_Base::get_instance();
+
+		$insights_instance = Modula_Insights_Base::get_instance();
+
+		// Get extensions data first to populate extension info
+		$extensions_instance->get_extensions();
+
+		return new \WP_REST_Response( $insights_instance->get_insights( $extensions_instance ), 200 );
 	}
 
 	/**

@@ -14,5 +14,6 @@ assets/js/admin/gallery-listing-ai/*
 assets/js/admin/general-settings/*
 assets/js/admin/settings/*
 assets/js/admin/extensions/*
+assets/js/admin/insights/*
 stubs
 import_file.txt

@@ -14,7 +14,7 @@ spl_autoload_register(
 
 		$relative_class = substr( $class_name, $len );
 
-		$file = MODULA_PATH . 'includes/ai/' . str_replace(
+		$file = MODULA_PATH . 'includes/features/ai/' . str_replace(
 			array( '\\', '_' ),
 			array( '/', '-' ),
 			strtolower( $relative_class )

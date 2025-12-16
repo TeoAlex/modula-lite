@@ -34,31 +34,21 @@ class Modula_Dashboard {
 		$this->tabs      = apply_filters(
 			$this->plugin_cpt . '_dashboard_tabs',
 			array(
-				'general'     => array(
+				'general'    => array(
 					'name' => __( 'Getting Started', 'modula-best-grid-gallery' ),
 					'url'  => false,
 				),
-				'about'       => array(
+				'about'      => array(
 					'name' => __( 'About us', 'modula-best-grid-gallery' ),
 					'url'  => false,
 				),
-				'partners'    => array(
+				'partners'   => array(
 					'name' => __( 'Partners', 'modula-best-grid-gallery' ),
 					'url'  => false,
 				),
-				'extensions'  => array(
+				'extensions' => array(
 					'name' => __( 'Extensions', 'modula-best-grid-gallery' ),
 					'url'  => $this->plugin_link['extensions'],
-				),
-				'lite_vs_pro' => array(
-					'name'   => __( 'Free vs. Premium', 'modula-best-grid-gallery' ),
-					'url'    => $this->plugin_link['lite_vs_pro'],
-					'target' => '_BLANK',
-				),
-				'changelog'   => array(
-					'name'   => __( 'Changelog', 'modula-best-grid-gallery' ),
-					'url'    => $this->plugin_link['changelog'],
-					'target' => '_BLANK',
 				),
 			)
 		);

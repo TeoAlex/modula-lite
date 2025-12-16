@@ -210,7 +210,7 @@ class Modula_Uninstall {
 
 		do_action( 'modula_uninstall' );
 
-		require_once MODULA_PATH . 'includes/wpchill/uninstall.php';
+		require_once MODULA_PATH . 'includes/features/telemetry/wpchill-telemetry-uninstall.php';
 
 		deactivate_plugins( MODULA_FILE );
 		wp_die();

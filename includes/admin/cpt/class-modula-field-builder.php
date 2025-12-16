@@ -829,6 +829,6 @@ class Modula_Field_Builder {
 	}
 
 	public function print_modula_templates() {
-		include 'modula-js-templates.php';
+		include MODULA_PATH . 'includes/admin/modula-js-templates.php';
 	}
 }

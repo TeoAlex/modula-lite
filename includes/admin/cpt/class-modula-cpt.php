@@ -45,10 +45,10 @@ class Modula_CPT {
 		add_action( 'wp_ajax_modula_remember_tab', array( $this, 'modula_remember_tab_save' ) );
 
 		/* Load Fields Helper */
-		require_once MODULA_PATH . 'includes/admin/class-modula-cpt-fields-helper.php';
+		require_once MODULA_PATH . 'includes/admin/cpt/class-modula-cpt-fields-helper.php';
 
 		/* Load Builder */
-		require_once MODULA_PATH . 'includes/admin/class-modula-field-builder.php';
+		require_once MODULA_PATH . 'includes/admin/cpt/class-modula-field-builder.php';
 		$this->builder = Modula_Field_Builder::get_instance();
 
 		/* Initiate Image Resizer */

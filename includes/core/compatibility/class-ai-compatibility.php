@@ -22,7 +22,7 @@ class Ai_Compatibility {
 		}
 
 		if ( ! class_exists( '\Modula_Notifications' ) ) {
-			require_once MODULA_PATH . 'includes/admin/class-modula-notifications.php';
+			require_once MODULA_PATH . 'includes/admin/notifications/class-modula-notifications.php';
 		}
 
 		if ( ! is_plugin_active( 'modula-imageseo/modula-imageseo.php' ) ) {

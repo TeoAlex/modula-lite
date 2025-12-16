@@ -6,7 +6,7 @@ export const useInsightsQuery = () => {
 		queryKey: ['insights'],
 		queryFn: async () => {
 			const data = await apiFetch({
-				path: `/modula-pro/v1/insights`,
+				path: `/modula-best-grid-gallery/v1/insights`,
 				method: 'GET',
 			});
 			return data;

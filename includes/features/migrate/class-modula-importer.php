@@ -27,7 +27,7 @@ class Modula_Importer {
 		add_filter( 'modula_admin_page_main_tabs', array( $this, 'add_importer_tab' ) );
 
 		// Required files
-		require_once MODULA_PATH . 'includes/migrate/wp-core-gallery/class-modula-wp-core-gallery-importer.php';
+		require_once MODULA_PATH . 'includes/features/migrate/wp-core-gallery/class-modula-wp-core-gallery-importer.php';
 
 		// Load the plugin.
 		$this->init();

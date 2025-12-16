@@ -14,7 +14,7 @@ class Modula_Duplicator {
 	}
 
 	private function load_dependencies() {
-		require_once MODULA_PATH . 'includes/duplicator/modula-duplicator-functions.php';
+		require_once MODULA_PATH . 'includes/features/duplicator/modula-duplicator-functions.php';
 	}
 
 	/**
@@ -26,7 +26,7 @@ class Modula_Duplicator {
 			return $actions;
 		}
 
-		$actions['duplicate_modula'] = '<a href="' . modula_duplicate_gallery_get_clone_post_link( $post->ID, 'display', false ) . '" title="' . esc_attr__( "Duplicate this gallery", 'modula-best-grid-gallery' ) . '">' . esc_html__( 'Duplicate gallery', 'modula-best-grid-gallery' ) . '</a>';
+		$actions['duplicate_modula'] = '<a href="' . modula_duplicate_gallery_get_clone_post_link( $post->ID, 'display', false ) . '" title="' . esc_attr__( 'Duplicate this gallery', 'modula-best-grid-gallery' ) . '">' . esc_html__( 'Duplicate gallery', 'modula-best-grid-gallery' ) . '</a>';
 
 		return $actions;
 	}

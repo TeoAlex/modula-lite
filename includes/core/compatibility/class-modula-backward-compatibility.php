@@ -35,10 +35,6 @@ class Modula_Backward_Compatibility {
 		add_filter( 'modula_shortcode_css', array( $this, 'modula_fancybox_5_css_matcher' ), 99999, 3 );
 		add_filter( 'modula_link_shortcode_css', array( $this, 'modula_fancybox_5_css_matcher' ), 99999, 3 );
 
-		// Thumbnail sizes
-		// add_filter( 'modula_admin_field_value', array( $this, 'backward_compatibility_admin_thumb_size' ), 10, 3 );
-		// add_filter( 'modula_backbone_settings', array( $this, 'backward_compatibility_backbone_thumb_size' ), 10 );
-
 		// Backwards compatibility for using fancybox 5 & vimeo video links.
 		add_filter( 'modula_shortcode_item_data', array( $this, 'backward_compatibility_video_vimeo_link' ), 81, 3 );
 		add_filter( 'modula_album_lightbox_item', array( $this, 'backward_compatibility_video_vimeo_link_albums' ), 99999, 3 );

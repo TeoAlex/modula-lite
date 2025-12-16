@@ -106,14 +106,14 @@ class Modula_Admin {
 				'priority'   => 99,
 			);
 
-			$links[] = array(
-				'page_title' => esc_html__( 'Insights', 'modula-best-grid-gallery' ),
-				'menu_title' => esc_html__( 'Insights', 'modula-best-grid-gallery' ),
-				'capability' => 'manage_options',
-				'menu_slug'  => 'modula-insights',
-				'function'   => array( $this, 'add_insights_react_root' ),
-				'priority'   => 100,
-			);
+			// $links[] = array(
+			//  'page_title' => esc_html__( 'Insights', 'modula-best-grid-gallery' ),
+			//  'menu_title' => esc_html__( 'Insights', 'modula-best-grid-gallery' ),
+			//  'capability' => 'manage_options',
+			//  'menu_slug'  => 'modula-insights',
+			//  'function'   => array( $this, 'add_insights_react_root' ),
+			//  'priority'   => 100,
+			// );
 		}
 
 		$links['modulalicense'] = array(
