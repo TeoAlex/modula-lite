@@ -35,7 +35,7 @@
 		"build:extensions": "wp-scripts build apps/extensions/index.js --output-path=./assets/js/admin/extensions --config webpack.config.react-apps.js",
 		"start:insights": "wp-scripts start apps/insights/index.js --output-path=./assets/js/admin/insights --config webpack.config.react-apps.js",
 		"build:insights": "wp-scripts build apps/insights/index.js --output-path=./assets/js/admin/insights --config webpack.config.react-apps.js",
-		"build": "npm run build:notification-system && npm run build:gallery-listing-ai && npm run build:general-settings && wp-scripts build",
+		"build": "npm run build:notification-system && npm run build:gallery-listing-ai && npm run build:general-settings && npm run build:extensions && npm run build:insights && wp-scripts build",
 		"check-engines": "wp-scripts check-engines",
 		"check-licenses": "wp-scripts check-licenses",
 		"format": "wp-scripts format",

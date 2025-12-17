@@ -8,7 +8,12 @@ import { useExtensionsMutation } from '../query/useExtensionsMutation';
 import ExtensionTableDivider from './extension-table-divider';
 
 export default function ExtensionTable() {
-	const { data: extensions, isLoading, isError } = useExtensionQuery();
+	const {
+		data: extensions,
+		isLoading,
+		isError,
+		isRefetching,
+	} = useExtensionQuery();
 	const { mutate: toggleExtensions, isPending } = useExtensionsMutation();
 	const [selectedIds, setSelectedIds] = useState([]);
 
@@ -111,7 +116,7 @@ export default function ExtensionTable() {
 									}
 									isPending={
 										selectedIds.includes(extension.slug) &&
-										isPending
+										(isPending || isRefetching)
 									}
 								/>
 							)
