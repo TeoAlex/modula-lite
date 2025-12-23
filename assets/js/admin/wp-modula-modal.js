@@ -397,7 +397,7 @@ wp.Modula = 'undefined' === typeof( wp.Modula ) ? {} : wp.Modula;
             // Add loading state to the button
             var $button = this.$el.find('#modula-ai-report-generate-button');
             $button.addClass('loading').prop('disabled', true);
-            $button.text(modulaHelper.strings.generating_alt_text);
+            $button.find('.modula-ai-btn-text').text(modulaHelper.strings.generating_alt_text);
 
             this.item.set('report', {});
         },
@@ -405,10 +405,10 @@ wp.Modula = 'undefined' === typeof( wp.Modula ) ? {} : wp.Modula;
         onReportSuccess: function(result) {
             var $button = this.$el.find('#modula-ai-report-generate-button');
             $button.removeClass('loading').prop('disabled', false);
-            $button.text(modulaHelper.strings.alt_text_generated);
+            $button.find('.modula-ai-btn-text').text(modulaHelper.strings.alt_text_generated);
 
             setTimeout(() => {
-                $button.text(modulaHelper.strings.refresh_report);
+                $button.find('.modula-ai-btn-text').text(modulaHelper.strings.refresh_report);
             }, 2500)
 
             // Update the report
@@ -452,7 +452,7 @@ wp.Modula = 'undefined' === typeof( wp.Modula ) ? {} : wp.Modula;
                 const isKeyValid = response?.readonly?.valid_key ?? false;
                 
                 if (!isKeyValid) {
-                    $button.text(modulaHelper.strings.configure_api_key || 'Configure API Key');
+                    $button.find('.modula-ai-btn-text').text(modulaHelper.strings.configure_api_key || 'Configure API Key');
                     $button.addClass('configure-api');
                     self.isApiConfigured = false;
                 } else {
@@ -461,7 +461,7 @@ wp.Modula = 'undefined' === typeof( wp.Modula ) ? {} : wp.Modula;
                 }
             } catch (error) {
                 console.error('API check failed:', error);
-                const $button = self.$el.find('#modula-ai-report-generate-button');
+                const $button = self.$el.find('#modula-ai-report-generate-button .modula-ai-btn-text');
                 $button.text(modulaHelper.strings.configure_api_key || 'Configure API Key');
                 $button.addClass('configure-api');
                 self.isApiConfigured = false;

@@ -18,11 +18,14 @@
 <script type="text/html" id="tmpl-modula-image-editor">
 	<div class="modula-ai-report">
 		<button class="modula-ai-report-button button button-primary media-button button-large" id="modula-ai-report-generate-button" data-action="<# if ( data.report ) { #>refresh<# } else { #>generate<# } #>">
-			<# if ( data.report ) { #>
-				<?php esc_html_e( 'Refresh AI Report', 'modula-best-grid-gallery' ); ?>
+		<?php echo Modula_Helper::get_icon( 'ai' ); ?>
+		<span class="modula-ai-btn-text">
+		<# if ( data.report ) { #>
+				<?php esc_html_e( 'Regenerate with Modula AI', 'modula-best-grid-gallery' ); ?>
 			<# } else { #>
-				<?php esc_html_e( 'Generate AI Report', 'modula-best-grid-gallery' ); ?>
+				<?php esc_html_e( 'Generate with Modula AI', 'modula-best-grid-gallery' ); ?>
 			<# } #>
+		</span>
 		</button>
 	</div>
 	<div class="edit-media-header">
