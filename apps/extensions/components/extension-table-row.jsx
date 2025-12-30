@@ -2,6 +2,7 @@ import { __ } from '@wordpress/i18n';
 import { Button, Spinner, ToggleControl } from '@wordpress/components';
 import styles from './extension-table-row.module.scss';
 import { useExtensionMutation } from '../query/useExtensionMutation';
+import { getMenuFn } from '../query/useGetMenuQuery';
 
 function Divider() {
 	return <> | </>;
@@ -16,7 +17,23 @@ export default function ExtensionTableRow({
 	const { mutate: toggleExtension, isPending } = useExtensionMutation();
 
 	const handleToggle = () => {
-		toggleExtension({ extension: extension.slug });
+		toggleExtension(
+			{ extension: extension.slug },
+			{
+				onSettled: async () => {
+					const menu = await getMenuFn();
+					if (!menu) {
+						return;
+					}
+					const item = document.getElementById(
+						'menu-posts-modula-gallery'
+					);
+					if (item) {
+						item.innerHTML = menu?.html;
+					}
+				},
+			}
+		);
 	};
 
 	const handleKeyDown = (e) => {
@@ -124,6 +141,8 @@ export default function ExtensionTableRow({
 						checked={extension.enabled}
 						onChange={handleToggle}
 						disabled={!extension.available}
+						__nextHasNoMarginBottom={true}
+						__next40pxDefaultSize={true}
 						aria-label={__(
 							'Toggle extension status',
 							'modula-best-grid-gallery'

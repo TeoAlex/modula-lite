@@ -6,6 +6,7 @@ import ExtensionBulkActions from './extension-bulk-actions';
 import { useExtensionQuery } from '../query/useExtensionQuery';
 import { useExtensionsMutation } from '../query/useExtensionsMutation';
 import ExtensionTableDivider from './extension-table-divider';
+import { getMenuFn } from '../query/useGetMenuQuery';
 
 export default function ExtensionTable() {
 	const {
@@ -14,6 +15,7 @@ export default function ExtensionTable() {
 		isError,
 		isRefetching,
 	} = useExtensionQuery();
+
 	const { mutate: toggleExtensions, isPending } = useExtensionsMutation();
 	const [selectedIds, setSelectedIds] = useState([]);
 
@@ -48,7 +50,24 @@ export default function ExtensionTable() {
 	};
 
 	const handleBulkAction = (action, ids) => {
-		toggleExtensions({ extensions: ids, status: action });
+		toggleExtensions(
+			{ extensions: ids, status: action },
+			{
+				onSettled: async () => {
+					const menu = await getMenuFn();
+					if (!menu) {
+						return;
+					}
+
+					const item = document.getElementById(
+						'menu-posts-modula-gallery'
+					);
+					if (item) {
+						item.innerHTML = menu?.html;
+					}
+				},
+			}
+		);
 		setSelectedIds([]);
 	};
 

@@ -311,4 +311,100 @@ class Modula_Admin_Assets {
 	public function metabox_prevent_closing() {
 		return array();
 	}
+
+	/**
+	 * Output standard WordPress CSS variables for plugin compatibility.
+	 * These variables ensure the plugin works on any WordPress installation.
+	 *
+	 * @return void
+	 */
+	public function output_wp_css_variables() {
+		$screen = get_current_screen();
+		if ( ! $screen ) {
+			return;
+		}
+
+		$is_modula_page = false;
+
+		if ( isset( $screen->post_type ) && 'modula-gallery' === $screen->post_type ) {
+			$is_modula_page = true;
+		}
+
+		if ( false !== strpos( $screen->id, 'modula-gallery' ) ||
+			false !== strpos( $screen->id, 'modula-addons' ) ||
+			false !== strpos( $screen->id, 'modula-insights' ) ||
+			false !== strpos( $screen->id, 'wpchill-dashboard' ) ) {
+			$is_modula_page = true;
+		}
+
+		if ( ! $is_modula_page ) {
+			return;
+		}
+
+		$admin_theme_color = get_user_option( 'admin_color' );
+		$wp_admin_color    = '#2271b1';
+
+		if ( function_exists( 'wp_admin_css_color' ) ) {
+			global $_wp_admin_css_colors;
+			if ( isset( $_wp_admin_css_colors[ $admin_theme_color ] ) ) {
+				$wp_admin_color = $_wp_admin_css_colors[ $admin_theme_color ]->colors[0];
+			}
+		}
+
+		$accent_color = 'var(--wp-admin-theme-color, ' . $wp_admin_color . ')';
+		$accent_hover = 'var(--wp-admin-theme-color-darker-10, ' . $wp_admin_color . ')';
+
+		$css = '
+		<style id="modula-wp-styles-inline-css">
+			:root {
+				/* Container widths - standard WordPress admin widths */
+				--theme-normal-container-max-width: 1290px;
+				--theme-narrow-container-max-width: 750px;
+				--theme-wide-offset: 130px;
+				
+				/* Spacing - standard WordPress admin spacing */
+				--theme-content-spacing: 1.5em;
+				
+				/* Accent colors - use WordPress admin theme color */
+				--ui-accent-color: ' . $accent_color . ';
+				--ui-accent-hover-color: ' . $accent_hover . ';
+				
+				/* Palette colors - standard WordPress admin colors */
+				--theme-palette-color-1: ' . $accent_color . ';
+				--theme-palette-color-2: ' . $accent_hover . ';
+				--theme-palette-color-3: #2c3338;
+				--theme-palette-color-4: #1d2327;
+				--theme-palette-color-5: #c3c4c7;
+				--theme-palette-color-6: #f0f0f1;
+				--theme-palette-color-7: #f6f7f7;
+				--theme-palette-color-8: #ffffff;
+				
+				/* Text and link colors - standard WordPress admin */
+				--theme-text-color: #2c3338;
+				--theme-link-initial-color: ' . $accent_color . ';
+				--theme-link-hover-color: ' . $accent_hover . ';
+				
+				/* Border colors - standard WordPress admin borders */
+				--theme-border-color: #c3c4c7;
+				
+				/* Headings - standard WordPress admin */
+				--theme-headings-color: #1d2327;
+				
+				/* Form fields - standard WordPress admin */
+				--theme-form-field-border-initial-color: #8c8f94;
+				--theme-form-field-border-focus-color: ' . $accent_color . ';
+				
+				/* Buttons - standard WordPress admin */
+				--theme-button-text-initial-color: #ffffff;
+				--theme-button-text-hover-color: #ffffff;
+				--theme-button-background-initial-color: ' . $accent_color . ';
+				--theme-button-background-hover-color: ' . $accent_hover . ';
+				
+				/* Quantity arrows */
+				--quantity-arrows-initial-color: var(--theme-text-color);
+			}
+		</style>';
+
+		echo $css;
+	}
 }

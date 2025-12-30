@@ -39,6 +39,7 @@ export default function ExtensionBulkActions({ selectedIds, onBulkAction }) {
 					options={bulkActions}
 					onChange={setSelectedAction}
 					className={styles.bulkSelect}
+					__nextHasNoMarginBottom={true}
 					__next40pxDefaultSize={true}
 				/>
 				<Button

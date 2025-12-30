@@ -29,6 +29,12 @@ class Modula_Extensions_Base {
 	 */
 	private $current_plan = 'modula_pro_current_plan';
 	/**
+	 * Active extensions cache
+	 *
+	 * @var array
+	 */
+	private static $active_extensions_cache = array();
+	/**
 	 * Plan map
 	 *
 	 * @var array
@@ -671,5 +677,27 @@ class Modula_Extensions_Base {
 		$owned_extensions = $this->plan_map[ $current_plan ] ?? array();
 
 		return ! in_array( $addon, $owned_extensions, true );
+	}
+	/**
+	 * Get active extensions
+	 *
+	 * @return array Active extensions.
+	 */
+	public function get_active_extensions() {
+		if ( empty( self::$active_extensions_cache ) ) {
+			self::$active_extensions_cache = get_option( $this->active_extensions, array() );
+		}
+		return self::$active_extensions_cache;
+	}
+
+	/**
+	 * Check if an extension is enabled
+	 *
+	 * @param string $extension Extension slug.
+	 * @return bool True if enabled, false otherwise.
+	 */
+	public function extension_enabled( $extension ) {
+		$active_extensions = $this->get_active_extensions();
+		return in_array( $extension, $active_extensions, true );
 	}
 }

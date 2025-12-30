@@ -136,11 +136,11 @@ class Modula_Admin {
 
 		$instance = Modula_Extensions_Base::get_instance();
 		if ( ! $instance->is_upgradable_addon( 'modula-image-proofing' ) ) {
-			$links['image-proofing-upsell'] = array(
+			$links['image-proofing'] = array(
 				'page_title' => esc_html__( 'Image Proofing', 'modula-best-grid-gallery' ),
 				'menu_title' => esc_html__( 'Proofing', 'modula-best-grid-gallery' ),
 				'capability' => 'manage_options',
-				'menu_slug'  => '#image-proofing-upsell',
+				'menu_slug'  => '#image-proofing',
 				'function'   => array( $this, 'modula_image_proofing' ),
 				'priority'   => 3,
 			);

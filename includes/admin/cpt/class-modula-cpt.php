@@ -1253,7 +1253,7 @@ class Modula_CPT {
 				continue;
 			}
 
-			$values = unserialize( $row['meta_value'] );
+			$values = maybe_unserialize( $row['meta_value'] );
 			if ( isset( $values['type'] ) ) {
 				$types[ $values['type'] ][] = absint( $row['post_id'] );
 			}

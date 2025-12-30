@@ -21,7 +21,7 @@ class Modula_Hook_Manager {
 	public function register_admin_hooks( Modula_Service_Container $services, Modula_Admin_Utils $admin_utils, Modula_I18n $i18n ): void {
 		$admin_assets = $services->get_admin_assets();
 		$editor       = $services->get_editor();
-
+		add_action( 'admin_head', array( $admin_assets, 'output_wp_css_variables' ), 5 );
 		add_action( 'admin_enqueue_scripts', array( $admin_assets, 'admin_scripts' ), 20 );
 		add_action( 'admin_enqueue_scripts', array( $admin_assets, 'general_settings_page_scripts' ) );
 		add_action( 'admin_enqueue_scripts', array( $admin_assets, 'extensions_scripts' ) );

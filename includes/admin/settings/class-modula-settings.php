@@ -1012,40 +1012,6 @@ class Modula_Settings {
 	}
 
 	/**
-	 * Build image licensing combo fields (author and company)
-	 *
-	 * @param array $licensing Licensing option data.
-	 *
-	 * @return array Combo field with author and company fields
-	 *
-	 * @since 2.11.0
-	 */
-	private function build_image_licensing_combo_fields( $licensing ) {
-		return $this->build_combo_field(
-			array(
-				$this->build_text_field(
-					'image_licensing_author',
-					esc_html__( 'Author', 'modula-best-grid-gallery' ),
-					isset( $licensing['image_licensing_author'] ) ? $licensing['image_licensing_author'] : '',
-					array(
-						'size'        => 'large',
-						'description' => esc_html__( 'Name used by Google to filter the images based on the author\'s name', 'modula-best-grid-gallery' ),
-					)
-				),
-				$this->build_text_field(
-					'image_licensing_company',
-					esc_html__( 'Company', 'modula-best-grid-gallery' ),
-					isset( $licensing['image_licensing_company'] ) ? $licensing['image_licensing_company'] : '',
-					array(
-						'size'        => 'large',
-						'description' => esc_html__( 'Company used by Google to filter the images based on the company\'s name', 'modula-best-grid-gallery' ),
-					)
-				),
-			)
-		);
-	}
-
-	/**
 	 * Get roles settings configuration
 	 *
 	 * @return array Roles settings configuration
@@ -1092,7 +1058,7 @@ class Modula_Settings {
 		$vimeo_creds      = $this->get_option_value( self::OPTION_VIMEO_CREDS );
 		$vimeo_connected  = false;
 		$vimeo_connect    = '#';
-		$vimeo_redirect   = admin_url( '/edit.php?post_type=modula-gallery&page=modula&modula-tab=video&sub=vi&action=save_modula_video_vimeo_token' );
+		$vimeo_redirect   = admin_url( '/edit.php?post_type=modula-gallery&page=modula&tab=social_media&sub=vi&action=save_modula_video_vimeo_token' );
 
 		if ( class_exists( 'Modula_Pro\Extensions\Instagram\Instagram' ) ) {
 			$instagram_status = (bool) Modula_Pro\Extensions\Instagram\OAuth::get_instance()->get_access_token();

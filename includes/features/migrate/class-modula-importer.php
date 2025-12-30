@@ -234,6 +234,13 @@ class Modula_Importer {
 			);
 		}
 
+		if ( is_null( $galleries['valid_galleries'] ) ) {
+			return array(
+				'success' => false,
+				'error'   => esc_html__( 'No galleries found', 'modula-best-grid-gallery' ),
+			);
+		}
+
 		$data = array();
 		foreach ( $galleries['valid_galleries'] as $key => $gallery ) {
 			$imported         = false;
@@ -248,7 +255,7 @@ class Modula_Importer {
 					);
 					$g_gallery = array(
 						'id'       => $gallery['page_id'] . '-' . $gallery['gal_nr'],
-						'imported' => ( isset( $import_settings['galleries'][ $source ] ) && 'modula-gallery' === $modula_gallery ),
+						'imported' => ( isset( $import_settings['galleries'][ $source ] ) ),
 						'title'    => esc_html( $gallery['title'] ),
 						'count'    => $gallery['images'],
 					);
