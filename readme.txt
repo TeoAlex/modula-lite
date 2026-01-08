@@ -1,4 +1,4 @@
-=== Image Gallery - Photo Grid & Video Gallery ===
+=== Modula Image Gallery - Photo Grid & Video Gallery ===
 Contributors: wpchill, silkalns  
 Tags: gallery plugin, image gallery, video gallery, responsive gallery, WordPress gallery plugin 
 Requires at least: 5.3
