@@ -264,6 +264,18 @@ class Modula_Admin {
 			die();
 		}
 
+		$gallery_post = get_post( $gallery_id );
+
+		if ( ! $gallery_post || 'modula-gallery' !== $gallery_post->post_type ) {
+			wp_send_json_error( esc_html__( 'Selected ID is not a Modula gallery', 'modula-best-grid-gallery' ) );
+			die();
+		}
+
+		if ( ! current_user_can( 'edit_post', $gallery_id ) ) {
+			wp_send_json_error( esc_html__( 'You are not allowed to edit this gallery.', 'modula-best-grid-gallery' ) );
+			die();
+		}
+
 		$data['old_images'] = get_post_meta( $gallery_id, 'modula-images', true );
 
 		if ( ! is_array( $data['old_images'] ) ) {

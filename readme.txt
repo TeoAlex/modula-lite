@@ -1,4 +1,4 @@
-=== Image Gallery - Photo Grid & Video Gallery ===
+=== Modula Image Gallery - Photo Grid & Video Gallery ===
 Contributors: wpchill, silkalns  
 Tags: gallery plugin, image gallery, video gallery, responsive gallery, WordPress gallery plugin 
 Requires at least: 5.3
@@ -322,6 +322,10 @@ The simplest way to install is to click on 'Plugins' then 'Add' and type 'Modula
 4. Mobile Responsive Image Galleries - Galleries automatically adapt to smartphone and tablet screen sizes
 
 == Changelog ==
+
+= 2.13.4 - 08.12.2025 =
+Fixed: Security issues.
+
 = 2.13.3 - 02.12.2025 =
 Fixed: Vulnerability in zip import.
 
