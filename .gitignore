@@ -17,3 +17,4 @@ assets/js/admin/extensions/*
 assets/js/admin/insights/*
 stubs
 import_file.txt
+.cursor
