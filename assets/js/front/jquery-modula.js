@@ -152,12 +152,14 @@ jQuery(window).on('elementor/frontend/init', function () {
 			instance.onResize(instance);
 		});
 
-		$(document).on('lazyloaded', function (evt) {
+		$(document).on('lazyloaded lazyload', function (evt) {
+			
 			var element = $(evt.target),
 				parent,
 				index;
 
-			if ('modula' == element.data('source')) {
+			if ('modula' == element.data('source') || 'a3-lazyload' == element.data('source')) {
+				
 				element.data('size', {
 					width : element.width(),
 					height: element.height(),

@@ -45,6 +45,9 @@ class Modula_Compatibility {
 		// Imagify lazy load compatibility
 		add_filter( 'imagify_picture_img_attributes', array( $this, 'imagify_prep_attributes_for_img_tags' ), 10, 2 );
 		add_filter( 'imagify_picture_attributes', array( $this, 'imagify_keep_attributes_off_picture_tags' ) );
+
+		// a3 Lazy Load compatibility
+		add_filter( 'modula_shortcode_item_data', array( $this, 'a3_compatibility_source' ) );
 	}
 
 	/**
@@ -162,6 +165,30 @@ class Modula_Compatibility {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Check if a3 Lazy Load is active and has enabled lazyloading
+	 *
+	 * @return bool
+	 */
+	public function a3_lazy_load_check() {
+
+		if ( ! class_exists( 'A3_Lazy_Load' ) ) {
+			return false;
+		}
+
+		$settings = get_option( 'a3_lazy_load_global_settings', array() );
+
+		if ( ! is_array( $settings ) ) {
+			return false;
+		}
+
+		return (
+			! empty( $settings['a3l_apply_to_images'] )
+			&&
+			! empty( $settings['a3l_apply_image_to_content'] )
+		);
 	}
 
 	/**
@@ -329,6 +356,26 @@ class Modula_Compatibility {
 		}
 
 		return $attributes;
+	}
+
+	/**
+	 * a3 Lazy Load compatibility - Adds the source of lazy load to images.
+	 *
+	 * @param $item_data
+	 *
+	 * @return array
+	 * @since 2.13.5
+	 */
+	public function a3_compatibility_source( $item_data ) {
+		if ( isset( $item_data['img_attributes']['data-source'] ) ) {
+			return $item_data;
+		}
+
+		if ( ! is_admin() && $this->a3_lazy_load_check() ) {
+			$item_data['img_attributes']['data-source'] = 'a3-lazyload';
+		}
+
+		return $item_data;
 	}
 }
 
