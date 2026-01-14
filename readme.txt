@@ -4,7 +4,7 @@ Tags: gallery plugin, image gallery, video gallery, responsive gallery, WordPres
 Requires at least: 5.3
 Tested up to: 6.9
 Requires PHP: 5.6
-Stable tag: 2.13.4
+Stable tag: 2.13.5
 
 License: GNU General Public License v3.0 or later  
 
@@ -326,8 +326,9 @@ The simplest way to install is to click on 'Plugins' then 'Add' and type 'Modula
 
 == Changelog ==
 
-= 2.13.5 - 08.12.2025 =
+= 2.13.5 - 14.12.2025 =
 Fixed: Fatal error when the theme enqueues styles for all widgets.
+Fixed: Security issues.
 
 = 2.13.4 - 08.12.2025 =
 Fixed: Security issues.
