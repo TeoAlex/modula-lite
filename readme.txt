@@ -323,6 +323,9 @@ The simplest way to install is to click on 'Plugins' then 'Add' and type 'Modula
 
 == Changelog ==
 
+= 2.13.5 - 08.12.2025 =
+Fixed: Fatal error when the theme enqueues styles for all widgets.
+
 = 2.13.4 - 08.12.2025 =
 Fixed: Security issues.
 
