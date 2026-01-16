@@ -300,7 +300,7 @@ class Modula_Gallery_Upload {
 			echo '<label for="keep_files"><input type="checkbox" id="delete_files" value="true">' . esc_html__( 'Delete files from folder after upload', 'modula-best-grid-gallery' ) . '</label>';
 			echo '</div>';
 			echo '<div class="modula-browser-footer__column text-right">';
-			echo '<a href="#" class="button button-primary disabled" id="modula_create_gallery">' . esc_html__( 'Create gallery from folders', 'modula-best-grid-gallery' ) . '</a>';
+			echo '<a href="#" class="button button-primary disabled" id="modula_create_gallery">' . esc_html__( 'Import images from selected folder', 'modula-best-grid-gallery' ) . '</a>';
 			echo '</div>';
 			echo '</div>';
 			echo '<div class="modula-browser-footer__progress">';

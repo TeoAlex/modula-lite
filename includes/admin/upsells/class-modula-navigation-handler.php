@@ -21,10 +21,6 @@ class Modula_Navigation_Handler extends Modula_Upsell_Base {
 		// Upgrade to PRO plugin action link
 		add_filter( 'plugin_action_links_' . MODULA_FILE, array( $this, 'filter_action_links' ), 60 );
 
-		// GO PRO admin menu link
-		add_filter( 'modula_admin_page_link', array( $this, 'add_go_pro_menu_item' ) );
-		add_action( 'admin_init', array( $this, 'go_pro_redirect' ) );
-
 		if ( $this->extensions->is_upgradable_addon( 'modula-whitelabel' ) ) {
 			add_filter( 'modula_admin_page_tabs', array( $this, 'add_whitelabel_tab' ), 140 );
 		}
@@ -53,36 +49,6 @@ class Modula_Navigation_Handler extends Modula_Upsell_Base {
 		array_unshift( $links, $upgrade['link'] );
 
 		return $links;
-	}
-
-	/**
-	 * Add Go Pro menu item
-	 *
-	 * @param array $links Existing menu links.
-	 * @return array Modified links array.
-	 */
-	public function add_go_pro_menu_item( $links ) {
-		$links['gopro'] = array(
-			'page_title' => esc_html__( 'Get Premium', 'modula-best-grid-gallery' ),
-			'menu_title' => esc_html__( 'Get Premium', 'modula-best-grid-gallery' ),
-			'capability' => 'manage_options',
-			'menu_slug'  => 'go-pro',
-			'function'   => array( $this, 'go_pro_redirect' ),
-			'priority'   => 999,
-		);
-
-		return $links;
-	}
-
-	/**
-	 * Redirect to Go Pro page
-	 */
-	public function go_pro_redirect() {
-		if ( isset( $_GET['post_type'] ) && 'modula-gallery' === $_GET['post_type'] && isset( $_GET['page'] ) && 'go-pro' === $_GET['page'] ) {
-			$url = 'https://wp-modula.com/pricing/?utm_source=modula-lite&utm_medium=admin-menu&utm_campaign=upsell';
-			wp_redirect( $url );
-			exit();
-		}
 	}
 
 	/**

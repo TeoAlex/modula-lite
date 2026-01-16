@@ -3,6 +3,7 @@ import { __ } from '@wordpress/i18n';
 import { Button, SelectControl } from '@wordpress/components';
 import styles from './extension-bulk-actions.module.scss';
 import ExtensionLicenseHeader from './extension-license-header';
+import NeedsPro from './needs-pro';
 
 export default function ExtensionBulkActions({ selectedIds, onBulkAction }) {
 	const { proExists } = window?.extensionsStrings || {};
@@ -52,7 +53,11 @@ export default function ExtensionBulkActions({ selectedIds, onBulkAction }) {
 				</Button>
 			</div>
 			<div className={styles.bulkActionsLicense}>
-				{Number(proExists) === 1 && <ExtensionLicenseHeader />}
+				{Number(proExists) === 1 ? (
+					<ExtensionLicenseHeader />
+				) : (
+					<NeedsPro />
+				)}
 			</div>
 		</div>
 	);
