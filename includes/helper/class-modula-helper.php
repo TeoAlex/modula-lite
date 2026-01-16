@@ -550,4 +550,12 @@ class Modula_Helper {
 
 		return apply_filters( 'modula_share_buttons_template', $share_buttons );
 	}
+
+	public static function snake_to_camel( $key ) {
+		$key = strtolower( $key );
+		$key = str_replace( '_', ' ', $key );
+		$key = ucwords( $key );
+		$key = str_replace( ' ', '', $key );
+		return lcfirst( $key );
+	}
 }

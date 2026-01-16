@@ -69,7 +69,8 @@ class Modula_Shortcode {
 			'align' => '',
 		);
 
-		$atts = wp_parse_args( $atts, $default_atts );
+		$raw_atts = (array) $atts;
+		$atts     = wp_parse_args( $raw_atts, $default_atts );
 
 		if ( ! $atts['id'] ) {
 			return esc_html__( 'Gallery not found.', 'modula-best-grid-gallery' );
@@ -111,6 +112,17 @@ class Modula_Shortcode {
 
 		/* Get gallery settings */
 		$settings = apply_filters( 'modula_backwards_compatibility_front', get_post_meta( $atts['id'], 'modula-settings', true ) );
+
+		unset( $raw_atts['id'], $raw_atts['align'] );
+
+		// Override existing settings with shortcode atts (only if the key already exists).
+		foreach ( $raw_atts as $attr_key => $value ) {
+			$camel_key = Modula_Helper::snake_to_camel( $attr_key );
+
+			if ( array_key_exists( $camel_key, $settings ) ) {
+				$settings[ $camel_key ] = $value;
+			}
+		}
 
 		$default = Modula_CPT_Fields_Helper::get_defaults();
 
@@ -306,7 +318,7 @@ class Modula_Shortcode {
 			$css .= "#{$gallery_id} .modula-item .jtg-social-expandable-icons { gap: " . absint( $settings['socialIconPadding'] ) . 'px' . ' }';
 		}
 
-		if ( $settings['socialDesktopCollapsed'] ){
+		if ( $settings['socialDesktopCollapsed'] ) {
 			$css .= "#{$gallery_id} .modula-item .no-socials{ display:none; }";
 		}
 
