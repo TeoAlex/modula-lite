@@ -1,6 +1,7 @@
 <?php
-if (!defined('ABSPATH'))
+if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly
+}
 
 final class Modula_Elementor_Check {
 
@@ -37,7 +38,7 @@ final class Modula_Elementor_Check {
 	public function __construct() {
 
 		// Init Plugin
-		add_action('plugins_loaded', array($this, 'init'));
+		add_action( 'plugins_loaded', array( $this, 'init' ) );
 	}
 
 	public function init() {
@@ -47,21 +48,21 @@ final class Modula_Elementor_Check {
 		}
 
 		// Check for required Elementor version
-		if (!version_compare(ELEMENTOR_VERSION, self::MINIMUM_ELEMENTOR_VERSION, '>=')) {
-			add_action('admin_notices', array($this, 'admin_notice_minimum_elementor_version'));
+		if ( ! version_compare( ELEMENTOR_VERSION, self::MINIMUM_ELEMENTOR_VERSION, '>=' ) ) {
+			add_action( 'admin_notices', array( $this, 'admin_notice_minimum_elementor_version' ) );
 			return;
 		}
 
 		// Check for required PHP version
-		if (version_compare(PHP_VERSION, self::MINIMUM_PHP_VERSION, '<')) {
-			add_action('admin_notices', array($this, 'admin_notice_minimum_php_version'));
+		if ( version_compare( PHP_VERSION, self::MINIMUM_PHP_VERSION, '<' ) ) {
+			add_action( 'admin_notices', array( $this, 'admin_notice_minimum_php_version' ) );
 			return;
 		}
 
-		add_action('elementor/widgets/widgets_registered', array( $this, 'remove_modula_widget' ), 15);
+		add_action( 'elementor/widgets/widgets_registered', array( $this, 'remove_modula_widget' ), 15 );
 
 		// Once we get here, We have passed all validation checks so we can safely include our elementor block activation
-		require_once( MODULA_PATH.'includes/elementor/class-modula-elementor-widget-activation.php' );
+		require_once MODULA_PATH . 'includes/features/third-party-builders/elementor/class-modula-elementor-widget-activation.php';
 	}
 
 
@@ -74,18 +75,18 @@ final class Modula_Elementor_Check {
 	 * @access public
 	 */
 	public function admin_notice_minimum_elementor_version() {
-		if (isset($_GET['activate'])) {
-			unset($_GET['activate']);
+		if ( isset( $_GET['activate'] ) ) {
+			unset( $_GET['activate'] );
 		}
 
 		$message = sprintf(
-			esc_html__('"%1$s" requires "%2$s" version %3$s or greater.', 'modula-best-grid-gallery'),
-			'<strong>' . esc_html__('Modula Elementor widget', 'modula-best-grid-gallery') . '</strong>',
-			'<strong>' . esc_html__('Elementor', 'modula-best-grid-gallery') . '</strong>',
+			esc_html__( '"%1$s" requires "%2$s" version %3$s or greater.', 'modula-best-grid-gallery' ),
+			'<strong>' . esc_html__( 'Modula Elementor widget', 'modula-best-grid-gallery' ) . '</strong>',
+			'<strong>' . esc_html__( 'Elementor', 'modula-best-grid-gallery' ) . '</strong>',
 			self::MINIMUM_ELEMENTOR_VERSION
 		);
 
-		printf('<div class="notice notice-warning is-dismissible"><p>%1$s</p></div>', $message);
+		printf( '<div class="notice notice-warning is-dismissible"><p>%1$s</p></div>', $message );
 	}
 
 	/**
@@ -97,22 +98,22 @@ final class Modula_Elementor_Check {
 	 * @access public
 	 */
 	public function admin_notice_minimum_php_version() {
-		if (isset($_GET['activate'])) {
-			unset($_GET['activate']);
+		if ( isset( $_GET['activate'] ) ) {
+			unset( $_GET['activate'] );
 		}
 
 		$message = sprintf(
-			esc_html__('"%1$s" requires "%2$s" version %3$s or greater.', 'modula-best-grid-gallery'),
-			'<strong>' . esc_html__('Modula Elementor widget', 'modula-best-grid-gallery') . '</strong>',
-			'<strong>' . esc_html__('PHP', 'modula-best-grid-gallery') . '</strong>',
+			esc_html__( '"%1$s" requires "%2$s" version %3$s or greater.', 'modula-best-grid-gallery' ),
+			'<strong>' . esc_html__( 'Modula Elementor widget', 'modula-best-grid-gallery' ) . '</strong>',
+			'<strong>' . esc_html__( 'PHP', 'modula-best-grid-gallery' ) . '</strong>',
 			self::MINIMUM_PHP_VERSION
 		);
 
-		printf('<div class="notice notice-warning is-dismissible"><p>%1$s</p></div>', $message);
+		printf( '<div class="notice notice-warning is-dismissible"><p>%1$s</p></div>', $message );
 	}
 
 	/* Remove WordPress widget because we have a dedicated Elementor Widget */
-	public function remove_modula_widget( $widget_manager ){
+	public function remove_modula_widget( $widget_manager ) {
 		$widget_manager->unregister_widget_type( 'wp-widget-modula_gallery_widget' );
 	}
 }
