@@ -2,6 +2,8 @@
 
 namespace ElementorModula;
 
+use ElementorModula\Widgets\Modula_Elementor_Widget;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 } // Exit if accessed directly
@@ -19,7 +21,7 @@ class Modula_Elementor_Widget_Activation {
 	}
 
 	private function include_widgets_files() {
-		require_once MODULA_PATH . 'includes/elementor/widgets/class-modula-elementor.php';
+		require_once MODULA_PATH . 'includes/features/third-party-builders/elementor/widgets/class-modula-elementor.php';
 	}
 
 	/**
@@ -33,7 +35,7 @@ class Modula_Elementor_Widget_Activation {
 	public function register_widgets() {
 		$this->include_widgets_files();
 		// Register Widgets
-		\Elementor\Plugin::instance()->widgets_manager->register_widget_type( new Widgets\Modula_Elementor_Widget() );
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type( new Modula_Elementor_Widget() );
 	}
 
 	public function __construct() {
