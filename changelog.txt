@@ -1,3 +1,6 @@
+= 2.13.6 - 20.01.2026 =
+Fixed: Gutenberg block editor was throwing an error due to circular references.
+
 = 2.13.5 - 14.12.2025 =
 Fixed: Fatal error when the theme enqueues styles for all widgets.
 Fixed: Security issues.
