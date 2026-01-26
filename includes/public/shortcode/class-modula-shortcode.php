@@ -54,7 +54,7 @@ class Modula_Shortcode {
 		wp_register_script( 'modula-grid-justified-gallery', MODULA_URL . 'assets/js/front/justifiedGallery' . $suffix . '.js', array( 'jquery' ), MODULA_LITE_VERSION, true );
 		wp_register_script( 'modula-fancybox', MODULA_URL . 'assets/js/front/fancybox' . $suffix . '.js', array( 'jquery', 'modulaFancybox' ), MODULA_LITE_VERSION, true );
 		wp_register_script( 'modulaFancybox', MODULA_URL . 'assets/js/front/modula-fancybox' . $suffix . '.js', array( 'dompurify' ), MODULA_LITE_VERSION, true );
-		wp_add_inline_script( 'modulaFancybox', "const ModulaShareButtons = '" . addslashes( json_encode( Modula_Helper::render_lightbox_share_template() ) ) . "';", 'before' );
+		wp_add_inline_script( 'modulaFancybox', "const ModulaShareButtons = '" . addslashes( wp_json_encode( Modula_Helper::render_lightbox_share_template() ) ) . "';", 'before' );
 		wp_register_script( 'modula-lazysizes', MODULA_URL . 'assets/js/front/lazysizes' . $suffix . '.js', array( 'jquery' ), MODULA_LITE_VERSION, true );
 
 		// @todo: minify all css & js for a better optimization.
@@ -119,7 +119,7 @@ class Modula_Shortcode {
 			unset( $settings['grid_type'] );
 		}
 
-		$settings = wp_parse_args( $settings, $default );
+		$settings               = wp_parse_args( $settings, $default );
 		$settings['gallery_id'] = $gallery_id;
 
 		$type = 'creative-gallery';
@@ -187,7 +187,7 @@ class Modula_Shortcode {
 			}
 		}
 
-		$settings['align']      = $atts['align'];
+		$settings['align'] = $atts['align'];
 
 		$template_data = array(
 			'gallery_id'        => $gallery_id,
@@ -312,7 +312,7 @@ class Modula_Shortcode {
 			$css .= "#{$gallery_id} .modula-item .jtg-social-expandable-icons { gap: " . absint( $settings['socialIconPadding'] ) . 'px' . ' }';
 		}
 
-		if ( $settings['socialDesktopCollapsed'] ){
+		if ( $settings['socialDesktopCollapsed'] ) {
 			$css .= "#{$gallery_id} .modula-item .no-socials{ display:none; }";
 		}
 

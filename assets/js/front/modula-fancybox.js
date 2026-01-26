@@ -102,8 +102,9 @@ var modulaFancybox = {
 			// Create custom event for vanilla JS
 			var event = new CustomEvent(
 				'modula_fancybox_' + eventName.replace(/\./g, '_'),
-				{ detail: { fancybox: fancybox, instance: this } }
+				{ detail: { fancybox: fancybox, instance: fancybox } }
 			);
+
 			document.dispatchEvent(event);
 		};
 
