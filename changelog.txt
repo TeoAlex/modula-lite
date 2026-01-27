@@ -1,3 +1,6 @@
+= 2.13.7 - 27.01.2026 =
+Fixed: Security issues.
+
 = 2.13.6 - 20.01.2026 =
 Fixed: Gutenberg block editor was throwing an error due to circular references.
 
