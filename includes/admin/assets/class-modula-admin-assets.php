@@ -148,7 +148,7 @@ class Modula_Admin_Assets {
 			wp_enqueue_script( 'modula-modal', MODULA_URL . 'assets/js/admin/wp-modula-modal' . $suffix . '.js', array(), MODULA_LITE_VERSION, true );
 			wp_enqueue_script( 'modula-upload', MODULA_URL . 'assets/js/admin/wp-modula-upload' . $suffix . '.js', array(), MODULA_LITE_VERSION, true );
 			wp_enqueue_script( 'modula-gallery', MODULA_URL . 'assets/js/admin/wp-modula-gallery' . $suffix . '.js', array(), MODULA_LITE_VERSION, true );
-			wp_enqueue_script( 'modula-conditions', MODULA_URL . 'assets/js/admin/wp-modula-conditions' . $suffix . '.js', array(), MODULA_LITE_VERSION, true );
+			wp_enqueue_script( 'modula-conditions', MODULA_URL . 'assets/js/admin/wp-modula-conditions' . $suffix . '.js', array( 'modula-modal' ), MODULA_LITE_VERSION, true );
 
 			do_action( 'modula_scripts_before_wp_modula' );
 

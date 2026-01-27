@@ -217,14 +217,14 @@ class Modula_Tab_Content_Handler extends Modula_Upsell_Base {
 	}
 
 	public function misc_tab_upsell( $tab_content ) {
-		if ( ! $this->extensions->is_upgradable_addon( 'modula-deeplink' ) && ! $this->extensions->is_upgradable_addon( 'modula-protection' ) ) {
+		if ( ! $this->extensions->is_upgradable_addon( 'modula-deeplink' ) && ! $this->extensions->is_upgradable_addon( 'modula-image-guardian' ) ) {
 			return $tab_content;
 		}
 
-		if ( $this->extensions->is_upgradable_addon( 'modula-deeplink' ) && $this->extensions->is_upgradable_addon( 'modula-protection' ) ) {
+		if ( $this->extensions->is_upgradable_addon( 'modula-deeplink' ) && $this->extensions->is_upgradable_addon( 'modula-image-guardian' ) ) {
 			$upsell_title       = esc_html__( 'Looking to add deeplink functionality to your lightbox or protect your images from stealing?', 'modula-best-grid-gallery' );
 			$upsell_description = esc_html__( 'Ugrade to Modula Premium today and get access to Modula Protection and Modula Deeplink add-ons and increase the functionality and copyright your images.', 'modula-best-grid-gallery' );
-		} elseif ( $this->extensions->is_upgradable_addon( 'modula-deeplink' ) && ! $this->extensions->is_upgradable_addon( 'modula-protection' ) ) {
+		} elseif ( $this->extensions->is_upgradable_addon( 'modula-deeplink' ) && ! $this->extensions->is_upgradable_addon( 'modula-image-guardian' ) ) {
 			$upsell_title       = esc_html__( 'Looking to add deeplink functionality to your lightbox?', 'modula-best-grid-gallery' );
 			$upsell_description = esc_html__( 'Ugrade to Modula Premium today and get access to Modula Deeplink add-ons and increase the functionality of your images.', 'modula-best-grid-gallery' );
 		} else {

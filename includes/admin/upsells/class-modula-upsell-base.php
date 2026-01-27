@@ -26,7 +26,10 @@ abstract class Modula_Upsell_Base {
 	 * Constructor
 	 */
 	public function __construct() {
-		$this->extensions       = Modula_Extensions_Base::get_instance();
+		$this->extensions = class_exists( 'Modula_Pro\Extensions\Extensions' )
+		? Modula_Pro\Extensions\Extensions::get_instance()
+		: Modula_Extensions_Base::get_instance();
+
 		$this->free_vs_pro_link = 'https://wp-modula.com/free-vs-pro/?utm_source=modula-lite&utm_medium=link&utm_campaign=upsell&utm_term=lite-vs-pro';
 	}
 
