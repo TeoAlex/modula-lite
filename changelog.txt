@@ -1,3 +1,8 @@
+= 2.13.8 - 29.01.2026 =
+Fixed: Compatibility with Imagify plugin.
+Fixed: Core gallery importer.
+Added: Support for shortcodes dropdown in gallery edit screen.
+
 = 2.13.7 - 27.01.2026 =
 Fixed: Security issues.
 
