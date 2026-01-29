@@ -9,7 +9,9 @@ wp.Modula = 'undefined' === typeof( wp.Modula ) ? {} : wp.Modula;
         },
 
         initialize: function( args ){
-
+            if(!args){
+                return;
+            }
             var modalView = new modula.modal['view']({
                 'model': this,
                 'childViews' : args.childViews

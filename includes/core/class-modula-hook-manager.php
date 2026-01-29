@@ -38,6 +38,7 @@ class Modula_Hook_Manager {
 		add_filter( 'mce_buttons', array( $editor, 'editor_button' ) );
 		add_filter( 'mce_external_plugins', array( $editor, 'register_editor_plugin' ) );
 		add_action( 'wp_ajax_modula_shortcode_editor', array( $editor, 'modula_shortcode_editor' ) );
+		add_action( 'admin_print_scripts', array( $editor, 'add_editor_nonce' ) );
 
 		// Initiate modula cpts
 		new Modula_CPT();
