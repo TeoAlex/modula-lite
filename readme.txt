@@ -4,7 +4,7 @@ Tags: gallery plugin, image gallery, video gallery, responsive gallery, WordPres
 Requires at least: 5.3
 Tested up to: 6.9
 Requires PHP: 5.6
-Stable tag: 2.13.6
+Stable tag: 2.13.7
 
 License: GNU General Public License v3.0 or later  
 
@@ -325,146 +325,9 @@ The simplest way to install is to click on 'Plugins' then 'Add' and type 'Modula
 4. Mobile Responsive Image Galleries - Galleries automatically adapt to smartphone and tablet screen sizes
 
 == Changelog ==
+= 2.13.7 - 27.01.2026 =
+Fixed: Security issues.
+
 = 2.13.6 - 20.01.2026 =
 Fixed: Gutenberg block editor was throwing an error due to circular references.
 
-= 2.13.5 - 14.12.2025 =
-Fixed: Fatal error when the theme enqueues styles for all widgets.
-Fixed: Security issues.
-
-= 2.13.4 - 08.12.2025 =
-Fixed: Security issues.
-
-= 2.13.3 - 02.12.2025 =
-Fixed: Vulnerability in zip import.
-
-= 2.13.2 - 19.11.2025 =
-Updated: Performance improvements.
-
-= 2.13.1 - 14.11.2025 =
-Added: Enhancements for zip import.
-
-= 2.13.0 - 12.11.2025 =
-Added: Yoast/Rank Math/SEOPress image sitemaps.
-
-= 2.12.30 - 11.11.2025 =
-Fixed: Improved remote requests handling.
-
-= 2.12.29 - 07.11.2025 =
-Fixed: Security issue.
-
-= 2.12.28 - 05.11.2025 =
-Added: Filters to exclude Modula JS files from third-party optimization plugins.
-Added: Black Friday upsells & notifications updates.
-Fixed: Missing data-image-id on lightbox link.
-
-= 2.12.27 - 24.10.2025 =
-Fixed: Left/Right thumbnail navigation.
-Fixed: Lightbox image display.
-Fixed: Custom gallery Guttenberg preview.
-Fixed: Divi builder compatibility.
-
-= 2.12.26 - 20.10.2025 =
-Updated: Fancybox Lightbox to version 5.0.36.
-Changed: Enabled the Custom Responsiveness setting by default for a better out of the box experience.
-Fixed: Missing text domains in some strings.
-Fixed: Load in view setting causing gallery images to remain hidden.
-Added: Debounce on window resize.
-Added: Interactive elements now include proper button roles and visible focus indicators, improving WCAG 2.1 compliance.
-
-= 2.12.25 - 18.09.2025 =
-Update: Better fit for social icons when using smaller images.
-
-= 2.12.23 - 29.08.2025 =
-Update: Share icons.
-Added: Collapsable social buttons for desktop and set default to be collapsed.
-
-= 2.12.22 - 28.08.2025 =
-Fixed: Social icons hover display issue.
-
-= 2.12.21 - 27.08.2025 =
-Fixed: Loading effect 'in view' setting not properly working.
-
-= 2.12.20 - 20.08.2025 =
-Fixed: Gallery jumping/scrolling issue in Elementor due to lazy load re-rendering.
-
-= 2.12.19 - 12.08.2025 =
-Fixed: Broken lightbox images when original image type was .heic.
-
-= 2.12.18 - 28.07.2025 =
-Added: Filter `modula_show_alignment_options` to allow enabling image alignment options.
-Fixed: Inconsistency between masonry script responsive breakpoints and CSS breakpoints.
-
-= 2.12.17 - 22.07.2025 =
-Added: Compatibility with Translatepress.
-
-= 2.12.16 - 14.07.2025 =
-Enhancement: The `modula_gallery_images` filter now receives the `gallery_id` parameter, allowing for more context-aware modifications.
-
-= 2.12.15 - 08.07.2025 =
-Added: Compatibility with Imagify and Modula Lazy Load option.
-
-= 2.12.14 - 07.07.2025 =
-Fixed: PHP warning when image has no valign or halign.
-
-= 2.12.13 - 24.06.2025 =
-Added: Compatibility with Imagify.
-
-= 2.12.12 - 13.05.2025 =
-Fixed: Security update
-
-= 2.12.11 - 26.03.2025 =
-Fixed: Import sources are now queried only on the Modula settings page.
-Update: Improved code formatting for the gallery template.
-
-= 2.12.10 - 19.03.2025 =
-Updated: Twitter icon to X icon.
-Added: Upsells in gallery edit screen.
-
-= 2.12.9 – 18.03.2025 =
-Changed: Removed tooltips.
-Update: Links to online knowledge base.
-Update: Default gallery type set to Masonry.
-Update: Title and Caption default size values.
-Update: Removed Misc tab from general settings.
-
-= 2.12.8 - 15.03.2025 =
-Added: Performance improvements in gallery listing page.
-
-= 2.12.7 - 12.03.2025 =
-Fixed: Fixes a PHP error occurring in certain scenarios
-
-= 2.12.6 - 11.03.2025 =
-Update: Notification system to WPChill Notification System.
-Fixed: Custom galleries preview images wrong scaling after image/bulk edit.
-Added: Upsells for Modula Comments.
-Fixed: Fixed: PHP Warning
-
-= 2.12.5 - 07.03.2025 =
-Fixed: Escaping of links in image's title & caption.
-
-= 2.12.4 - 06.03.2025 =
-Fixed: Not displaying image metadata properly
-Fixed: Saving image metadata on gallery edit
-
-= 2.12.3 - 05.03.2025 =
-Fixed: Do not strip image's title & caption html tags on image edit.
-
-= 2.12.2 - 05.03.2025 =
-Fixed: Plugin loading order.
-
-= 2.12.1 – 03.03.2025 =
-Fixed: AI Image Optimizer update method.
-
-= 2.12.0 – 28.02.2025 =
-Added: AI Image Optimizer.
-
-= 2.11.11 – 07.01.2025 =
-Fixed: ZIP file vulnerability fix.
-
-See the full changelog [here](https://github.com/WPChill/modula-lite/blob/master/changelog.txt).
-
-== Upgrade Notice ==
-
-= 2.11.11 =
-This update resolved a vulnerability for ZIP files!
