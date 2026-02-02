@@ -1149,41 +1149,34 @@ class Modula_Settings {
 					'badge'       => 'starter',
 				),
 				array(
-					'id'          => 'vimeo',
-					'type'        => 'oauth',
-					'provider'    => 'vimeo',
-					'title'       => esc_html__( 'Vimeo', 'modula-best-grid-gallery' ),
-					'description' => esc_html__( 'Connect Modula to your Vimeo account.', 'modula-best-grid-gallery' ),
-					'status'      => array(
-						'connected'        => $vimeo_connected,
-						'textConnected'    => esc_html__( 'Connected', 'modula-best-grid-gallery' ),
-						'textDisconnected' => esc_html__( 'Not connected', 'modula-best-grid-gallery' ),
-					),
-					'connect'     => array(
-						'href'     => $vimeo_connected ? '#' : $vimeo_connect,
-						'label'    => empty( $vimeo_creds['client_id'] ) ? esc_html__( 'Save your credentials first', 'modula-best-grid-gallery' ) : esc_html__( 'Connect to Vimeo', 'modula-best-grid-gallery' ),
-						'disabled' => empty( $vimeo_creds['client_id'] ),
-					),
-					'disconnect'  => array(
-						'label' => esc_html__( 'Disconnect', 'modula-best-grid-gallery' ),
-						'api'   => array(
-							'path'   => '/modula-best-grid-gallery/v1/video/vimeo/',
-							'method' => 'POST',
-							'data'   => array( 'action' => 'disconnect' ),
-						),
-					),
-					'docs'        => array(
-						'href'  => 'https://wp-modula.com/kb/how-to-connect-modula-to-vimeo-and-add-video-playlists-to-your-galleries/',
-						'label' => esc_html__( 'Need help?', 'modula-best-grid-gallery' ),
-					),
-					'locked'      => true,
-					'badge'       => 'starter',
-				),
-				array(
 					'id'          => 'vimeo_credentials',
 					'type'        => 'credentials_group',
 					'title'       => esc_html__( 'Vimeo credentials', 'modula-best-grid-gallery' ),
 					'description' => esc_html__( 'Add your Vimeo app keys to enable the connection.', 'modula-best-grid-gallery' ),
+					'oauth'       => array(
+						'status'     => array(
+							'connected'        => $vimeo_connected,
+							'textConnected'    => esc_html__( 'Connected', 'modula-best-grid-gallery' ),
+							'textDisconnected' => esc_html__( 'Not connected', 'modula-best-grid-gallery' ),
+						),
+						'connect'    => array(
+							'href'     => $vimeo_connected ? '#' : $vimeo_connect,
+							'label'    => empty( $vimeo_creds['client_id'] ) ? esc_html__( 'Save your credentials first', 'modula-best-grid-gallery' ) : esc_html__( 'Connect to Vimeo', 'modula-best-grid-gallery' ),
+							'disabled' => empty( $vimeo_creds['client_id'] ),
+						),
+						'disconnect' => array(
+							'label' => esc_html__( 'Disconnect', 'modula-best-grid-gallery' ),
+							'api'   => array(
+								'path'   => '/modula-best-grid-gallery/v1/video/vimeo/',
+								'method' => 'POST',
+								'data'   => array( 'action' => 'disconnect' ),
+							),
+						),
+						'docs'       => array(
+							'href'  => 'https://wp-modula.com/kb/how-to-connect-modula-to-vimeo-and-add-video-playlists-to-your-galleries/',
+							'label' => esc_html__( 'Need help?', 'modula-best-grid-gallery' ),
+						),
+					),
 					'fields'      => array(
 						array(
 							'type'         => 'text',

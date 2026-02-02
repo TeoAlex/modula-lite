@@ -1,5 +1,8 @@
+import { Button } from '@wordpress/components';
+import { useState } from '@wordpress/element';
 import styles from './OAuthField.module.scss';
 import FieldRenderer from '../FieldRenderer';
+import { useApiCall } from '../query/useApiCall';
 
 export default function CredentialsGroup({
 	field,
@@ -9,7 +12,29 @@ export default function CredentialsGroup({
 	evaluateConditions,
 	locked = false,
 }) {
-	const { title, description, fields = [] } = field;
+	const { title, description, fields = [], oauth } = field;
+	const doApiCall = useApiCall();
+	const [loading, setLoading] = useState(false);
+
+	const connected = !!oauth?.status?.connected;
+	const statusText = oauth?.status
+		? connected
+			? oauth.status.textConnected || 'Connected'
+			: oauth.status.textDisconnected || 'Not connected'
+		: null;
+
+	const handleDisconnect = async () => {
+		if (locked || !oauth?.disconnect?.api?.path) {
+			return;
+		}
+		setLoading(true);
+		await doApiCall(
+			oauth.disconnect.api.path,
+			oauth.disconnect.api.method || 'POST',
+			oauth.disconnect.api.data || {}
+		);
+		setLoading(false);
+	};
 
 	return (
 		<div className={styles.card + ' ' + styles.compactCard}>
@@ -22,7 +47,51 @@ export default function CredentialsGroup({
 						)}
 					</div>
 				</div>
+				{oauth?.status && statusText != null && (
+					<span
+						className={`${styles.status} ${
+							connected ? styles.connected : styles.disconnected
+						}`}
+					>
+						{statusText}
+					</span>
+				)}
 			</div>
+
+			{oauth && (
+				<div className={styles.actions}>
+					{!connected && oauth.connect?.label && (
+						<Button
+							variant="primary"
+							href={oauth.connect.href}
+							disabled={
+								loading || oauth.connect.disabled || locked
+							}
+						>
+							{oauth.connect.label}
+						</Button>
+					)}
+					{connected && oauth.disconnect?.label && (
+						<Button
+							variant="secondary"
+							onClick={handleDisconnect}
+							disabled={loading || locked}
+						>
+							{oauth.disconnect.label}
+						</Button>
+					)}
+					{oauth.docs?.href && (
+						<a
+							className={styles.docs}
+							href={oauth.docs.href}
+							target="_blank"
+							rel="noreferrer"
+						>
+							{oauth.docs.label || 'Docs'}
+						</a>
+					)}
+				</div>
+			)}
 
 			<div className={styles.credentialsGrid}>
 				{fields.map((subField, idx) => {
