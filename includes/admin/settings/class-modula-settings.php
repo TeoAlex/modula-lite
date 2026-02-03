@@ -694,8 +694,8 @@ class Modula_Settings {
 	 * @since 2.11.0
 	 */
 	private function get_compression() {
-		$run_compression     = apply_filters( 'modula_speedup_run_local_compression', 'production' === wp_get_environment_type() );
-		$run_compression     = true; // Override for now.
+		$run_compression = apply_filters( 'modula_speedup_run_local_compression', 'production' === wp_get_environment_type() );
+
 		$compression         = $this->get_option_value( self::OPTION_COMPRESSION );
 		$compression_options = $this->get_compression_options();
 
@@ -766,6 +766,13 @@ class Modula_Settings {
 						'disabled'    => ! $run_compression,
 						'description' => esc_html__( 'Choose the compression type for your gallery thumbnails.', 'modula-best-grid-gallery' ),
 						'size'        => 'large',
+						'conditions'  => array(
+							array(
+								'field'      => 'enable_optimization',
+								'comparison' => '===',
+								'value'      => self::DEFAULT_ENABLED,
+							),
+						),
 					)
 				),
 				$this->build_select_field(
@@ -777,6 +784,13 @@ class Modula_Settings {
 						'disabled'    => ! $run_compression,
 						'description' => esc_html__( 'Choose the compression type for your gallery lightbox images.', 'modula-best-grid-gallery' ),
 						'size'        => 'large',
+						'conditions'  => array(
+							array(
+								'field'      => 'enable_optimization',
+								'comparison' => '===',
+								'value'      => self::DEFAULT_ENABLED,
+							),
+						),
 					)
 				),
 			)
@@ -1183,6 +1197,7 @@ class Modula_Settings {
 							'name'         => 'modula_video_vimeo_creds.client_id',
 							'label'        => esc_html__( 'Vimeo Client ID', 'modula-best-grid-gallery' ),
 							'default'      => isset( $vimeo_creds['client_id'] ) ? $vimeo_creds['client_id'] : '',
+							'readonly'     => $vimeo_connected,
 							'sanitization' => array( 'text' ),
 						),
 						array(
@@ -1190,6 +1205,7 @@ class Modula_Settings {
 							'name'         => 'modula_video_vimeo_creds.client_secret',
 							'label'        => esc_html__( 'Vimeo Client Secret', 'modula-best-grid-gallery' ),
 							'default'      => isset( $vimeo_creds['client_secret'] ) ? $vimeo_creds['client_secret'] : '',
+							'readonly'     => $vimeo_connected,
 							'sanitization' => array( 'text' ),
 						),
 						array(

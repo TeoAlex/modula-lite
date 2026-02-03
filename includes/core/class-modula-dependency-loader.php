@@ -65,6 +65,7 @@ class Modula_Dependency_Loader {
 		'features'          => array(
 			'features/licensing/class-modula-licensing.php',
 			'features/ai/class-client.php',
+			'features/migrate/class-modula-migrator-detector.php',
 			'features/migrate/class-modula-importer.php',
 			'features/telemetry/wpchill-telemetry-loader.php',
 			'features/telemetry/class-modula-telemetry-integration.php',

@@ -24,12 +24,16 @@ export function ComboField({
 					);
 				}
 
+				if (!isVisible) {
+					return null;
+				}
+
 				const sizeClass = item.size ? styles[item.size] : '';
 
 				return (
 					<div
 						key={item?.name || index}
-						className={`${styles.comboFieldItem} ${sizeClass} ${!isVisible ? styles.disabledClass : ''}`}
+						className={`${styles.comboFieldItem} ${sizeClass}`}
 					>
 						<form.Field
 							name={option ? `${option}.${item.name}` : item.name}

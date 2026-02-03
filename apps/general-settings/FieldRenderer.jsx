@@ -17,7 +17,7 @@ const FieldRenderer = ({
 	handleChange,
 	disabled = false,
 }) => {
-	const isDisabled = disabled || field.readonly;
+	const isDisabled = disabled || field.readonly || field.disabled;
 
 	switch (field.type) {
 		case 'toggle':

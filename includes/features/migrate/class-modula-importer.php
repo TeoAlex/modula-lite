@@ -29,6 +29,11 @@ class Modula_Importer {
 		// Required files
 		require_once MODULA_PATH . 'includes/features/migrate/wp-core-gallery/class-modula-wp-core-gallery-importer.php';
 
+		// Ensure migrator detector is instantiated for notification and install script.
+		if ( class_exists( 'Modula_Migrator_Detector' ) ) {
+			Modula_Migrator_Detector::get_instance();
+		}
+
 		// Load the plugin.
 		$this->init();
 	}
@@ -203,7 +208,7 @@ class Modula_Importer {
 
 	public function get_galleries_by_source( $source = false ) {
 
-		if ( ! $source || 'none' == $source ) {
+		if ( ! $source || 'none' === $source ) {
 				return array(
 					'success' => false,
 					'error'   => esc_html__( 'There is no source selected', 'modula-best-grid-gallery' ),

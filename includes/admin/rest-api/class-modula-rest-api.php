@@ -14,6 +14,11 @@ class Modula_Rest_Api {
 		Modula_Extensions_Base::get_instance();
 
 		$this->settings = Modula_Settings::get_instance();
+
+		if ( class_exists( 'Modula_Migrator_Detector' ) ) {
+			require_once MODULA_PATH . 'includes/admin/rest-api/class-modula-migrator-rest.php';
+			new Modula_Migrator_Rest();
+		}
 	}
 
 	public function register_routes() {

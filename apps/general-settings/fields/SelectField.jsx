@@ -19,6 +19,7 @@ export default function SelectField({
 				onChange={(val) => handleChange(val)}
 				disabled={disabled}
 				label={field.label}
+				readOnly={field?.readonly ?? false}
 				help={field.description}
 				__nextHasNoMarginBottom={true}
 				__next40pxDefaultSize={true}
