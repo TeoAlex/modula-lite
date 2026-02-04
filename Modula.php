@@ -75,7 +75,35 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-modula.php';
 
 // Action Scheduler
 require_once plugin_dir_path( __FILE__ ) . 'includes/libraries/action-scheduler/action-scheduler.php';
+/**
+ * Ensures Modula Pro (modula/Modula.php) loads right after Lite so extensions
+ * that depend on Modula_Pro do not run before the class exists.
+ * Runs on every request when Lite loads first; updates DB for the next request.
+ *
+ * @since 2.14.0
+ */
+function modula_ensure_pro_loads_after_lite() {
+	$lite = 'modula-best-grid-gallery/Modula.php';
+	$pro  = 'modula/Modula.php';
+	$list = (array) get_option( 'active_plugins', array() );
 
+	$key_lite = array_search( $lite, $list, true );
+	$key_pro  = array_search( $pro, $list, true );
+
+	if ( false === $key_pro ) {
+		return;
+	}
+
+	$want_pro_index = ( false !== $key_lite ) ? 1 : 0;
+	if ( $key_pro === $want_pro_index ) {
+		return;
+	}
+	unset( $list[ $key_pro ] );
+	$list = array_values( $list );
+	array_splice( $list, $want_pro_index, 0, array( $pro ) );
+
+	update_option( 'active_plugins', $list );
+}
 /**
  * Begins execution of the plugin.
  *
@@ -86,6 +114,7 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/libraries/action-scheduler/
  * @since    2.0.0
  */
 function modula_run() {
+	modula_ensure_pro_loads_after_lite();
 	new Modula();
 }
 
