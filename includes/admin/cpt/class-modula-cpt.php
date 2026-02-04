@@ -231,6 +231,11 @@ class Modula_CPT {
 				continue;
 			}
 
+			if ( isset( $image['video_template'] ) && boolval( $image['video_template'] ) ) {
+				$valid_images[] = $image;
+				continue;
+			}
+
 			$attachment_id = absint( $image['id'] );
 			if ( ! $attachment_id ) {
 				continue;
