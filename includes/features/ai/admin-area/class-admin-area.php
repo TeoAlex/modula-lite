@@ -27,8 +27,6 @@ class Admin_Area {
 			)
 		);
 
-		$helper['settings_url'] = esc_url( admin_url( 'edit.php?post_type=modula-gallery&page=modula&tab=optimization' ) );
-
 		return $helper;
 	}
 }

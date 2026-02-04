@@ -36,15 +36,16 @@ class Modula_Admin_Assets {
 		$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min';
 
 		$modula_helper = array(
-			'items'     => array(),
-			'settings'  => array(),
-			'strings'   => array(
+			'items'        => array(),
+			'settings'     => array(),
+			'strings'      => array(
 				'limitExceeded' => '',
 			),
-			'id'        => $post_id,
-			'_wpnonce'  => wp_create_nonce( 'modula-ajax-save' ),
-			'ajax_url'  => admin_url( 'admin-ajax.php' ),
-			'admin_url' => admin_url(),
+			'id'           => $post_id,
+			'_wpnonce'     => wp_create_nonce( 'modula-ajax-save' ),
+			'ajax_url'     => admin_url( 'admin-ajax.php' ),
+			'admin_url'    => admin_url(),
+			'settings_url' => admin_url( 'edit.php?post_type=modula-gallery&page=modula&tab=optimization' ),
 		);
 
 		$allowed_post_types = apply_filters( 'modula_enqueue_for_post_types', array( 'modula-gallery' ) );
