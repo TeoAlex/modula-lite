@@ -1,5 +1,5 @@
 import styles from './header.module.scss';
-import modulaLogo from '../../assets/images/logo-dark.webp';
+import modulaLogo from '../../assets/images/modula-logo-black.webp';
 export default function Header() {
 	return (
 		<>

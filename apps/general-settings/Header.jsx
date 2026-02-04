@@ -1,4 +1,4 @@
-import logoUrl from '../../assets/images/logo-dark.webp';
+import logoUrl from '../../assets/images/modula-logo-black.webp';
 
 export default function Header() {
 		<>
