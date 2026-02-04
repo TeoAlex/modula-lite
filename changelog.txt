@@ -19,6 +19,9 @@ Fixed: Security issues.
 
 = 2.13.4 - 08.12.2025 =
 Fixed: Security issues.
+Added: TinyMCE editor for captions.
+Changed: Removed debug gallery metabox.
+Fixed: WordPress improter not properly exporting galleries.
 
 = 2.13.3 - 02.12.2025 =
 Fixed: Vulnerability in zip import.

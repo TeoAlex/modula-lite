@@ -4,6 +4,7 @@ import useStateContext from './context/useStateContext';
 import { useModulaAiQuery } from './query/useModulaAiQuery';
 import { Button, Spinner } from '@wordpress/components';
 import { useCallback } from '@wordpress/element';
+import SparkleIcon from './sparkleIcon';
 
 export function Actions() {
 	const mutation = useGalleryMutation();
@@ -56,8 +57,8 @@ export function Actions() {
 	if (0 === state?.imagesWithoutAlt) {
 		return (
 			<div className="modula-ai-actions">
-				<Button variant="secondary" onClick={optimizeAll}>
-					{__('Refresh reports', 'modula-best-grid-gallery')}
+				<Button icon={ <SparkleIcon /> } variant="secondary" onClick={optimizeAll}>
+					{__('Regenerate with Modula AI', 'modula-best-grid-gallery')}
 				</Button>
 			</div>
 		);

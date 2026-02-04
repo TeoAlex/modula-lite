@@ -69,7 +69,8 @@ class Modula_Shortcode {
 			'align' => '',
 		);
 
-		$atts = wp_parse_args( $atts, $default_atts );
+		$raw_atts = (array) $atts;
+		$atts     = wp_parse_args( $raw_atts, $default_atts );
 
 		if ( ! $atts['id'] ) {
 			return esc_html__( 'Gallery not found.', 'modula-best-grid-gallery' );
@@ -111,6 +112,17 @@ class Modula_Shortcode {
 
 		/* Get gallery settings */
 		$settings = apply_filters( 'modula_backwards_compatibility_front', get_post_meta( $atts['id'], 'modula-settings', true ), $atts );
+
+		unset( $raw_atts['id'], $raw_atts['align'] );
+
+		// Override existing settings with shortcode atts (only if the key already exists).
+		foreach ( $raw_atts as $attr_key => $value ) {
+			$camel_key = Modula_Helper::snake_to_camel( $attr_key );
+
+			if ( array_key_exists( $camel_key, $settings ) ) {
+				$settings[ $camel_key ] = $value;
+			}
+		}
 
 		$default = Modula_CPT_Fields_Helper::get_defaults();
 
@@ -361,15 +373,15 @@ class Modula_Shortcode {
 		}
 
 		if ( '' != $settings['captionFontSize'] && 0 != $settings['captionFontSize'] ) {
-			$css .= "#{$gallery_id} .modula-items .figc p.description { font-size:" . absint( $settings['captionFontSize'] ) . 'px; }';
+			$css .= "#{$gallery_id} .modula-items .figc p.description,#{$gallery_id} .modula-items .figc .jtg-description { font-size:" . absint( $settings['captionFontSize'] ) . 'px; }';
 		}
 
-		$css .= "#{$gallery_id} .modula-items .figc p.description { color:" . Modula_Helper::sanitize_rgba_colour( $settings['captionColor'] ) . ';}';
+		$css .= "#{$gallery_id} .modula-items .figc p.description,#{$gallery_id} .modula-items .figc .jtg-description { color:" . Modula_Helper::sanitize_rgba_colour( $settings['captionColor'] ) . ';}';
 		if ( '' != $settings['titleColor'] ) {
 			$css .= "#{$gallery_id} .modula-items .figc .jtg-title { color:" . Modula_Helper::sanitize_rgba_colour( $settings['titleColor'] ) . '; }';
 		}
 		if ( ! isset( $settings['lightbox'] ) || 'no-link' != $settings['lightbox'] ) {
-			$css .= "#{$gallery_id}.modula-gallery .modula-item > a, #{$gallery_id}.modula-gallery .modula-item, #{$gallery_id}.modula-gallery .modula-item-content > a:not(.modula-no-follow) { cursor:" . esc_attr( $settings['cursor'] ) . '; } ';
+			$css .= "#{$gallery_id}.modula-gallery .modula-item > a, #{$gallery_id}.modula-gallery .modula-item a.modula-item-link, #{$gallery_id}.modula-gallery .modula-item-content > a:not(.modula-no-follow) { cursor:" . esc_attr( $settings['cursor'] ) . '; } ';
 		}
 		$css .= "#{$gallery_id}.modula-gallery .modula-item-content .modula-no-follow { cursor: default; } ";
 		$css  = apply_filters( 'modula_shortcode_css', $css, $gallery_id, $settings );
@@ -385,7 +397,7 @@ class Modula_Shortcode {
 			$css .= "#{$gallery_id} .modula-item .figc .jtg-title {  font-size: " . absint( $settings['mobileTitleFontSize'] ) . 'px; }';
 		}
 
-		$css .= "#{$gallery_id} .modula-items .figc p.description { color:" . Modula_Helper::sanitize_rgba_colour( $settings['captionColor'] ) . ';font-size:' . absint( $settings['mobileCaptionFontSize'] ) . 'px; }';
+		$css .= "#{$gallery_id} .modula-items .figc p.description,#{$gallery_id} .modula-items .figc .jtg-description { color:" . Modula_Helper::sanitize_rgba_colour( $settings['captionColor'] ) . ';font-size:' . absint( $settings['mobileCaptionFontSize'] ) . 'px; }';
 
 		$css .= '}';
 

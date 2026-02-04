@@ -408,7 +408,7 @@ p.modula-onboarding-doc > a {
 	top: 9px;
 }
 
-.modula-ai-report-button {
+#wp-media-modal .modula-ai-report .modula-ai-report-button {
 	cursor: pointer;
 	padding: 0 15px;
 	text-align: center;
@@ -417,6 +417,14 @@ p.modula-onboarding-doc > a {
 	transition:
 		color 0.1s ease-in-out,
 		background 0.1s ease-in-out;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 5px;
+}
+
+#wp-media-modal .modula-ai-report .modula-ai-report-button svg {
+	fill: currentColor;
 }
 
 .media-frame-title {

@@ -4,6 +4,7 @@ import { Spinner, Button } from '@wordpress/components';
 import { Optimizing } from './optimizing';
 import { Optimized } from './optimized';
 import { ErrorLog } from './debug';
+import SparkleIcon from './sparkleIcon';
 import useStateContext from './context/useStateContext';
 import { __ } from '@wordpress/i18n';
 
@@ -14,10 +15,11 @@ export function Optimizer() {
 		return (
 			<div className="modula-ai-start-container">
 				<Button
+					icon={ <SparkleIcon /> }
 					variant="primary"
 					onClick={ () => dispatch( { type: 'SET_STARTED', payload: true } ) }
 				>
-					{ __( 'Start optimizing now', 'modula-gallery' ) }
+					{ __( 'Generate with Modula AI', 'modula-gallery' ) }
 				</Button>
 			</div>
 		);
