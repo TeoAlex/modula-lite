@@ -142,7 +142,7 @@ class Modula_Admin_Assets {
 				true
 			);
 			wp_enqueue_script( 'modula-pro-tilt', MODULA_URL . 'assets/js/admin/modula-pro-tilt' . $suffix . '.js', array( 'jquery' ), MODULA_LITE_VERSION, true );
-
+			wp_enqueue_editor();
 			wp_enqueue_script( 'modula-save', MODULA_URL . 'assets/js/admin/wp-modula-save' . $suffix . '.js', array(), MODULA_LITE_VERSION, true );
 			wp_enqueue_script( 'modula-items', MODULA_URL . 'assets/js/admin/wp-modula-items' . $suffix . '.js', array(), MODULA_LITE_VERSION, true );
 			wp_enqueue_script( 'modula-modal', MODULA_URL . 'assets/js/admin/wp-modula-modal' . $suffix . '.js', array(), MODULA_LITE_VERSION, true );

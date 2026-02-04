@@ -287,7 +287,6 @@ class Modula_Importer {
 		);
 	}
 
-
 	/**
 	 * Prepare gallery images
 	 *
