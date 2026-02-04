@@ -270,8 +270,10 @@ class Modula_Importer {
 					break;
 			}
 
-			$id  = absint( $g_gallery['id'] );
-			$val = ( $value ) ? $value : $id;
+			// Small fix for wp_core galleries
+			$val          = ( $value ) ? $value : $g_gallery['id'];
+			$upload_count = absint( $g_gallery['count'] );
+			$id           = ( 'wp_core' === $source ) ? sanitize_text_field( $g_gallery['id'] ) : absint( $g_gallery['id'] );
 
 			$data[] = array(
 				'label' => wp_strip_all_tags( $g_gallery['title'] ),

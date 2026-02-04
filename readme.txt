@@ -325,6 +325,15 @@ The simplest way to install is to click on 'Plugins' then 'Add' and type 'Modula
 4. Mobile Responsive Image Galleries - Galleries automatically adapt to smartphone and tablet screen sizes
 
 == Changelog ==
+= 2.13.9 - 02.02.2026 =
+Added: Additional $atts parameter to frontend shortcode settings filter.
+Updated: Admin shortcodes dropdown design.
+
+= 2.13.8 - 29.01.2026 =
+Fixed: Compatibility with Imagify plugin.
+Fixed: Core gallery importer.
+Added: Support for shortcodes dropdown in gallery edit screen.
+
 = 2.13.7 - 27.01.2026 =
 Fixed: Security issues.
 
