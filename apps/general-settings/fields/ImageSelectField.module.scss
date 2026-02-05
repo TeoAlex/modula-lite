@@ -1,0 +1,45 @@
+.imageSelectField {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.imageContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.imagePreview {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    aspect-ratio: 1;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #f6f7f7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+    }
+}
+
+.uploadPlaceholder {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+}
+
+.imageActions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}

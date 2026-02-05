@@ -1,3 +1,8 @@
+= 2.14.0 - 05.02.2026 =
+Changed: Multiple improvements to the codebase.
+Added: Support for extensions bundled in pro
+Fixed: Various issues and bugs.
+
 = 2.13.9 - 02.02.2026 =
 Added: Additional $atts parameter to frontend shortcode settings filter.
 Updated: Admin shortcodes dropdown design.
@@ -19,6 +24,9 @@ Fixed: Security issues.
 
 = 2.13.4 - 08.12.2025 =
 Fixed: Security issues.
+Added: TinyMCE editor for captions.
+Changed: Removed debug gallery metabox.
+Fixed: WordPress improter not properly exporting galleries.
 
 = 2.13.3 - 02.12.2025 =
 Fixed: Vulnerability in zip import.
