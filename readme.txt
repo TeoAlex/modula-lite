@@ -325,6 +325,11 @@ The simplest way to install is to click on 'Plugins' then 'Add' and type 'Modula
 4. Mobile Responsive Image Galleries - Galleries automatically adapt to smartphone and tablet screen sizes
 
 == Changelog ==
+= 2.14.0 - 05.02.2026 =
+Changed: Multiple improvements to the codebase.
+Added: Support for extensions bundled in pro
+Fixed: Various issues and bugs.
+
 = 2.13.9 - 02.02.2026 =
 Added: Additional $atts parameter to frontend shortcode settings filter.
 Updated: Admin shortcodes dropdown design.

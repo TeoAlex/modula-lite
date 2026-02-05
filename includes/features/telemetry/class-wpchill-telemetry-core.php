@@ -669,7 +669,7 @@ class WPChill_Telemetry_Core {
 	 * AJAX handler for opt out
 	 */
 	public function ajax_opt_out() {
-		check_ajax_referer( 'wpchill_telemetry_nonce', 'wpchill_telemetry_nonce' );
+		check_ajax_referer( 'wpchill_telemetry_nonce', 'nonce' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( 'Unauthorized' );
