@@ -292,12 +292,25 @@ export default function ExtensionLicenseHeader() {
 					</div>
 				) : (
 					<div className={styles.licenseInactive}>
-						<p className={styles.greeting}>
-							{__(
-								'Hello, please enter your license key to activate extensions',
-								'modula-best-grid-gallery'
-							)}
-						</p>
+						<div className={styles.licenseTextWrapper}>
+							<p className={styles.greeting}>
+								{__(
+									'Hello, please enter your license key to activate extensions',
+									'modula-best-grid-gallery'
+								)}
+							</p>
+							<a
+								href="https://wp-modula.com/kb/how-to-retrieve-your-license-key/"
+								target="_blank"
+								rel="noopener noreferrer"
+								className={styles.forgotLicenseLink}
+							>
+								{__(
+									'Forgot your license?',
+									'modula-best-grid-gallery'
+								)}
+							</a>
+						</div>
 						<Button
 							variant="link"
 							onClick={() => {
