@@ -100,25 +100,26 @@ jobs:
               if: always()
               run: |
                   if [[ "${{ steps.generate-release-post.outputs.api_status }}" =~ ^2 ]]; then
-                      # Create message using printf to avoid shell interpretation
-                      MESSAGE=$(printf '%s\n\n%s\n%s\n%s\n\n%s\n%s\n\n%s' \
-                        "🎉 *Release Post Generated Successfully!*" \
-                        "*Version:* ${{ steps.package-version.outputs.current-version }}" \
-                        "*Repository:* ${{ github.repository }}" \
-                        "*PR:* #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}" \
-                        "*Summary:*" \
-                        "${{ steps.generate-release-post.outputs.summary }}" \
-                        "The release post has been created and is ready for review.")
+                      MESSAGE="🎉 *Release Post Generated Successfully!*
+
+                      *Version:* ${{ steps.package-version.outputs.current-version }}
+                      *Repository:* ${{ github.repository }}
+                      *PR:* #${{ github.event.pull_request.number }} - ${{ github.event.pull_request.title }}
+
+                      *Summary:*
+                      ${{ steps.generate-release-post.outputs.summary }}
+
+                      The release post has been created and is ready for review."
                   else
-                      MESSAGE=$(printf '%s\n\n%s\n%s\n%s\n\n%s' \
-                        "❌ *Release Post Generation Failed*" \
-                        "*Version:* ${{ steps.package-version.outputs.current-version }}" \
-                        "*Repository:* ${{ github.repository }}" \
-                        "*Error:* HTTP ${{ steps.generate-release-post.outputs.api_status }}" \
-                        "Please check the workflow logs for more details.")
+                      MESSAGE="❌ *Release Post Generation Failed*
+
+                      *Version:* ${{ steps.package-version.outputs.current-version }}
+                      *Repository:* ${{ github.repository }}
+                      *Error:* HTTP ${{ steps.generate-release-post.outputs.api_status }}
+
+                      Please check the workflow logs for more details."
                   fi
 
-                  # Send to Slack using jq for proper JSON escaping
-                  echo "$MESSAGE" | jq -Rs '{"text": .}' | curl -X POST ${{ secrets.SLACK_WEBHOOK_URL }} \
+                  curl -X POST ${{ secrets.SLACK_WEBHOOK_URL }} \
                       -H "Content-type: application/json" \
-                      --data-binary @-
+                      -d "{\"text\": \"$MESSAGE\"}"
