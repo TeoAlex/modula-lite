@@ -71,12 +71,14 @@ if ( ! class_exists( 'WPChill_Remote_Upsells' ) ) {
 			// Load and apply active promotions
 			$this->load_active_promotions();
 
-			// Clean up on plugin deactivation
+			// Register activation and deactivation hooks
 			$plugin_slug    = explode( '/', plugin_basename( __FILE__ ) )[0];
 			$active_plugins = (array) get_option( 'active_plugins', array() );
 			foreach ( $active_plugins as $active_plugin ) {
 				if ( 0 === strpos( $active_plugin, $plugin_slug . '/' ) ) {
-					register_deactivation_hook( WP_PLUGIN_DIR . '/' . $active_plugin, array( $this, 'deactivate' ) );
+					$plugin_file = WP_PLUGIN_DIR . '/' . $active_plugin;
+					register_activation_hook( $plugin_file, array( $this, 'activate' ) );
+					register_deactivation_hook( $plugin_file, array( $this, 'deactivate' ) );
 					break;
 				}
 			}
@@ -350,7 +352,7 @@ if ( ! class_exists( 'WPChill_Remote_Upsells' ) ) {
 					esc_html( $button['text'] )
 				);
 
-				$button_index++;
+				++$button_index;
 			}
 
 			return $new_buttons;
@@ -433,6 +435,13 @@ if ( ! class_exists( 'WPChill_Remote_Upsells' ) ) {
 			$this->load_active_promotions();
 
 			return $this->has_active_promotions();
+		}
+
+		/**
+		 * Run initial promotions check on plugin activation
+		 */
+		public function activate() {
+			$this->fetch_remote_upsells();
 		}
 
 		/**
