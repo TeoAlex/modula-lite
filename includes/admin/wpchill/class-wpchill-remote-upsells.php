@@ -204,7 +204,7 @@ if ( ! class_exists( 'WPChill_Remote_Upsells' ) ) {
 			$response = wp_remote_get(
 				$api_url,
 				array(
-					'sslverify' => false,
+					'sslverify' => true,
 					'timeout'   => 15,
 				)
 			);
@@ -391,7 +391,7 @@ if ( ! class_exists( 'WPChill_Remote_Upsells' ) ) {
 			}
 
 			if ( ! empty( $css ) ) {
-				echo '<style>' . wp_kses_post( $css ) . '</style>';
+				echo '<style>' . wp_strip_all_tags( $css ) . '</style>';
 			}
 		}
 
@@ -462,7 +462,7 @@ if ( ! class_exists( 'WPChill_Remote_Upsells' ) ) {
 		 * @return array
 		 */
 		public function get_transients_to_clear( $transients ) {
-			$transients[] = $this->option_name;
+			$transients[] = $this->cache_transient;
 			return $transients;
 		}
 	}
