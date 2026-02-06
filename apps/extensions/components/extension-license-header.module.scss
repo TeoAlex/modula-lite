@@ -56,12 +56,19 @@
 	flex: 1;
 	min-width: 0;
 
+	.licenseTextWrapper {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		flex: 1;
+		min-width: 0;
+	}
+
 	.greeting {
 		margin: 0;
 		font-size: 13px;
 		line-height: 1.5;
 		color: var(--theme-text-color);
-		flex: 1;
 
 		.activationLink {
 			color: var(--theme-link-initial-color);
@@ -72,6 +79,20 @@
 				color: var(--theme-link-hover-color);
 				text-decoration: underline;
 			}
+		}
+	}
+
+	.forgotLicenseLink {
+		font-size: 12px;
+		line-height: 1.5;
+		color: var(--theme-link-initial-color);
+		text-decoration: none;
+		margin-top: 4px;
+		display: inline-block;
+
+		&:hover {
+			color: var(--theme-link-hover-color);
+			text-decoration: underline;
 		}
 	}
 }
