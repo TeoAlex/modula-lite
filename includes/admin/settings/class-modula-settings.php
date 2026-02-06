@@ -835,6 +835,9 @@ class Modula_Settings {
 	 */
 	private function get_shortcodes() {
 		$shortcodes = $this->get_option_value( self::OPTION_SHORTCODES, null, 'gallery_id' );
+		if ( ! is_string( $shortcodes ) ) {
+			$shortcodes = 'gallery_id';
+		}
 
 		return array(
 			'fields' => array(

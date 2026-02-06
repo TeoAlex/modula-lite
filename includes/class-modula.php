@@ -142,7 +142,7 @@ class Modula {
 	 * @return void
 	 */
 	public function initialize_divi_extension(): void {
-		require_once MODULA_PATH . 'includes/third-party-builders/divi-extension/includes/DiviExtension.php';
+		require_once MODULA_PATH . 'includes/features/third-party-builders/divi-extension/includes/DiviExtension.php';
 	}
 
 	/**

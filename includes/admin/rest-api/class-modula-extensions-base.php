@@ -46,7 +46,9 @@ class Modula_Extensions_Base {
 	public function __construct() {
 		$this->create_plan_map();
 		add_action( 'init', array( $this, 'add_default_extensions' ) );
-		add_filter( 'modula_admin_page_subtabs', array( $this, 'replace_proper_badges' ) );
+		if ( ! class_exists( 'Modula_Pro\Extensions\Extensions' ) ) {
+			add_filter( 'modula_admin_page_subtabs', array( $this, 'replace_proper_badges' ) );
+		}
 	}
 
 	/**

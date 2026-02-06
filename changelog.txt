@@ -1,3 +1,8 @@
+= 2.14.0 - 05.02.2026 =
+Changed: Multiple improvements to the codebase.
+Added: Support for extensions bundled in pro
+Fixed: Various issues and bugs.
+
 = 2.13.9 - 02.02.2026 =
 Added: Additional $atts parameter to frontend shortcode settings filter.
 Updated: Admin shortcodes dropdown design.
