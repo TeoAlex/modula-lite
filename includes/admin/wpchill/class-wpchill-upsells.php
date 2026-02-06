@@ -36,6 +36,13 @@ if ( ! class_exists( 'WPChill_Remote_Upsells' ) ) {
 		private $option_name = 'wpchill_upsells_data';
 
 		/**
+		 * Transient name for caching API requests
+		 *
+		 * @var string
+		 */
+		private $cache_transient = 'wpchill_upsells_cache';
+
+		/**
 		 * Remote API URL
 		 *
 		 * @var string
@@ -182,10 +189,16 @@ if ( ! class_exists( 'WPChill_Remote_Upsells' ) ) {
 		 * Fetch upsell data from remote API
 		 */
 		public function fetch_remote_upsells() {
+			// Return cached data if available
+			$cached = get_transient( $this->cache_transient );
+			if ( false !== $cached ) {
+				return $cached;
+			}
+
 			$api_url = apply_filters( 'wpchill_upsells_api_url', $this->api_url );
 
 			if ( empty( $api_url ) ) {
-				return;
+				return array();
 			}
 
 			$response = wp_remote_get(
@@ -197,29 +210,32 @@ if ( ! class_exists( 'WPChill_Remote_Upsells' ) ) {
 			);
 
 			if ( is_wp_error( $response ) ) {
-				return;
+				return array();
 			}
 
 			$status_code = wp_remote_retrieve_response_code( $response );
 			if ( 200 !== $status_code ) {
-				return;
+				return array();
 			}
 
 			$body = wp_remote_retrieve_body( $response );
 			$data = json_decode( $body, true );
 
 			if ( json_last_error() !== JSON_ERROR_NONE ) {
-				return;
+				return array();
 			}
 
 			// Validate - must be an array of promotions
 			if ( ! $this->validate_promotions_data( $data ) ) {
 				$this->clear_promotions();
-				return;
+				return array();
 			}
 
 			// Store the promotions data
 			update_option( $this->option_name, $data );
+			set_transient( $this->cache_transient, $data, DAY_IN_SECONDS );
+
+			return $data;
 		}
 
 		/**
@@ -384,6 +400,7 @@ if ( ! class_exists( 'WPChill_Remote_Upsells' ) ) {
 		 */
 		public function clear_promotions() {
 			delete_option( $this->option_name );
+			delete_transient( $this->cache_transient );
 			$this->active_promotions = array();
 		}
 
@@ -422,19 +439,6 @@ if ( ! class_exists( 'WPChill_Remote_Upsells' ) ) {
 		 */
 		public function set_api_url( $url ) {
 			$this->api_url = $url;
-		}
-
-		/**
-		 * Force refresh promotions data from API
-		 *
-		 * @return bool True if successful, false otherwise.
-		 */
-		public function force_refresh() {
-			$this->fetch_remote_upsells();
-			$this->active_promotions = array();
-			$this->load_active_promotions();
-
-			return $this->has_active_promotions();
 		}
 
 		/**
