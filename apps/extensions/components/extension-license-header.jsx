@@ -192,7 +192,7 @@ export default function ExtensionLicenseHeader() {
 				'modula-best-grid-gallery'
 			),
 			license?.product_name || '',
-			new Date(license?.expiration).toLocaleDateString()
+			new Date(license?.expiration * 1000).toLocaleDateString()
 		);
 	}, [license]);
 
