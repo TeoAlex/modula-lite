@@ -1,6 +1,6 @@
 {
 	"name": "modula-best-grid-gallery",
-	"version": "2.14.6",
+	"version": "2.14.7",
 	"description": "Modula Image Gallery build tools",
 	"author": "WPChill",
 	"license": "GPL-2.0-or-later",
@@ -35,7 +35,7 @@
 		"build:extensions": "wp-scripts build apps/extensions/index.js --output-path=./assets/js/admin/extensions --config webpack.config.react-apps.js",
 		"start:insights": "wp-scripts start apps/insights/index.js --output-path=./assets/js/admin/insights --config webpack.config.react-apps.js",
 		"build:insights": "wp-scripts build apps/insights/index.js --output-path=./assets/js/admin/insights --config webpack.config.react-apps.js",
-		"build": "npm run build:notification-system && npm run build:gallery-listing-ai && npm run build:general-settings && npm run build:extensions && npm run build:insights && wp-scripts build",
+		"build": "npm run build:notification-system && npm run build:gallery-listing-ai && npm run build:general-settings && npm run build:extensions && npm run build:insights && wp-scripts build && npm run min:css",
 		"check-engines": "wp-scripts check-engines",
 		"check-licenses": "wp-scripts check-licenses",
 		"format": "wp-scripts format",
@@ -61,7 +61,7 @@
 		"concat:css:frontend": "concat -o \"./assets/css/front.css\" \"./assets/css/front/fancybox.min.css\" \"./assets/css/front/modula.min.css\" ",
 		"min:css": "npm run min:css:frontend && npm run min:css:backend && npm run concat:css:frontend",
 		"makepot": "wp i18n make-pot . languages/modula-best-grid-gallery.pot",
-		"wpchill": "npm run min:css && npm run makepot"
+		"wpchill": "npm run min:css"
 	},
 	"stylelint": {
 		"extends": "@wordpress/stylelint-config/scss"
