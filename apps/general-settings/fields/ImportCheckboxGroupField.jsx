@@ -43,13 +43,12 @@ export default function ImportCheckboxGroupField({
 			};
 			const response = await doAjaxCall(data);
 
-			const galleryOption = options.find((opt) => opt.value === id);
 			const importData = {
 				action: 'modula_importer_' + source + '_gallery_import',
 				id,
 				nonce: field.nonce,
 				clean: deleteSource,
-				gallery_title: galleryOption?.label || '',
+				gallery_title: id,
 				attachments: response.attachments,
 				source,
 			};

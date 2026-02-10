@@ -127,7 +127,9 @@ class Modula_WP_Core_Gallery_Importer {
 			}
 			// Reinitialize as array, it may be string
 			$galery_atts = array();
-			$galery_atts = json_decode( stripslashes( $_POST['id'] ), true );
+			// Need to make replace so we can search our shortcode in content
+			$galery_atts['id']        = absint( $_POST['id']['id'] );
+			$galery_atts['shortcode'] = str_replace( '\"', '"', sanitize_text_field( $_POST['id']['shortcode'] ) );
 		}
 
 		// Get page with gallery
