@@ -757,7 +757,7 @@ class Modula_Backward_Compatibility {
 
 	public function plugin_updater() {
 
-		if ( ! is_admin() || ! class_exists( 'Modula_Pro\Updater\Base_Updater' ) ) {
+		if ( ! is_admin() || ! class_exists( 'Modula_Pro\Updater\Base_Updater' ) || ! defined( 'MODULA_PRO_VERSION' ) ) {
 			return;
 		}
 
