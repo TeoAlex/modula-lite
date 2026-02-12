@@ -47,7 +47,7 @@
  * @since    2.0.2
  */
 
-define( 'MODULA_LITE_VERSION', '2.14.9' );
+define( 'MODULA_LITE_VERSION', '2.14.10' );
 define( 'MODULA_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MODULA_URL', plugin_dir_url( __FILE__ ) );
 defined( 'MODULA_PRO_STORE_URL' ) || define( 'MODULA_PRO_STORE_URL', 'https://wp-modula.com' );
