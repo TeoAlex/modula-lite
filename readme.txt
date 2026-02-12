@@ -325,6 +325,9 @@ The simplest way to install is to click on 'Plugins' then 'Add' and type 'Modula
 4. Mobile Responsive Image Galleries - Galleries automatically adapt to smartphone and tablet screen sizes
 
 == Changelog ==
+= 2.14.10 - 12.02.2026 =
+Fixed: Various issues and bugs.
+
 = 2.14.9 - 11.02.2026 =
 Fixed: Various issues and bugs.
 
