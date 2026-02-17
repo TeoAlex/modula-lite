@@ -325,7 +325,7 @@ The simplest way to install is to click on 'Plugins' then 'Add' and type 'Modula
 4. Mobile Responsive Image Galleries - Galleries automatically adapt to smartphone and tablet screen sizes
 
 == Changelog ==
-= 2.14.12 - 16.02.2026 =
+= 2.14.12 - 17.02.2026 =
 Fixed: Modula shortcode button in tinymce editors.
 
 = 2.14.11 - 13.02.2026 =
