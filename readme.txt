@@ -325,6 +325,9 @@ The simplest way to install is to click on 'Plugins' then 'Add' and type 'Modula
 4. Mobile Responsive Image Galleries - Galleries automatically adapt to smartphone and tablet screen sizes
 
 == Changelog ==
+= 2.14.14 - 20.02.2026 =
+Fixed: Endpoint changes
+
 = 2.14.13 - 19.02.2026 =
 Fixed: Z-index issue with lightbox.
 
