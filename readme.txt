@@ -325,6 +325,12 @@ The simplest way to install is to click on 'Plugins' then 'Add' and type 'Modula
 4. Mobile Responsive Image Galleries - Galleries automatically adapt to smartphone and tablet screen sizes
 
 == Changelog ==
+= 2.14.17 - 25.02.2026 =
+Fixed: Migrator detection cache.
+
+= 2.14.16 - 23.02.2026 =
+Fixed: Moved touch navigation settings to base plugin
+
 = 2.14.14 - 20.02.2026 =
 Fixed: Endpoint changes
 
