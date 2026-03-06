@@ -1,3 +1,6 @@
+= 2.14.19 - 06.03.2026 =
+Fixed: Security issues
+
 = 2.14.18 - 03.03.2026 =
 Fixed: Enqueue front styles early.
 
