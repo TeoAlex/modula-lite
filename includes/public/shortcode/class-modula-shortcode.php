@@ -472,15 +472,8 @@ class Modula_Shortcode {
 
 		if ( isset( $settings['lightbox'] ) && 'no-link' === $settings['lightbox'] ) {
 			/* Allows text selection for hover effects titles and captions */
-			html body .modula .figc *:not(:has(*)),
-			html body .modula .figc .jtg-description,
-			html body .modula .figc .jtg-title,
-			html body .modula .figc .jtg-description:has(a) {
-				position: relative;
-				z-index: 2;
-			}
+			$css .= "#{$gallery_id}.modula-gallery .figc *:not(:has(*)), #{$gallery_id}.modula-gallery .figc .jtg-description, #{$gallery_id}.modula-gallery .figc .jtg-title, #{$gallery_id}.modula-gallery .figc .jtg-description:has(a) { position: relative; z-index: 2; }";
 		}
-
 
 		$css .= "#{$gallery_id}.modula-gallery .modula-item-content .modula-no-follow { cursor: default; } ";
 		$css  = apply_filters( 'modula_shortcode_css', $css, $gallery_id, $settings );
