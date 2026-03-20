@@ -26,6 +26,8 @@
 
 			// Check per gallery & per image if we should show title.
 			$should_hide_title = ( boolval( $data->settings['hide_title'] ) || ( isset( $image['hide_title'] ) && boolval( $image['hide_title'] ) ) );
+			$custom_size       = 'custom' === $data->settings['grid_image_size'] || 'custom' === $data->settings['slider_image_size'];
+			$crop              = boolval( $data->settings['grid_image_crop'] ) || ( isset( $data->settings['slider_image_crop'] ) && boolval( $data->settings['slider_image_crop'] ) );
 
 			// Create array with data in order to send it to image template
 			$item_data = array(
@@ -75,7 +77,7 @@
 					'alt'         => isset( $image['alt'] ) ? $image['alt'] : '',
 					'data-full'   => $full_img_src,
 					'title'       => isset( $image['title'] ) ? $image['title'] : '',
-					'crop'        => boolval( $data->settings['grid_image_crop'] ) || boolval( $data->settings['slider_image_crop'] ),
+					'crop'        => $custom_size && $crop,
 				),
 				'social_attributes'      => array(
 					'data-modula-gallery-id' => preg_replace( '/[^0-9]/', '', $data->gallery_id ),
