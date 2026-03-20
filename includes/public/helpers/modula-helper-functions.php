@@ -315,7 +315,7 @@ function modula_sources_and_sizes( $data ) {
 		return;
 	}
 
-	if ( isset( $data->gallery_type ) && $data->gallery_type && isset( $data->img_attributes['crop'] ) && $data->img_attributes['crop'] ) {
+	if ( isset( $data->gallery_type ) && 'slider' === $data->gallery_type && isset( $data->img_attributes['crop'] ) && $data->img_attributes['crop'] ) {
 		echo $image;
 		return;
 	}

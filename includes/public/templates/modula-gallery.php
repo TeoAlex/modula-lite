@@ -26,7 +26,7 @@
 
 			// Check per gallery & per image if we should show title.
 			$should_hide_title = ( boolval( $data->settings['hide_title'] ) || ( isset( $image['hide_title'] ) && boolval( $image['hide_title'] ) ) );
-			$custom_size       = 'custom' === $data->settings['grid_image_size'] || 'custom' === $data->settings['slider_image_size'];
+			$custom_size       = 'custom' === $data->settings['grid_image_size'] || ( isset( $data->settings['slider_image_crop'] ) && 'custom' === $data->settings['slider_image_size'] );
 			$crop              = boolval( $data->settings['grid_image_crop'] ) || ( isset( $data->settings['slider_image_crop'] ) && boolval( $data->settings['slider_image_crop'] ) );
 
 			// Create array with data in order to send it to image template
