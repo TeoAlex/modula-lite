@@ -46,6 +46,7 @@
 				'enableEmail'            => boolval( $data->settings['enableEmail'] ),
 				'socialDesktopCollapsed' => boolval( $data->settings['socialDesktopCollapsed'] ),
 				'lazyLoad'               => modula_run_lazy_load( $data->settings ),
+				'gallery_type'           => $data->settings['type'],
 				// Video defaults (some extensions expect these properties to exist).
 				'video_template'         => false,
 				'video_type'             => false,
@@ -74,6 +75,7 @@
 					'alt'         => isset( $image['alt'] ) ? $image['alt'] : '',
 					'data-full'   => $full_img_src,
 					'title'       => isset( $image['title'] ) ? $image['title'] : '',
+					'crop'        => boolval( $data->settings['grid_image_crop'] ) || boolval( $data->settings['slider_image_crop'] ),
 				),
 				'social_attributes'      => array(
 					'data-modula-gallery-id' => preg_replace( '/[^0-9]/', '', $data->gallery_id ),
