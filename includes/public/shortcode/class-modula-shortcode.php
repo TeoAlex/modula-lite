@@ -359,6 +359,8 @@ class Modula_Shortcode {
 			$js_config['lightbox'] = 'fancybox';
 		}
 
+		$js_config['lightbox_devices'] = apply_filters( 'modula_lightbox_devices', 'both' );
+
 		return $js_config;
 	}
 

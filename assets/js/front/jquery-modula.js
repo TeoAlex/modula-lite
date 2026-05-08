@@ -13,6 +13,21 @@ if (
 	jQueryBridget('modulaisotope', window.ModulaIsotope, jQuery);
 }
 
+window.modulacheckDevice = function ( opts ) {
+	if ( 'undefined' != typeof opts ) {
+		var devices = true;
+		if ( 'undefined' != typeof opts.lightbox_devices && 'both' !== opts.lightbox_devices ) {
+			if ( 'mobile' == opts.lightbox_devices ) {
+				devices = 1024 > jQuery( window ).width();
+			} else {
+				devices = 1024 < jQuery( window ).width();
+			}
+		}
+		return devices;
+	}
+	return false;
+};
+
 // Compatibility with WPBakery Page Builder( reset modula after section go full width )
 jQuery(document).on(
 	'vc-full-width-row-single vc-full-width-row',
@@ -300,11 +315,13 @@ jQuery(window).on('elementor/frontend/init', function () {
 						}
 					})[0];
 
-				jQuery.modulaFancybox.open(
-					links,
-					self.options.lightboxOpts,
-					index
-				);
+				if ( modulacheckDevice( self.options ) ) {
+					jQuery.modulaFancybox.open(
+						links,
+						self.options.lightboxOpts,
+						index
+					);
+				}
 			}
 		);
 	};
