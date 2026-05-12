@@ -328,23 +328,36 @@ jQuery(window).on('elementor/frontend/init', function () {
 		if ( self.options.copyCaptionMobile ) {
 			var tapped = false, tappedTimeout;
 			var galleryId = self.element.id;
-			document.addEventListener( 'click', function ( e ) {
+			var doCopyCaption = function ( caption ) {
+				var textEl = caption.querySelector( '.modula-caption-description' );
+				var textToCopy = textEl ? textEl.textContent : caption.textContent;
+				if ( ! textToCopy.trim() ) return;
+				if ( navigator.clipboard && navigator.clipboard.writeText ) {
+					navigator.clipboard.writeText( textToCopy.trim() ).catch( function ( err ) {
+						console.error( 'Could not copy text: ', err );
+					} );
+				} else {
+					var ta = document.createElement( 'textarea' );
+					ta.value = textToCopy.trim();
+					document.body.appendChild( ta );
+					ta.select();
+					document.execCommand( 'copy' );
+					document.body.removeChild( ta );
+				}
+			};
+			document.addEventListener( 'touchend', function ( e ) {
 				var caption = e.target.closest( '.fancybox__caption' );
 				if ( ! caption ) return;
 				if ( ! caption.closest( '.modula-lightbox-' + galleryId ) ) return;
+				e.preventDefault();
 				e.stopPropagation();
 				if ( ! tapped ) {
 					tapped = true;
-					tappedTimeout = setTimeout( function () { tapped = false; }, 300 );
+					tappedTimeout = setTimeout( function () { tapped = false; }, 400 );
 				} else {
 					clearTimeout( tappedTimeout );
 					tapped = false;
-					var textEl = caption.querySelector( '.modula-caption-description' );
-					if ( textEl ) {
-						navigator.clipboard.writeText( textEl.textContent ).catch( function ( err ) {
-							console.error( 'Could not copy text: ', err );
-						} );
-					}
+					doCopyCaption( caption );
 				}
 			}, true );
 		}
