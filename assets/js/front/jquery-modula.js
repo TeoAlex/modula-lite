@@ -324,6 +324,30 @@ jQuery(window).on('elementor/frontend/init', function () {
 				}
 			}
 		);
+
+		if ( self.options.copyCaptionMobile ) {
+			var tapped = false, tappedTimeout;
+			var galleryId = self.element.id;
+			document.addEventListener( 'click', function ( e ) {
+				var caption = e.target.closest( '.fancybox__caption' );
+				if ( ! caption ) return;
+				if ( ! caption.closest( '.modula-lightbox-' + galleryId ) ) return;
+				e.stopPropagation();
+				if ( ! tapped ) {
+					tapped = true;
+					tappedTimeout = setTimeout( function () { tapped = false; }, 300 );
+				} else {
+					clearTimeout( tappedTimeout );
+					tapped = false;
+					var textEl = caption.querySelector( '.modula-caption-description' );
+					if ( textEl ) {
+						navigator.clipboard.writeText( textEl.textContent ).catch( function ( err ) {
+							console.error( 'Could not copy text: ', err );
+						} );
+					}
+				}
+			}, true );
+		}
 	};
 
 	Plugin.prototype.trunc = function (v) {
