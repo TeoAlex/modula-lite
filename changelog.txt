@@ -1,3 +1,6 @@
+= 2.14.30 - 15.06.2026 =
+Fixed: PHP warning for undefined variable $item_data when gallery has no renderable images.
+
 = 2.14.29 - 12.06.2026 =
 Fixed: Image caption changes no longer affect the description in media library.
 
