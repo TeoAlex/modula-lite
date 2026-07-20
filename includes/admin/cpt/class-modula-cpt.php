@@ -1253,7 +1253,7 @@ class Modula_CPT {
 			$link = $link . '#!modula-general';
 		}
 
-		return $link;
+		return esc_url( $link );
 	}
 
 	/**
