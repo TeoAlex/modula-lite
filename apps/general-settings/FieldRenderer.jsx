@@ -5,6 +5,7 @@ import TextField from './fields/TextField';
 import NumberField from './fields/NumberField';
 import RadioField from './fields/RadioField';
 import TextareaField from './fields/TextareaField';
+import CodeEditorField from './fields/CodeEditorField';
 import RadioGroupField from './fields/RadioGroupField';
 import RangeSelect from './fields/RangeSelect';
 import ImageField from './fields/ImageSelectField';
@@ -90,6 +91,16 @@ const FieldRenderer = ({
 		case 'textarea':
 			return (
 				<TextareaField
+					fieldState={fieldState}
+					field={field}
+					handleChange={(val) =>
+						handleChange(fieldState, field.name, val)
+					}
+				/>
+			);
+		case 'code_editor':
+			return (
+				<CodeEditorField
 					fieldState={fieldState}
 					field={field}
 					handleChange={(val) =>
