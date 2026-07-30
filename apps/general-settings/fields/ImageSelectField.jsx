@@ -66,7 +66,9 @@ export default function ImageSelector({ fieldState, field, handleChange }) {
 				) : (
 					<div className={styles.uploadPlaceholder}>
 						<Button variant="primary" onClick={openMediaLibrary}>
-							Set watermark image
+							{field.uploadButtonText ||
+								field.buttonText ||
+								'Select image'}
 						</Button>
 					</div>
 				)}
