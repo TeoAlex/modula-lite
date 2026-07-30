@@ -148,7 +148,7 @@ class Modula_Settings_Sanitizer {
 	 * @return string
 	 */
 	private function strip_leading_empty_paragraphs( $html ) {
-		$pattern = '/(<body[^>]*>)(\s*<(?:p|div)(?:\s[^>]*)?>\s*(?:&nbsp;|\xc2\xa0|\s|<br\s*\/?>)*\s*<\/(?:p|div)>\s*)+/is';
+		$pattern = '/(<body[^>]*>)(\s*<p>\s*(?:&nbsp;|\xc2\xa0|\s|<br\s*\/?>)*\s*<\/p>\s*)+/is';
 
 		$stripped = preg_replace( $pattern, '$1', $html, 1 );
 
