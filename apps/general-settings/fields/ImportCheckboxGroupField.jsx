@@ -34,14 +34,27 @@ export default function ImportCheckboxGroupField({
 		setLoading(true);
 		const importedGalleries = [];
 		for (const id of selectedValues) {
-			const data = {
-				action: 'modula_ajax_import_images',
-				id,
-				nonce: field.nonce || false,
-				chunk: 0,
-				source,
-			};
-			const response = await doAjaxCall(data);
+			let chunk = 0;
+			let attachments = [];
+			let endOfArray = false;
+
+			while (!endOfArray) {
+				const data = {
+					action: 'modula_ajax_import_images',
+					id,
+					nonce: field.nonce || false,
+					chunk,
+					source,
+				};
+				const response = await doAjaxCall(data);
+
+				if (response.attachments) {
+					attachments = attachments.concat(response.attachments);
+				}
+
+				endOfArray = Boolean(response.end_of_array);
+				chunk += 5;
+			}
 
 			const galleryOption = options.find((opt) => opt.value === id);
 			const importData = {
@@ -50,7 +63,7 @@ export default function ImportCheckboxGroupField({
 				nonce: field.nonce,
 				clean: deleteSource,
 				gallery_title: galleryOption?.label || '',
-				attachments: response.attachments,
+				attachments,
 				source,
 			};
 
