@@ -103,28 +103,39 @@ class Modula_Ajax_Migrator {
 	public function add_image_to_library( $source_path, $source_file, $description, $alt ) {
 
 		global $wpdb;
-		$sql = $wpdb->prepare(
-			"SELECT * FROM $wpdb->posts WHERE guid LIKE %s",
-			'%/' . str_replace( '-scaled', '', $source_file )
-		);
 
-		$queried = $wpdb->get_results( $sql );
-
-		if ( count( $queried ) > 0 ) {
-			return array(
-				'ID'      => $queried[0]->ID,
-				'title'   => $queried[0]->post_title,
-				'alt'     => get_post_meta( $queried[0]->ID, '_wp_attachment_image_alt', true ),
-				'caption' => ! empty( $description ) ? $description : $queried[0]->post_content,
-			);
-		}
-
-		// Get full path and filename
 		// Seems like in some scenarios the $sourche_path contains the ABSPATH also
 		if ( strpos( $source_path, ABSPATH ) !== false ) {
 			$source_file_path = $source_path . '/' . $source_file;
 		} else {
 			$source_file_path = ABSPATH . $source_path . '/' . $source_file;
+		}
+
+		if ( ! file_exists( $source_file_path ) ) {
+			return false;
+		}
+
+		$source_hash = md5_file( $source_file_path );
+
+		// Filename match is only a pre-filter; content hash decides if it's actually the same image.
+		$sql = $wpdb->prepare(
+			"SELECT ID FROM $wpdb->posts WHERE post_type = 'attachment' AND guid LIKE %s",
+			'%/' . str_replace( '-scaled', '', $source_file )
+		);
+
+		$candidates = $wpdb->get_results( $sql );
+
+		foreach ( $candidates as $candidate ) {
+			$candidate_file_path = get_attached_file( $candidate->ID );
+
+			if ( $candidate_file_path && file_exists( $candidate_file_path ) && md5_file( $candidate_file_path ) === $source_hash ) {
+				return array(
+					'ID'      => $candidate->ID,
+					'title'   => get_the_title( $candidate->ID ),
+					'alt'     => get_post_meta( $candidate->ID, '_wp_attachment_image_alt', true ),
+					'caption' => ! empty( $description ) ? $description : get_post_field( 'post_content', $candidate->ID ),
+				);
+			}
 		}
 
 		// Get WP upload dir
